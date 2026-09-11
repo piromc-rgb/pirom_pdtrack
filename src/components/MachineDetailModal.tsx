@@ -443,8 +443,8 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                               <Clock className="w-3 h-3" /> รอดำเนินการ
                             </span>
                           )}
-                          {item.closed === '*' && (
-                            <span className="ml-1 text-[10px] text-slate-400" title="Closed (*)">
+                          {(item.closed === '*' || item.closed?.toLowerCase().includes('close') || item.remark?.includes('*') || item.remark?.toLowerCase().includes('close')) && (
+                            <span className="ml-1 text-[10px] text-amber-600 font-bold" title="Closed (*) / ส่งงานแล้ว">
                               ★
                             </span>
                           )}

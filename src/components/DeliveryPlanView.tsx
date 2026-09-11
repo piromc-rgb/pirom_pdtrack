@@ -944,11 +944,11 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               {/* Remark / Delivery Destination */}
                               <td className="py-3 px-3 text-slate-600 text-[11px] max-w-xs">
                                 <div>{item.remark || '-'}</div>
-                                {item.closed === '*' && (
-                                  <span className="text-[10px] text-amber-600 font-bold block mt-0.5">
-                                    ★ Closed (*)
-                                  </span>
-                                )}
+                                  {(item.closed === '*' || item.closed?.toLowerCase().includes('close') || item.remark?.includes('*') || item.remark?.toLowerCase().includes('close')) && (
+                                    <span className="text-[10px] text-amber-600 font-bold block mt-0.5">
+                                      ★ Closed {item.closed ? `(${item.closed})` : '(*) / ส่งแล้ว'}
+                                    </span>
+                                  )}
                               </td>
                             </tr>
                           );

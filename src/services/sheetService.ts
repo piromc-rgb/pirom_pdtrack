@@ -22,7 +22,7 @@ export const DEFAULT_QC_URL = 'https://docs.google.com/spreadsheets/d/1w8B0DyG7P
 const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v3';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v4';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -385,7 +385,18 @@ export function parseDeliveryCsvWithProduction(
       if (!isNaN(parsedQty)) qty = parsedQty;
     }
 
-    const isDelivered = rawStatus.includes('ส่ง') || rawStatus.toLowerCase().includes('deliv');
+    const normRemark = remark.toLowerCase();
+    const normClosed = closed.toLowerCase();
+    const normRawStatus = rawStatus.toLowerCase();
+
+    // กฎ: ถ้าสถานะระบุส่งแล้ว หรือในหมายเหตุ/Closed มีเครื่องหมาย * หรือคำว่า close แสดงว่าส่งงานแล้ว
+    const isDelivered = 
+      normRawStatus.includes('ส่ง') || 
+      normRawStatus.includes('deliv') ||
+      normRemark.includes('*') ||
+      normRemark.includes('close') ||
+      normClosed.includes('*') ||
+      normClosed.includes('close');
 
     // Link with Production Register
     const docNorm = norm(docRef);
@@ -558,9 +569,21 @@ export async function fetchDeliveryData(
           if (!prodOrder && overviewMeta?.prodOrder) {
             prodOrder = overviewMeta.prodOrder;
           }
+          const normRemark = (item.remark || '').toLowerCase();
+          const normClosed = (item.closed || '').toLowerCase();
+          const normRawStatus = (item.rawStatus || '').toLowerCase();
+          const isDelivered = 
+            item.status === 'ส่งแล้ว' ||
+            normRawStatus.includes('ส่ง') || 
+            normRawStatus.includes('deliv') ||
+            normRemark.includes('*') ||
+            normRemark.includes('close') ||
+            normClosed.includes('*') ||
+            normClosed.includes('close');
 
           return {
             ...item,
+            status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
             prodOrder,
             isQcPassed,
             qcDate: item.qcDate || firstQcMeta?.qcDate || '',
@@ -609,9 +632,21 @@ export async function fetchDeliveryData(
       if (!prodOrder && overviewMeta?.prodOrder) {
         prodOrder = overviewMeta.prodOrder;
       }
+      const normRemark = (item.remark || '').toLowerCase();
+      const normClosed = (item.closed || '').toLowerCase();
+      const normRawStatus = (item.rawStatus || '').toLowerCase();
+      const isDelivered = 
+        item.status === 'ส่งแล้ว' ||
+        normRawStatus.includes('ส่ง') || 
+        normRawStatus.includes('deliv') ||
+        normRemark.includes('*') ||
+        normRemark.includes('close') ||
+        normClosed.includes('*') ||
+        normClosed.includes('close');
 
       return {
         ...item,
+        status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
         prodOrder,
         customer: item.customer || extractCustomer(item.projectName),
         actionTopic: prodMeta?.actionTopic || '',
