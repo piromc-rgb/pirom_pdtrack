@@ -59,7 +59,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   const [internalSearch, setInternalSearch] = useState('');
   const [selectedMachine, setSelectedMachine] = useState('all');
   const [dateWindowFilter, setDateWindowFilter] = useState<'all' | 'overdue' | 'today' | '7days' | 'month' | 'qc-ready'>('all');
-  const [statusSource, setStatusSource] = useState<'qc' | 'overview' | 'dual'>('qc');
+  const [statusSource, setStatusSource] = useState<'qc' | 'overview' | 'dual'>('overview');
   const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [selectedPrintDate, setSelectedPrintDate] = useState<string | null>(null);
@@ -542,16 +542,6 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
             </span>
             <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
               <button
-                onClick={() => setStatusSource('qc')}
-                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
-                  statusSource === 'qc'
-                    ? 'bg-white text-emerald-800 shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900 font-medium'
-                }`}
-              >
-                🛡️ QC Record (ผ่าน QC / ยังไม่เข้า)
-              </button>
-              <button
                 onClick={() => setStatusSource('overview')}
                 className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
                   statusSource === 'overview'
@@ -560,6 +550,16 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                 }`}
               >
                 📊 Overview status (Completed / Active...)
+              </button>
+              <button
+                onClick={() => setStatusSource('qc')}
+                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                  statusSource === 'qc'
+                    ? 'bg-white text-emerald-800 shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900 font-medium'
+                }`}
+              >
+                🛡️ QC Record (ผ่าน QC / ยังไม่เข้า)
               </button>
               <button
                 onClick={() => setStatusSource('dual')}
