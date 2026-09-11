@@ -8,8 +8,7 @@ import {
   FolderKanban, 
   ChevronRight, 
   Boxes,
-  History,
-  Briefcase
+  History
 } from 'lucide-react';
 import { MachineSummary } from '../types';
 import { formatThaiDate, isDateOverdue } from '../utils/dateUtils';
@@ -83,21 +82,6 @@ export const MachineCard: React.FC<MachineCardProps> = ({ machine, onSelect }) =
           </span>
         </div>
 
-        {/* Requesting Departments tags */}
-        {machine.requestDepts.length > 0 && (
-          <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-            <span className="text-[10px] text-slate-400">ฝ่ายที่ขอผลิต:</span>
-            {machine.requestDepts.slice(0, 2).map((d, i) => (
-              <span key={i} className="px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-50 text-emerald-800 border border-emerald-100">
-                {d}
-              </span>
-            ))}
-            {machine.requestDepts.length > 2 && (
-              <span className="text-[10px] text-slate-400">+{machine.requestDepts.length - 2}</span>
-            )}
-          </div>
-        )}
-
         {/* Progress Bar */}
         <div className="space-y-1.5 my-3">
           <div className="flex justify-between text-xs font-medium text-slate-600">
@@ -166,7 +150,7 @@ export const MachineCard: React.FC<MachineCardProps> = ({ machine, onSelect }) =
 
       {/* Bottom Footer Button */}
       <div className="bg-slate-50 px-4 sm:px-5 py-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-medium text-slate-600 group-hover:bg-sky-50 group-hover:text-sky-700 transition">
-        <span>ดูรายการชิ้นส่วนและข้อมูลฝ่ายผลิต ({machine.totalItems})</span>
+        <span>ดูรายการชิ้นส่วนอะไหล่ ({machine.totalItems})</span>
         <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition" />
       </div>
     </div>

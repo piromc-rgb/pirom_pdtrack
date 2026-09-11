@@ -156,15 +156,6 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                 </span>
                 <span>•</span>
                 <span>เป้าหมายส่งมอบล่าสุด: <strong>{machine.latestTarget ? formatThaiDate(machine.latestTarget) : '-'}</strong></span>
-                {machine.requestDepts.length > 0 && (
-                  <>
-                    <span>•</span>
-                    <span className="flex items-center gap-1 text-emerald-300">
-                      <Briefcase className="w-3.5 h-3.5" />
-                      <span>ฝ่ายที่สั่งผลิต: {machine.requestDepts.join(', ')}</span>
-                    </span>
-                  </>
-                )}
               </div>
             </div>
           </div>
