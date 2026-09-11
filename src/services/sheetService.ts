@@ -3,11 +3,16 @@ import defaultItemsJson from '../data/defaultData.json';
 import defaultProductionMap from '../data/productionMap.json';
 import defaultQcData from '../data/qcData.json';
 import defaultOverviewData from '../data/overviewStatusData.json';
+import defaultOverviewItemMap from '../data/overviewItemMap.json';
 import itemPdMap from '../data/itemPdMap.json';
 import { DeliveryItem, MachineSummary, OverviewMeta } from '../types';
 import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer } from '../utils/dateUtils';
 
 export const overviewStatusMap = defaultOverviewData as Record<string, OverviewMeta>;
+export const overviewItemMap = defaultOverviewItemMap as {
+  byItem: Record<string, OverviewMeta>;
+  byProjItem: Record<string, OverviewMeta>;
+};
 export const qcStatusMap = defaultQcData as Record<string, QcMeta>;
 
 export const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1l5FbiznQNUhIpUNuma9iivKzYvcaCTiL7Z_9mDcCijE/edit?gid=472754949#gid=472754949';
@@ -17,7 +22,7 @@ export const DEFAULT_QC_URL = 'https://docs.google.com/spreadsheets/d/1w8B0DyG7P
 const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v2';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v3';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -265,6 +270,38 @@ export function getOverviewStatusForPds(pds: string[]): OverviewMeta | undefined
 }
 
 /**
+ * Look up Overview Status prioritized by Item Code (เลขที่ Item), with fallback to PD Number
+ */
+export function getOverviewStatusForItem(
+  itemCode?: string,
+  projectCode?: string,
+  pds?: string[]
+): OverviewMeta | undefined {
+  const cleanCode = itemCode?.trim().toUpperCase();
+  const cleanProj = projectCode?.trim().toUpperCase();
+
+  // 1. Primary: match by Project Code + Item Code (Most accurate for project-specific orders)
+  if (cleanProj && cleanCode) {
+    const projKey = `${cleanProj}|${cleanCode}`;
+    const meta = overviewItemMap.byProjItem[projKey];
+    if (meta) return meta;
+  }
+
+  // 2. Secondary: match by Item Code directly
+  if (cleanCode) {
+    const meta = overviewItemMap.byItem[cleanCode];
+    if (meta) return meta;
+  }
+
+  // 3. Fallback: match by PD Number if available
+  if (pds && pds.length > 0) {
+    return getOverviewStatusForPds(pds);
+  }
+
+  return undefined;
+}
+
+/**
  * Parses File 1 (Check list ส่งมอบ) and joins with production and QC maps
  */
 export function parseDeliveryCsvWithProduction(
@@ -366,8 +403,11 @@ export function parseDeliveryCsvWithProduction(
     const isQcPassed = matchedQcPds.length > 0;
     const firstQcMeta = isQcPassed && qcMap ? qcMap[matchedQcPds[0]] : undefined;
 
-    // Link with Overview Status
-    const overviewMeta = getOverviewStatusForPds(itemPds);
+    // Link with Overview Status (Prioritized by Item Code)
+    const overviewMeta = getOverviewStatusForItem(itemCode, projectCode, itemPds);
+    if (!prodOrder && overviewMeta?.prodOrder) {
+      prodOrder = overviewMeta.prodOrder;
+    }
 
     items.push({
       id: `item-${i}`,
@@ -514,7 +554,10 @@ export async function fetchDeliveryData(
           const isQcPassed = item.isQcPassed || matchedQcPds.length > 0;
           const firstQcMeta = matchedQcPds.length > 0 ? (defaultQcData as Record<string, QcMeta>)[matchedQcPds[0]] : undefined;
 
-          const overviewMeta = getOverviewStatusForPds(itemPds);
+          const overviewMeta = getOverviewStatusForItem(item.itemCode, item.projectCode, itemPds);
+          if (!prodOrder && overviewMeta?.prodOrder) {
+            prodOrder = overviewMeta.prodOrder;
+          }
 
           return {
             ...item,
@@ -526,10 +569,10 @@ export async function fetchDeliveryData(
             qcTopic: item.qcTopic || firstQcMeta?.topic || '',
             qcRemarks: item.qcRemarks || firstQcMeta?.remarks || '',
             qcPdList: matchedQcPds.length > 0 ? matchedQcPds : item.qcPdList,
-            overviewStatus: item.overviewStatus || overviewMeta?.status || '',
-            overviewCustomer: item.overviewCustomer || overviewMeta?.customer || '',
-            overviewProject: item.overviewProject || overviewMeta?.project || '',
-            overviewItemCode: item.overviewItemCode || overviewMeta?.itemCode || '',
+            overviewStatus: overviewMeta?.status || item.overviewStatus || '',
+            overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
+            overviewProject: overviewMeta?.project || item.overviewProject || '',
+            overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
           };
         });
 
@@ -562,7 +605,10 @@ export async function fetchDeliveryData(
       const matchedQcPds = itemPds.filter(p => (defaultQcData as Record<string, QcMeta>)[p]);
       const isQcPassed = matchedQcPds.length > 0;
       const firstQcMeta = isQcPassed ? (defaultQcData as Record<string, QcMeta>)[matchedQcPds[0]] : undefined;
-      const overviewMeta = getOverviewStatusForPds(itemPds);
+      const overviewMeta = getOverviewStatusForItem(item.itemCode, item.projectCode, itemPds);
+      if (!prodOrder && overviewMeta?.prodOrder) {
+        prodOrder = overviewMeta.prodOrder;
+      }
 
       return {
         ...item,
@@ -581,10 +627,10 @@ export async function fetchDeliveryData(
         qcTopic: firstQcMeta?.topic || '',
         qcRemarks: firstQcMeta?.remarks || '',
         qcPdList: matchedQcPds,
-        overviewStatus: overviewMeta?.status || '',
-        overviewCustomer: overviewMeta?.customer || '',
-        overviewProject: overviewMeta?.project || '',
-        overviewItemCode: overviewMeta?.itemCode || '',
+        overviewStatus: overviewMeta?.status || item.overviewStatus || '',
+        overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
+        overviewProject: overviewMeta?.project || item.overviewProject || '',
+        overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
       };
     });
 

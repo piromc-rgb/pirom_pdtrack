@@ -61,6 +61,7 @@ export interface OverviewMeta {
   customer?: string;
   itemCode?: string;
   description?: string;
+  prodOrder?: string;
 }
 
 export interface MachineSummary {

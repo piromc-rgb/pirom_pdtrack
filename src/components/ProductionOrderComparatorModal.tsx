@@ -93,8 +93,13 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
       // Status chip filter
       if (statusFilter !== 'all') {
         if (source === 'overview') {
-          const st = item.overviewStatus || (item.prodOrder ? 'ไม่พบข้อมูล' : 'ไม่มีเลข PD');
-          if (statusFilter !== st) return false;
+          if (['Completed', 'Active', 'Ready to Start', 'Planned'].includes(statusFilter)) {
+            if (item.overviewStatus !== statusFilter) return false;
+          } else if (statusFilter === 'ไม่พบข้อมูล') {
+            if (item.overviewStatus || !item.prodOrder) return false;
+          } else if (statusFilter === 'ไม่มีเลข PD') {
+            if (item.overviewStatus || item.prodOrder) return false;
+          }
         } else if (source === 'qc') {
           if (statusFilter === 'qc-passed' && !item.isQcPassed) return false;
           if (statusFilter === 'qc-pending' && (item.isQcPassed || !item.prodOrder)) return false;
@@ -142,25 +147,27 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
     scopeItems.forEach(it => {
       const pds = extractPdNumbers(it.prodOrder);
-      if (pds.length > 0) {
-        withPdCount++;
-        const st = it.overviewStatus;
-        if (st === 'Completed') ovCompleted++;
-        else if (st === 'Active') ovActive++;
-        else if (st === 'Planned') ovPlanned++;
-        else if (st === 'Ready to Start') ovReady++;
-        else ovNotFound++;
+      const hasPd = pds.length > 0;
+      if (hasPd) withPdCount++;
 
-        if (it.isQcPassed) qcPassed++;
-        else qcPending++;
+      // Overview status counts (อิงตามเลขที่ item หรือ PD)
+      const st = it.overviewStatus;
+      if (st === 'Completed') ovCompleted++;
+      else if (st === 'Active') ovActive++;
+      else if (st === 'Planned') ovPlanned++;
+      else if (st === 'Ready to Start') ovReady++;
+      else if (hasPd) ovNotFound++;
+      else ovNoPd++;
 
-        if (st === 'Completed' && it.isQcPassed) bothDone++;
-        else if (st === 'Completed' && !it.isQcPassed) prodDoneQcPending++;
-        else if (['Active', 'Planned', 'Ready to Start'].includes(st || '')) inProd++;
-      } else {
-        ovNoPd++;
-        qcNoPd++;
-      }
+      // QC status counts
+      if (it.isQcPassed) qcPassed++;
+      else if (hasPd) qcPending++;
+      else qcNoPd++;
+
+      // Dual status counts
+      if (st === 'Completed' && it.isQcPassed) bothDone++;
+      else if (st === 'Completed' && !it.isQcPassed) prodDoneQcPending++;
+      else if (['Active', 'Planned', 'Ready to Start'].includes(st || '')) inProd++;
     });
 
     return {
@@ -493,6 +500,18 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                     >
                       📅 Planned ({stats.ovPlanned})
                     </button>
+                    {stats.ovNotFound > 0 && (
+                      <button
+                        onClick={() => setStatusFilter('ไม่พบข้อมูล')}
+                        className={`px-2.5 py-1 rounded-lg font-medium border transition cursor-pointer ${
+                          statusFilter === 'ไม่พบข้อมูล'
+                            ? 'bg-rose-600 text-white border-rose-600'
+                            : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'
+                        }`}
+                      >
+                        ไม่พบใน Overview ({stats.ovNotFound})
+                      </button>
+                    )}
                     <button
                       onClick={() => setStatusFilter('ไม่มีเลข PD')}
                       className={`px-2.5 py-1 rounded-lg font-medium border transition cursor-pointer ${
@@ -708,7 +727,7 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                                     ไม่พบข้อมูล
                                   </span>
                                 )}
-                                {!item.prodOrder && (
+                                {!item.overviewStatus && !item.prodOrder && (
                                   <span className="text-slate-400 italic text-[10px]">
                                     (อะไหล่สั่งซื้อ)
                                   </span>

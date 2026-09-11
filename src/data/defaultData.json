@@ -49,7 +49,10 @@
     "remark": "เข้าคลัง17/7/26 จัดส่งแล้ว 18/7/26 ฝากไปพร้อมงาน BRS รถบริษัท",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-3",
@@ -75,7 +78,10 @@
     "remark": "เข้าคลัง17/7/26 จัดส่งแล้ว 18/7/26 ฝากไปพร้อมงาน BRS รถบริษัท",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-4",
@@ -101,7 +107,10 @@
     "remark": "เข้าคลัง17/7/26 จัดส่งแล้ว 18/7/26 ฝากไปพร้อมงาน BRS รถบริษัท",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-5",
@@ -127,7 +136,10 @@
     "remark": "เข้าคลัง17/7/26 จัดส่งแล้ว 18/7/26 ฝากไปพร้อมงาน BRS รถบริษัท",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-6",
@@ -231,7 +243,9 @@
     "remark": "11/4/26 p-56801",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-10",
@@ -283,7 +297,10 @@
     "remark": "จัดส่งแล้ว23/7/26 ออฟฟิศ กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
+    "overviewProject": "SO2600001"
   },
   {
     "id": "item-12",
@@ -777,7 +794,10 @@
     "remark": "จัดส่งแล้ว 24-7-69",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-31",
@@ -803,7 +823,10 @@
     "remark": "จัดส่งแล้ว 24-7-69",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-32",
@@ -829,7 +852,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-33",
@@ -855,7 +881,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-34",
@@ -881,7 +910,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-35",
@@ -907,7 +939,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-36",
@@ -933,7 +968,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-37",
@@ -959,7 +997,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-38",
@@ -985,7 +1026,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-39",
@@ -1011,7 +1055,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-40",
@@ -1037,7 +1084,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-41",
@@ -1063,7 +1113,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-42",
@@ -1089,7 +1142,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-43",
@@ -1115,7 +1171,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-44",
@@ -1141,7 +1200,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-45",
@@ -1167,7 +1229,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-46",
@@ -1193,7 +1258,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-47",
@@ -1219,7 +1287,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-48",
@@ -1245,7 +1316,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-49",
@@ -1271,7 +1345,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-50",
@@ -1323,7 +1400,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-52",
@@ -1349,7 +1429,9 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-53",
@@ -1375,7 +1457,9 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-54",
@@ -1401,7 +1485,10 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-55",
@@ -1947,7 +2034,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-76",
@@ -1973,7 +2063,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-77",
@@ -1999,7 +2092,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-78",
@@ -2025,7 +2121,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-79",
@@ -2051,7 +2150,10 @@
     "remark": "เข้าคลัง18/7/26 จัดส่งแล้ว",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-80",
@@ -2077,7 +2179,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-81",
@@ -2103,7 +2208,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-82",
@@ -2129,7 +2237,10 @@
     "remark": "เข้าคลัง18/7/26 จัดส่งแล้ว",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-83",
@@ -2155,7 +2266,9 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-84",
@@ -2181,7 +2294,9 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-85",
@@ -2207,7 +2322,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-86",
@@ -2233,7 +2351,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-87",
@@ -2259,7 +2380,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-88",
@@ -2285,7 +2409,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-89",
@@ -2311,7 +2438,9 @@
     "remark": "เข้าคลัง18/7/26 จัดส่งแล้ว",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-90",
@@ -2337,7 +2466,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-91",
@@ -2363,7 +2495,10 @@
     "remark": "1/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-92",
@@ -2389,7 +2524,10 @@
     "remark": "1/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-93",
@@ -2415,7 +2553,9 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-94",
@@ -2441,7 +2581,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-95",
@@ -2467,7 +2610,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-96",
@@ -2493,7 +2639,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-97",
@@ -2519,7 +2668,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-98",
@@ -2545,7 +2697,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-99",
@@ -2571,7 +2726,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-100",
@@ -2597,7 +2755,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-101",
@@ -2623,7 +2784,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-102",
@@ -2649,7 +2813,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-103",
@@ -2675,7 +2842,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-104",
@@ -2701,7 +2871,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-105",
@@ -2727,7 +2900,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-106",
@@ -2753,7 +2929,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-107",
@@ -2779,7 +2958,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-108",
@@ -2805,7 +2987,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-109",
@@ -2831,7 +3016,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-110",
@@ -2857,7 +3045,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-111",
@@ -2883,7 +3074,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-112",
@@ -2909,7 +3103,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-113",
@@ -2935,7 +3132,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-114",
@@ -2961,7 +3161,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
+    "overviewProject": "BDM250015"
   },
   {
     "id": "item-115",
@@ -2987,7 +3190,10 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-116",
@@ -3013,7 +3219,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-117",
@@ -3039,7 +3248,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-118",
@@ -3065,7 +3277,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-119",
@@ -3091,7 +3306,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-120",
@@ -3117,7 +3335,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-121",
@@ -3143,7 +3364,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-122",
@@ -3169,7 +3393,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-123",
@@ -3195,7 +3422,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-124",
@@ -3221,7 +3451,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-125",
@@ -3247,7 +3480,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-126",
@@ -3273,7 +3509,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-127",
@@ -3299,7 +3538,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-128",
@@ -3325,7 +3567,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-129",
@@ -3351,7 +3596,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-130",
@@ -3377,7 +3625,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-131",
@@ -3403,7 +3654,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-132",
@@ -3429,7 +3683,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-133",
@@ -3455,7 +3712,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-134",
@@ -3481,7 +3741,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-135",
@@ -3507,7 +3770,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-136",
@@ -3533,7 +3799,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-137",
@@ -3559,7 +3828,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-138",
@@ -3585,7 +3857,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-139",
@@ -3611,7 +3886,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-140",
@@ -3637,7 +3915,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-141",
@@ -3663,7 +3944,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-142",
@@ -3689,7 +3973,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-143",
@@ -3715,7 +4002,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-144",
@@ -3741,7 +4031,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
+    "overviewProject": "MA2400053"
   },
   {
     "id": "item-145",
@@ -3767,7 +4060,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-146",
@@ -3793,7 +4089,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-147",
@@ -3819,7 +4118,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-148",
@@ -3845,7 +4147,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-149",
@@ -3871,7 +4176,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-150",
@@ -3897,7 +4205,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-151",
@@ -3923,7 +4234,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-152",
@@ -3949,7 +4263,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-153",
@@ -3975,7 +4292,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-154",
@@ -4001,7 +4321,10 @@
     "remark": "14/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-155",
@@ -4027,7 +4350,10 @@
     "remark": "จ่าย Service เบิกแล้ว 18/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-156",
@@ -4053,7 +4379,10 @@
     "remark": "จ่าย Service เบิกแล้ว 18/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-157",
@@ -4079,7 +4408,10 @@
     "remark": "จ่าย Service เบิกแล้ว 21/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-158",
@@ -4105,7 +4437,10 @@
     "remark": "จ่าย Service เบิกแล้ว 18/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-159",
@@ -4131,7 +4466,10 @@
     "remark": "จ่าย Service เบิกแล้ว 18/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-160",
@@ -4157,7 +4495,10 @@
     "remark": "จ่าย Service เบิกแล้ว 18/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-161",
@@ -4183,7 +4524,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-162",
@@ -4209,7 +4553,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-163",
@@ -4235,7 +4582,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-164",
@@ -4261,7 +4611,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-165",
@@ -4287,7 +4640,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-166",
@@ -4313,7 +4669,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-167",
@@ -4339,7 +4698,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-168",
@@ -4365,7 +4727,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-169",
@@ -4391,7 +4756,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-170",
@@ -4417,7 +4785,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-171",
@@ -4443,7 +4814,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-172",
@@ -4469,7 +4843,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-173",
@@ -4495,7 +4872,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-174",
@@ -4521,7 +4901,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Ready to Start",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-175",
@@ -4547,7 +4930,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-176",
@@ -4573,7 +4959,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-177",
@@ -4599,7 +4988,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-178",
@@ -4625,7 +5017,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-179",
@@ -4651,7 +5046,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-180",
@@ -4677,7 +5075,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-181",
@@ -4703,7 +5104,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-182",
@@ -4729,7 +5133,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-183",
@@ -4755,7 +5162,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-184",
@@ -4781,7 +5191,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-185",
@@ -4807,7 +5220,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-186",
@@ -4833,7 +5249,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-187",
@@ -4859,7 +5278,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-188",
@@ -4885,7 +5307,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-189",
@@ -4911,7 +5336,10 @@
     "remark": "จ่าย Service เบิกแล้ว 19/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-190",
@@ -4937,7 +5365,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-191",
@@ -5067,7 +5498,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-196",
@@ -5093,7 +5527,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-197",
@@ -5119,7 +5556,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-198",
@@ -5145,7 +5585,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-199",
@@ -5171,7 +5614,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-200",
@@ -5197,7 +5643,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-201",
@@ -5223,7 +5672,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-202",
@@ -5249,7 +5701,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-203",
@@ -5275,7 +5730,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-204",
@@ -5301,7 +5759,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-205",
@@ -5327,7 +5788,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-206",
@@ -5353,7 +5817,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-207",
@@ -5379,7 +5846,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-208",
@@ -5405,7 +5875,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-209",
@@ -5431,7 +5904,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-210",
@@ -5457,7 +5933,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-211",
@@ -5483,7 +5962,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-212",
@@ -5509,7 +5991,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-213",
@@ -5535,7 +6020,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-214",
@@ -5561,7 +6049,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-215",
@@ -5587,7 +6078,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-216",
@@ -5613,7 +6107,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-217",
@@ -5639,7 +6136,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-218",
@@ -5665,7 +6165,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Ready to Start",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-219",
@@ -5691,7 +6194,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-220",
@@ -5717,7 +6223,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-221",
@@ -5743,7 +6252,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-222",
@@ -5769,7 +6281,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-223",
@@ -5821,7 +6336,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-225",
@@ -5925,7 +6443,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
+    "overviewProject": "SO2600001"
   },
   {
     "id": "item-229",
@@ -5951,7 +6472,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
+    "overviewProject": "SO2600001"
   },
   {
     "id": "item-230",
@@ -5977,7 +6501,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
+    "overviewProject": "SO2600001"
   },
   {
     "id": "item-231",
@@ -6003,7 +6530,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
+    "overviewProject": "SO2600001"
   },
   {
     "id": "item-232",
@@ -6029,7 +6559,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
+    "overviewProject": "MA2500047"
   },
   {
     "id": "item-233",
@@ -6055,7 +6588,10 @@
     "remark": "คลังส่งแล้ว 21/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)",
+    "overviewProject": "SO2500003"
   },
   {
     "id": "item-234",
@@ -6081,7 +6617,10 @@
     "remark": "คลังส่งแล้ว 21/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)",
+    "overviewProject": "SO2500003"
   },
   {
     "id": "item-235",
@@ -6211,7 +6750,10 @@
     "remark": "23/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
+    "overviewProject": "SO2600001"
   },
   {
     "id": "item-240",
@@ -6887,7 +7429,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-266",
@@ -6913,7 +7458,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-267",
@@ -6939,7 +7487,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-268",
@@ -6965,7 +7516,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-269",
@@ -6991,7 +7545,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-270",
@@ -7017,7 +7574,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-271",
@@ -7043,7 +7603,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-272",
@@ -7069,7 +7632,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-273",
@@ -7095,7 +7661,10 @@
     "remark": "คลังจัดส่งออฟฟิศ กทม แล้ว 4/9/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "-"
+    "closed": "-",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-274",
@@ -7121,7 +7690,10 @@
     "remark": "เป้าหมาย1 เป็นการประมาณการไว้",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-275",
@@ -7147,7 +7719,10 @@
     "remark": "เป้าหมาย1 เป็นการประมาณการไว้",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-276",
@@ -7173,7 +7748,9 @@
     "remark": "เป้าหมาย1 เป็นการประมาณการไว้",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "Service Order"
   },
   {
     "id": "item-277",
@@ -7199,7 +7776,10 @@
     "remark": "เป้าหมาย1 เป็นการประมาณการไว้",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Ready to Start",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-278",
@@ -7225,7 +7805,10 @@
     "remark": "เป้าหมาย1 เป็นการประมาณการไว้",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-279",
@@ -7251,7 +7834,10 @@
     "remark": "คาดว่าจะผลิตเสร็จ 22/8/69",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM ขอนแก่นแหอวนคลังตลาด 3/1/2568-02/01/2569",
+    "overviewProject": "BDM250012"
   },
   {
     "id": "item-280",
@@ -7277,7 +7863,10 @@
     "remark": "คาดว่าจะผลิตเสร็จ 22/8/69",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM ขอนแก่นแหอวนคลังตลาด 3/1/2568-02/01/2569",
+    "overviewProject": "BDM250012"
   },
   {
     "id": "item-281",
@@ -7329,7 +7918,10 @@
     "remark": "คลังจ่ายแล้ว 21/8/26",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "WM  BRS (รอระบุวันที่เริ่มต้น-สุดสิ้น)",
+    "overviewProject": "WM2600002"
   },
   {
     "id": "item-283",
@@ -7511,7 +8103,10 @@
     "remark": "สั่งซื้อลง กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Active",
+    "overviewCustomer": "AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)",
+    "overviewProject": "SO2500003"
   },
   {
     "id": "item-290",
@@ -7537,7 +8132,10 @@
     "remark": "8/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
+    "overviewProject": "BDM260010"
   },
   {
     "id": "item-291",
@@ -7693,7 +8291,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM PTTGCL เริ่ม1/5/2567- 30/4/2569",
+    "overviewProject": "BDM240026"
   },
   {
     "id": "item-297",
@@ -7719,7 +8320,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-298",
@@ -7745,7 +8349,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-299",
@@ -7771,7 +8378,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-300",
@@ -7797,7 +8407,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-301",
@@ -7823,7 +8436,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-302",
@@ -7849,7 +8465,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-303",
@@ -7875,7 +8494,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-304",
@@ -7901,7 +8523,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-305",
@@ -7927,7 +8552,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-306",
@@ -7953,7 +8581,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-307",
@@ -7979,7 +8610,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-308",
@@ -8005,7 +8639,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-309",
@@ -8031,7 +8668,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-310",
@@ -8057,7 +8697,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Ready to Start",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-311",
@@ -8083,7 +8726,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
+    "overviewProject": "SR2600017"
   },
   {
     "id": "item-312",
@@ -8109,7 +8755,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-313",
@@ -8135,7 +8784,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-314",
@@ -8161,7 +8813,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-315",
@@ -8187,7 +8842,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-316",
@@ -8213,7 +8871,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-317",
@@ -8239,7 +8900,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-318",
@@ -8265,7 +8929,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-319",
@@ -8291,7 +8958,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-320",
@@ -8317,7 +8987,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-321",
@@ -8343,7 +9016,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-322",
@@ -8369,7 +9045,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-323",
@@ -8395,7 +9074,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-324",
@@ -8421,7 +9103,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
+    "overviewProject": "BDM250028"
   },
   {
     "id": "item-325",
@@ -8447,7 +9132,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-326",
@@ -8473,7 +9161,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-327",
@@ -8499,7 +9190,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Active",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-328",
@@ -8525,7 +9219,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-329",
@@ -8551,7 +9248,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-330",
@@ -8577,7 +9277,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Completed",
+    "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
+    "overviewProject": "BDM250040"
   },
   {
     "id": "item-331",
@@ -8603,7 +9306,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Planned",
+    "overviewCustomer": "BDM WHA GCL 1/5/2569-28/2/2570",
+    "overviewProject": "BDM260013"
   },
   {
     "id": "item-332",
@@ -8629,7 +9335,10 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Ready to Start",
+    "overviewCustomer": "BDM WHA GCL 1/5/2569-28/2/2570",
+    "overviewProject": "BDM260013"
   },
   {
     "id": "item-333",
@@ -8655,6 +9364,9 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "overviewStatus": "Ready to Start",
+    "overviewCustomer": "BDM WHA GCL 1/5/2569-28/2/2570",
+    "overviewProject": "BDM260013"
   }
 ]
