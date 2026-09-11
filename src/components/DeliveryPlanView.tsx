@@ -760,8 +760,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               </td>
 
                               {/* Customer & Project */}
-                              <td className="py-3 px-3">
-                                <div className="font-bold text-slate-900 truncate max-w-[140px]" title={customerName}>
+                              <td className="py-3 px-3 min-w-[140px]">
+                                <div className="font-bold text-slate-900 leading-snug" title={customerName}>
                                   {customerName}
                                 </div>
                                 <div className="text-[10px] text-slate-500 font-mono">
@@ -770,7 +770,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               </td>
 
                               {/* Machine Name */}
-                              <td className="py-3 px-3 font-medium whitespace-nowrap">
+                              <td className="py-3 px-3 font-medium whitespace-nowrap min-w-[130px]">
                                 <button
                                   onClick={() => onSelectMachineByName(item.machineName)}
                                   className="font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center gap-1 text-left cursor-pointer"
@@ -778,7 +778,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   <Cpu className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
                                   <span>{item.machineName}</span>
                                 </button>
-                                <div className="text-[10px] text-slate-400 truncate max-w-[130px]" title={item.projectName}>
+                                <div className="text-[10px] text-slate-400 leading-snug" title={item.projectName}>
                                   {item.projectName}
                                 </div>
                               </td>
@@ -942,7 +942,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               </td>
 
                               {/* Remark / Delivery Destination */}
-                              <td className="py-3 px-3 text-slate-600 text-[11px] max-w-xs">
+                              <td className="py-3 px-3 text-slate-600 text-[11px] min-w-[160px]">
                                 <div>{item.remark || '-'}</div>
                                   {(item.closed === '*' || item.closed?.toLowerCase().includes('close') || item.remark?.includes('*') || item.remark?.toLowerCase().includes('close')) && (
                                     <span className="text-[10px] text-amber-600 font-bold block mt-0.5">

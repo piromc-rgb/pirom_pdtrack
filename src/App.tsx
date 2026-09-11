@@ -153,7 +153,7 @@ export function App() {
 
       {/* Toast notification banner */}
       {toastMessage && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-3 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-3 sm:px-5 lg:px-8 w-full pt-3 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 text-xs sm:text-sm font-medium shadow-sm ${
             toastMessage.type === 'success'
               ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
@@ -180,7 +180,7 @@ export function App() {
       )}
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-6">
+      <main className="flex-1 max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-3 sm:px-5 lg:px-8 py-6 w-full space-y-6">
         
         {/* Top KPI Metrics Section */}
         <KpiSummary
@@ -289,7 +289,7 @@ export function App() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700">PDTrack</span>
             <span>- ระบบติดตามเป้าหมายการส่งมอบโดยใช้ชื่อเครื่องจักรเป็นดัชนี</span>

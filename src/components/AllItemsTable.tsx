@@ -299,7 +299,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                         <Cpu className="w-3.5 h-3.5 text-sky-500" />
                         <span>{item.machineName}</span>
                       </button>
-                      <div className="text-[10px] text-slate-400 truncate max-w-[130px]" title={item.projectName}>
+                      <div className="text-[10px] text-slate-400 leading-snug" title={item.projectName}>
                         {item.projectName}
                       </div>
                     </td>
@@ -387,7 +387,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                     </td>
 
                     {/* Remark */}
-                    <td className="py-3 px-3 text-slate-600 text-[11px] max-w-xs">
+                    <td className="py-3 px-3 text-slate-600 text-[11px] min-w-[150px]">
                       {item.remark || '-'}
                     </td>
                   </tr>

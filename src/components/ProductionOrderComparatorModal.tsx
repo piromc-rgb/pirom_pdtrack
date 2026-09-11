@@ -287,9 +287,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-3 sm:py-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
       <div 
-        className="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+        className="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-[97vw] 2xl:max-w-[1780px] max-h-[94vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150"
         onClick={e => e.stopPropagation()}
       >
         {/* ======================================================== */}
@@ -606,8 +606,8 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                   <thead className="bg-slate-100 text-slate-700 font-bold border-b border-slate-300 sticky top-0 z-10 shadow-2xs">
                     <tr>
                       <th className="py-2.5 px-2 text-center w-10 border-r border-slate-200">#</th>
-                      <th className="py-2.5 px-2.5 w-[110px] font-mono border-r border-slate-200">เลขที่ Item</th>
-                      <th className="py-2.5 px-3 min-w-[200px] border-r border-slate-200">ชื่อ Item / โครงการ</th>
+                      <th className="py-2.5 px-2.5 w-[calc(14ch+24px)] min-w-[calc(14ch+24px)] font-mono border-r border-slate-200">เลขที่ Item</th>
+                      <th className="py-2.5 px-3 min-w-[240px] border-r border-slate-200">ชื่อ Item / โครงการ</th>
                       <th className="py-2.5 px-2 text-center w-14 border-r border-slate-200">จำนวน</th>
                       <th className="py-2.5 px-2.5 w-32 font-mono border-r border-slate-200">Production Order</th>
                       
@@ -663,7 +663,7 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
                           {/* Description + Project + Machine */}
                           <td className="py-2.5 px-3 border-r border-slate-200">
-                            <div className="font-semibold text-slate-900 line-clamp-1" title={item.itemName}>
+                            <div className="font-semibold text-slate-900 leading-snug" title={item.itemName}>
                               {item.itemName}
                             </div>
                             <div className="text-[10.5px] text-slate-500 flex items-center gap-2 mt-0.5 flex-wrap">

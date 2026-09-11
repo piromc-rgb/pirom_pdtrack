@@ -120,8 +120,8 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
   const hasOverdue = machine.overdueItems > 0;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[94vh] flex flex-col overflow-hidden border border-slate-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-3 md:p-4 animate-in fade-in duration-150">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[97vw] 2xl:max-w-[1780px] max-h-[94vh] flex flex-col overflow-hidden border border-slate-200">
         
         {/* Modal Header */}
         <div className="p-5 sm:p-6 bg-slate-900 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -451,7 +451,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                         </td>
 
                         {/* Remark */}
-                        <td className="py-3 px-3.5 text-slate-600 text-[11px] max-w-xs">
+                        <td className="py-3 px-3.5 text-slate-600 text-[11px] min-w-[150px]">
                           {item.remark || '-'}
                         </td>
                       </tr>

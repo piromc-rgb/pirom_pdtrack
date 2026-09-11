@@ -420,7 +420,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
     >
       
       {/* Modal Container */}
-      <div className="bg-slate-50 rounded-2xl border border-slate-300 shadow-2xl w-full max-w-6xl max-h-[96vh] flex flex-col overflow-hidden print:overflow-visible print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none print:bg-white print:p-0 print-modal-card">
+      <div className="bg-slate-50 rounded-2xl border border-slate-300 shadow-2xl w-full max-w-[97vw] 2xl:max-w-[1780px] max-h-[96vh] flex flex-col overflow-hidden print:overflow-visible print:max-w-none print:max-h-none print:border-none print:shadow-none print:rounded-none print:bg-white print:p-0 print-modal-card">
         
         {/* ======================================================== */}
         {/* CONTROL HEADER (Hidden on actual print / PDF output)    */}
