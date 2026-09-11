@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>รายงานรหัสแบบตามเลขที่ Production Order (PD)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+
+        @page {
+            size: A4 landscape;
+            margin: 10mm 12mm 10mm 12mm;
+        }
+
+        body {
+            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            background-color: #ffffff;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .header-container {
+            border-bottom: 2px solid #0284c7;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .title-block h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 4px 0;
+        }
+
+        .title-block p {
+            font-size: 11px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .meta-block {
+            text-align: right;
+            font-size: 10px;
+            color: #475569;
+        }
+
+        .meta-block strong {
+            color: #0f172a;
+        }
+
+        .summary-ribbon {
+            display: flex;
+            gap: 15px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 8px 14px;
+            margin-bottom: 12px;
+            font-size: 11px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-item span.label {
+            color: #64748b;
+        }
+
+        .summary-item span.val {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5px;
+            margin-bottom: 14px;
+        }
+
+        th {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-weight: 600;
+            text-align: left;
+            padding: 7px 8px;
+            border: 1px solid #0f172a;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 6px 8px;
+            border: 1px solid #cbd5e1;
+            vertical-align: middle;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .font-mono {
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .font-bold {
+            font-weight: 700;
+        }
+
+        .text-blue-700 {
+            color: #1d4ed8;
+        }
+
+        .text-purple-800 {
+            color: #6b21a8;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #0f172a;
+            line-height: 1.3;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 9999px;
+            font-size: 9.5px;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .ops-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .op-badge {
+            display: inline-block;
+            padding: 1.5px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 500;
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .footer-note {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9.5px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <div class="title-block">
+            <h1>รายงานรหัสแบบ (Drawing Code) ตามเลขที่ Production Order (PD No.)</h1>
+            <p>อ้างอิงฐานข้อมูลฝ่ายผลิต: Week 37 26-09-10 Status Overview.xlsx (ชีต Data)</p>
+        </div>
+        <div class="meta-block">
+            <div>วันที่ออกรายงาน: <strong>10 กันยายน 2026</strong></div>
+            <div>จำนวนรายการ: <strong>13 ใบสั่งผลิต</strong></div>
+            <div>ระบบ: <strong>PDTrack Production Intelligence</strong></div>
+        </div>
+    </div>
+
+    <div class="summary-ribbon">
+        <div class="summary-item">
+            <span class="label">จำนวนใบสั่งผลิต:</span>
+            <span class="val">13 รายการ</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">จำนวนชิ้นงานรวม (Qty):</span>
+            <span class="val">212 ชิ้น</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">สถานะคำสั่งผลิต:</span>
+            <span class="val" style="color: #0284c7;">Active (กำลังดำเนินการ) 100%</span>
+        </div>
+        <div class="summary-item">
+            <span class="label">สถานะขั้นตอนย่อยในโรงงาน:</span>
+            <span class="val" style="color: #059669;">Completed (ผ่านทุกขั้นตอน) 100%</span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 32px;" class="text-center">ลำดับ</th>
+                <th style="width: 85px;">เลขที่ PD</th>
+                <th style="width: 125px;">รหัสแบบ (Drawing No.)</th>
+                <th style="min-width: 170px;">ชื่อแบบ / รายละเอียดชิ้นส่วน</th>
+                <th style="width: 75px;" class="text-center">เครื่องจักร</th>
+                <th style="width: 95px;">โครงการ</th>
+                <th style="width: 45px;" class="text-center">จำนวน</th>
+                <th style="width: 65px;" class="text-center">สถานะคำสั่ง</th>
+                <th>ขั้นตอนการผลิตจริงในโรงงาน (Routing Operations)</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <td class="text-center font-mono">1</td>
+        <td class="font-mono font-bold text-blue-700">PD2605773</td>
+        <td class="font-mono font-bold text-purple-800">B631013J01113A</td>
+        <td>
+            <div class="item-name">00-78-น็อตแกนลูกปืน NUTR17</div>
+        </td>
+        <td class="text-center font-mono">B631013J</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2600001</div>
+            <div class="text-[11px] text-slate-500">ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">72</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC VF4 (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">2</td>
+        <td class="font-mono font-bold text-blue-700">PD2605914</td>
+        <td class="font-mono font-bold text-purple-800">L923036Z031400</td>
+        <td>
+            <div class="item-name">01-03 Bush access Piont-AAI(P2)</div>
+        </td>
+        <td class="text-center font-mono">L923036Z</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">24</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">3</td>
+        <td class="font-mono font-bold text-blue-700">PD2605365</td>
+        <td class="font-mono font-bold text-purple-800">CP11H14A031127</td>
+        <td>
+            <div class="item-name">03-80 Pin leaf chain</div>
+        </td>
+        <td class="text-center font-mono">CP11H14A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">4</td>
+        <td class="font-mono font-bold text-blue-700">PD2605427</td>
+        <td class="font-mono font-bold text-purple-800">CP11H14A03115A</td>
+        <td>
+            <div class="item-name">03-24 bush sprocket-1</div>
+        </td>
+        <td class="text-center font-mono">CP11H14A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">5</td>
+        <td class="font-mono font-bold text-blue-700">PD2605352</td>
+        <td class="font-mono font-bold text-purple-800">CP11H14A031114</td>
+        <td>
+            <div class="item-name">03-30 Bush sprocket shaft-3</div>
+        </td>
+        <td class="text-center font-mono">CP11H14A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">6</td>
+        <td class="font-mono font-bold text-blue-700">PD2605351</td>
+        <td class="font-mono font-bold text-purple-800">CP11H14A031113</td>
+        <td>
+            <div class="item-name">03-29 Bush sprocket shaft-2</div>
+        </td>
+        <td class="text-center font-mono">CP11H14A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">7</td>
+        <td class="font-mono font-bold text-blue-700">PD2519377</td>
+        <td class="font-mono font-bold text-purple-800">J131012A051100</td>
+        <td>
+            <div class="item-name">SR-121-1 Shaft guideway</div>
+        </td>
+        <td class="text-center font-mono">J131012A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC ST30 (Ready to Start)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">8</td>
+        <td class="font-mono font-bold text-blue-700">PD2519373</td>
+        <td class="font-mono font-bold text-purple-800">J131012A051200</td>
+        <td>
+            <div class="item-name">SR-121-2 Bush guideway</div>
+        </td>
+        <td class="text-center font-mono">J131012A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">24</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC ST30 (Ready to Start)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">9</td>
+        <td class="font-mono font-bold text-blue-700">PD2523373</td>
+        <td class="font-mono font-bold text-purple-800">J211312A231200</td>
+        <td>
+            <div class="item-name">SHU-22-2 Bush for All Sensor SHU-2</div>
+        </td>
+        <td class="text-center font-mono">J211312A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">24</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC ST30 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">10</td>
+        <td class="font-mono font-bold text-blue-700">PD2522529</td>
+        <td class="font-mono font-bold text-purple-800">J211312A021200</td>
+        <td>
+            <div class="item-name">SHU-02-3 Bush for lifting</div>
+        </td>
+        <td class="text-center font-mono">J211312A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">11</td>
+        <td class="font-mono font-bold text-blue-700">PD2522871</td>
+        <td class="font-mono font-bold text-purple-800">J211312A091300</td>
+        <td>
+            <div class="item-name">SHU-08-3 Shaft for Guide Wheel</div>
+        </td>
+        <td class="text-center font-mono">J211312A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ปรับแต่ง (Planned)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">12</td>
+        <td class="font-mono font-bold text-blue-700">PD2519376</td>
+        <td class="font-mono font-bold text-purple-800">J131012A931200</td>
+        <td>
+            <div class="item-name">SR-275-4 Shaft mid guide wheel</div>
+        </td>
+        <td class="text-center font-mono">J131012A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500003</div>
+            <div class="text-[11px] text-slate-500">AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">4</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC ST30 (Ready to Start)
+        </span>
+        
+        <span class="op-badge completed">
+            ทำสี (Planned)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td class="text-center font-mono">13</td>
+        <td class="font-mono font-bold text-blue-700">PD2607975</td>
+        <td class="font-mono font-bold text-purple-800">L822524A10416B</td>
+        <td>
+            <div class="item-name">Brake Lifting</div>
+        </td>
+        <td class="text-center font-mono">L822524A</td>
+        <td>
+            <div class="text-xs font-semibold text-slate-700">SO2500019</div>
+            <div class="text-[11px] text-slate-500">บจก.ซิเลซติกา(ประเทศไทย)</div>
+        </td>
+        <td class="text-center font-bold text-slate-800">8</td>
+        <td class="text-center">
+            <span class="status-badge active">Active</span>
+        </td>
+        <td>
+            <div class="ops-container">
+        <span class="op-badge completed">
+            เลื่อย (Completed)
+        </span>
+        
+        <span class="op-badge completed">
+            CNC TL2 2 (Ready to Start)
+        </span>
+        </div>
+        </td>
+    </tr>
+    
+        </tbody>
+    </table>
+
+    <div class="footer-note">
+        <div>* เอกสารนี้สร้างขึ้นโดยอัตโนมัติจากระบบติดตามเป้าหมายการส่งมอบและข้อมูลการผลิต PDTrack</div>
+        <div>หน้า 1 จาก 1</div>
+    </div>
+
+</body>
+</html>

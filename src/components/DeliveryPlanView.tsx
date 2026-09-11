@@ -1,0 +1,969 @@
+import React, { useState, useMemo } from 'react';
+import { 
+  Calendar, 
+  Clock, 
+  CheckCircle2, 
+  AlertTriangle, 
+  Cpu, 
+  ArrowRight,
+  Filter,
+  Boxes,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  Search,
+  Printer,
+  Sparkles,
+  ShieldCheck,
+  Building2,
+  Briefcase,
+  User,
+  Truck,
+  RefreshCw,
+  GitCompare,
+  Layers,
+  TrendingUp
+} from 'lucide-react';
+import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
+import { 
+  formatThaiDate, 
+  formatCompactDate, 
+  formatThaiDayOfWeek,
+  parseDate, 
+  isDateOverdue, 
+  isDateDueSoon,
+  getDaysDiff,
+  extractCustomer
+} from '../utils/dateUtils';
+import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
+
+interface DeliveryPlanViewProps {
+  items: DeliveryItem[];
+  machines: MachineSummary[];
+  searchCriteria: SearchCriteria;
+  onSelectMachineByName: (name: string) => void;
+  onRefresh?: () => void;
+  onOpenComparator?: () => void;
+  isLoading?: boolean;
+}
+
+export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
+  items,
+  machines,
+  searchCriteria,
+  onSelectMachineByName,
+  onRefresh,
+  onOpenComparator,
+  isLoading,
+}) => {
+  const [internalSearch, setInternalSearch] = useState('');
+  const [selectedMachine, setSelectedMachine] = useState('all');
+  const [dateWindowFilter, setDateWindowFilter] = useState<'all' | 'overdue' | 'today' | '7days' | 'month' | 'qc-ready'>('all');
+  const [statusSource, setStatusSource] = useState<'qc' | 'overview' | 'dual'>('qc');
+  const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [selectedPrintDate, setSelectedPrintDate] = useState<string | null>(null);
+
+  // 1. FILTER STRICTLY TO PENDING ITEMS ONLY ("แสดงเฉพาะงานที่ยังไม่ส่ง")
+  const pendingItems = useMemo(() => {
+    return items.filter(item => {
+      // Strictly must NOT be delivered
+      if (item.status === 'ส่งแล้ว') return false;
+
+      // Apply 5-field Search criteria
+      if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase().trim())) return false;
+      if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
+      if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
+      if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase().trim())) return false;
+      if (searchCriteria.machineName && !item.machineName.toLowerCase().includes(searchCriteria.machineName.toLowerCase().trim())) return false;
+      if (searchCriteria.requestDept && (!item.requestDept || !item.requestDept.toLowerCase().includes(searchCriteria.requestDept.toLowerCase().trim()))) return false;
+      if (searchCriteria.actionTopic && (!item.actionTopic || !item.actionTopic.toLowerCase().includes(searchCriteria.actionTopic.toLowerCase().trim()))) return false;
+      if (searchCriteria.qcStatus === 'passed' && !item.isQcPassed) return false;
+      if (searchCriteria.qcStatus === 'pending' && item.isQcPassed) return false;
+
+      // Machine Dropdown filter
+      if (selectedMachine !== 'all' && item.machineName !== selectedMachine) return false;
+
+      // Internal text search
+      if (internalSearch) {
+        const term = internalSearch.toLowerCase().trim();
+        const matchName = item.itemName.toLowerCase().includes(term);
+        const matchCode = item.itemCode.toLowerCase().includes(term);
+        const matchMachine = item.machineName.toLowerCase().includes(term);
+        const matchPO = item.prodOrder.toLowerCase().includes(term);
+        const matchProj = item.projectName.toLowerCase().includes(term) || item.projectCode.toLowerCase().includes(term);
+        const matchDept = item.requestDept?.toLowerCase().includes(term);
+        const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
+        if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC) {
+          return false;
+        }
+      }
+
+      // Quick Date Window Filter
+      const daysDiff = getDaysDiff(item.targetLatest);
+      if (dateWindowFilter === 'overdue' && !item.isOverdue) return false;
+      if (dateWindowFilter === 'today' && (daysDiff === null || daysDiff !== 0)) return false;
+      if (dateWindowFilter === '7days' && (daysDiff === null || daysDiff < 0 || daysDiff > 7)) return false;
+      if (dateWindowFilter === 'month' && (daysDiff === null || daysDiff < 0 || daysDiff > 30)) return false;
+      if (dateWindowFilter === 'qc-ready' && !item.isQcPassed) return false;
+
+      return true;
+    });
+  }, [items, searchCriteria, selectedMachine, internalSearch, dateWindowFilter]);
+
+  // Overall statistics for pending items
+  const stats = useMemo(() => {
+    let totalQty = 0;
+    let overdueCount = 0;
+    let dueSoonCount = 0;
+    let qcPassedCount = 0;
+    let qcPassedQty = 0;
+    const machineSet = new Set<string>();
+
+    pendingItems.forEach(i => {
+      totalQty += i.qty;
+      if (i.isOverdue) overdueCount++;
+      if (i.isDueSoon) dueSoonCount++;
+      if (i.isQcPassed) {
+        qcPassedCount++;
+        qcPassedQty += i.qty;
+      }
+      if (i.machineName && i.machineName !== '(ไม่ระบุเครื่องจักร)') {
+        machineSet.add(i.machineName);
+      }
+    });
+
+    return {
+      totalItems: pendingItems.length,
+      totalQty,
+      overdueCount,
+      dueSoonCount,
+      qcPassedCount,
+      qcPassedQty,
+      machinesCount: machineSet.size,
+    };
+  }, [pendingItems]);
+
+  // 2. GROUP STRICTLY BY PLANNED DELIVERY DATE ("ยึดตามเป้าการส่งวันไหน คือแผนการส่งวันนั้น")
+  const dateGroups = useMemo(() => {
+    const groups: { 
+      [key: string]: { 
+        dateKey: string; 
+        parsedDate: Date | null; 
+        isOverdue: boolean;
+        isToday: boolean;
+        isTomorrow: boolean;
+        daysDiff: number | null;
+        totalQty: number;
+        qcPassedCount: number;
+        machines: Set<string>;
+        items: DeliveryItem[];
+      } 
+    } = {};
+
+    pendingItems.forEach(item => {
+      const dateKey = item.targetLatest ? item.targetLatest.trim() : 'ยังไม่ระบุวันส่ง';
+      const parsed = parseDate(dateKey);
+      const daysDiff = getDaysDiff(dateKey);
+      const isOverdue = item.isOverdue || Boolean(daysDiff !== null && daysDiff < 0);
+      const isToday = daysDiff === 0;
+      const isTomorrow = daysDiff === 1;
+
+      if (!groups[dateKey]) {
+        groups[dateKey] = {
+          dateKey,
+          parsedDate: parsed,
+          isOverdue,
+          isToday,
+          isTomorrow,
+          daysDiff,
+          totalQty: 0,
+          qcPassedCount: 0,
+          machines: new Set<string>(),
+          items: []
+        };
+      }
+
+      groups[dateKey].totalQty += item.qty;
+      if (item.isQcPassed) groups[dateKey].qcPassedCount++;
+      if (item.machineName) groups[dateKey].machines.add(item.machineName);
+      groups[dateKey].items.push(item);
+    });
+
+    // Sort chronologically:
+    // Past overdue dates -> today -> upcoming dates -> undefined date at the end
+    const sorted = Object.values(groups).sort((a, b) => {
+      if (!a.parsedDate) return 1;
+      if (!b.parsedDate) return -1;
+      return a.parsedDate.getTime() - b.parsedDate.getTime();
+    });
+
+    return sorted;
+  }, [pendingItems]);
+
+  // Expand / collapse single date
+  const toggleExpand = (dateKey: string) => {
+    setExpandedDates(prev => ({
+      ...prev,
+      [dateKey]: prev[dateKey] === false ? true : false // default open
+    }));
+  };
+
+  const isExpanded = (dateKey: string) => {
+    return expandedDates[dateKey] !== false; // Default open
+  };
+
+  const expandAll = () => {
+    const next: Record<string, boolean> = {};
+    dateGroups.forEach(g => { next[g.dateKey] = true; });
+    setExpandedDates(next);
+  };
+
+  const collapseAll = () => {
+    const next: Record<string, boolean> = {};
+    dateGroups.forEach(g => { next[g.dateKey] = false; });
+    setExpandedDates(next);
+  };
+
+  // Export Delivery Plan to CSV
+  const handleExportCsv = () => {
+    const headers = [
+      'แผนวันที่ส่งมอบ',
+      'สถานะกำหนดส่ง',
+      'ชื่อเครื่องจักร',
+      'เลขที่ Item',
+      'ชื่อ Item / รายละเอียด',
+      'จำนวน (Qty)',
+      'Production Order (PD)',
+      'สถานะ QC',
+      'วันที่ตรวจ QC',
+      'ผู้ตรวจ QC',
+      'ชื่อโครงการ',
+      'เลขที่โครงการ',
+      'ประวัติเป้าหมายเดิม (1-5)',
+      'หมายเหตุปลายทาง'
+    ];
+
+    const rows: string[][] = [];
+
+    dateGroups.forEach(group => {
+      group.items.forEach(item => {
+        const urgencyText = group.isOverdue 
+          ? `เกินกำหนด ${Math.abs(group.daysDiff || 0)} วัน` 
+          : group.isToday 
+          ? 'วันนี้' 
+          : group.isTomorrow 
+          ? 'พรุ่งนี้' 
+          : `อีก ${group.daysDiff || 0} วัน`;
+
+        const milestones = [item.target1, item.target2, item.target3, item.target4, item.target5].filter(Boolean).join(' -> ');
+
+        rows.push([
+          `"${group.dateKey}"`,
+          `"${urgencyText}"`,
+          `"${item.machineName}"`,
+          `"${item.itemCode}"`,
+          `"${item.itemName.replace(/"/g, '""')}"`,
+          String(item.qty),
+          `"${item.prodOrder}"`,
+          item.isQcPassed ? '"ผ่าน QC แล้ว"' : '"ยังไม่เข้า QC"',
+          `"${item.qcDate || ''}"`,
+          `"${item.qcInspector || ''}"`,
+          `"${item.projectName.replace(/"/g, '""')}"`,
+          `"${item.projectCode}"`,
+          `"${milestones}"`,
+          `"${item.remark.replace(/"/g, '""')}"`
+        ]);
+      });
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Daily_Delivery_Plan_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="space-y-6">
+      
+      {/* 1. Header Banner & Plan Philosophy */}
+      <div className="bg-gradient-to-r from-blue-900 via-sky-900 to-slate-900 rounded-2xl p-5 sm:p-6 text-white shadow-md relative overflow-hidden">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-200 text-xs font-semibold border border-sky-500/30">
+              <Truck className="w-4 h-4 text-sky-400" />
+              <span>แผนการส่งมอบประจำวัน (Daily Delivery Schedule)</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+              แผนการส่งมอบชิ้นส่วนตามวันที่กำหนดส่ง
+            </h1>
+            <p className="text-xs sm:text-sm text-sky-100/80 leading-relaxed">
+              * ระบบยึดตามเป้าการส่งวันไหน คือแผนการส่งมอบของวันนั้น โดยคัดกรองเฉพาะ <strong>งานที่ยังไม่ส่งมอบ</strong> เพื่อเตรียมความพร้อมในการประกอบและขนส่ง
+            </p>
+          </div>
+
+          {/* Quick Action Buttons */}
+          <div className="flex items-center gap-2.5 flex-wrap">
+            {onOpenComparator && (
+              <button
+                onClick={onOpenComparator}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-blue-600/80 hover:bg-blue-600 text-white border border-blue-400/40 shadow-xs transition active:scale-95 cursor-pointer"
+              >
+                <GitCompare className="w-4 h-4 text-blue-200" />
+                <span>ตัวเทียบ Production Order</span>
+              </button>
+            )}
+            {onRefresh && (
+              <button
+                onClick={onRefresh}
+                disabled={isLoading}
+                title="กดเพื่อดึงข้อมูลล่าสุดจาก Google Sheets และอัปเดตเลขที่ PD"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-sky-300' : 'text-sky-300'}`} />
+                <span>{isLoading ? 'กำลังอัปเดต...' : 'อัปเดตข้อมูล'}</span>
+              </button>
+            )}
+            <button
+              onClick={handleExportCsv}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-sky-50 shadow transition active:scale-95 cursor-pointer"
+            >
+              <Download className="w-4 h-4 text-sky-600" />
+              <span>ส่งออกแผนส่งมอบ (CSV)</span>
+            </button>
+            <button
+              onClick={() => {
+                setSelectedPrintDate('all');
+                setIsPrintModalOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-md shadow-sky-950/20 transition active:scale-95 cursor-pointer border border-sky-400/30"
+            >
+              <Printer className="w-4 h-4" />
+              <span>พิมพ์แผน / บันทึกเป็น PDF</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Key Metrics for Pending Plan */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+        {/* Metric 1: Total Pending */}
+        <div className="p-4 rounded-xl border border-sky-200 bg-sky-50/50 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-sky-900">งานรอส่งทั้งหมด</span>
+            <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
+              <Truck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="text-2xl font-bold text-sky-950">{stats.totalItems} <span className="text-xs font-normal text-sky-700">รายการ</span></div>
+            <div className="text-xs text-sky-700 mt-0.5">รวมทั้งหมด {stats.totalQty} ชิ้น</div>
+          </div>
+        </div>
+
+        {/* Metric 2: Delivery Dates Count */}
+        <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-600">วันที่ต้องจัดส่ง</span>
+            <div className="p-2 rounded-lg bg-slate-100 text-slate-700">
+              <Calendar className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="text-2xl font-bold text-slate-900">{dateGroups.length} <span className="text-xs font-normal text-slate-500">วัน</span></div>
+            <div className="text-xs text-slate-500 mt-0.5">ครอบคลุม {stats.machinesCount} เครื่องจักร</div>
+          </div>
+        </div>
+
+        {/* Metric 3: Overdue Backlog */}
+        <div className={`p-4 rounded-xl border flex flex-col justify-between ${
+          stats.overdueCount > 0 ? 'bg-rose-50/70 border-rose-200' : 'bg-white border-slate-200'
+        }`}>
+          <div className="flex items-center justify-between">
+            <span className={`text-xs font-semibold ${stats.overdueCount > 0 ? 'text-rose-900' : 'text-slate-600'}`}>
+              เกินกำหนดส่ง
+            </span>
+            <div className={`p-2 rounded-lg ${stats.overdueCount > 0 ? 'bg-rose-100 text-rose-700 animate-pulse' : 'bg-slate-100 text-slate-500'}`}>
+              <AlertTriangle className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className={`text-2xl font-bold ${stats.overdueCount > 0 ? 'text-rose-600' : 'text-slate-800'}`}>
+              {stats.overdueCount} <span className="text-xs font-normal text-slate-500">รายการ</span>
+            </div>
+            <div className="text-xs text-rose-600 mt-0.5 font-medium">
+              {stats.overdueCount > 0 ? 'ต้องเร่งรัดการจัดส่งทันที' : 'ไม่มีงานตกค้าง'}
+            </div>
+          </div>
+        </div>
+
+        {/* Metric 4: 7 Days Ahead */}
+        <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-amber-900">กำหนดส่งใน 7 วัน</span>
+            <div className="p-2 rounded-lg bg-amber-100 text-amber-700">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="text-2xl font-bold text-amber-900">{stats.dueSoonCount} <span className="text-xs font-normal text-amber-700">รายการ</span></div>
+            <div className="text-xs text-amber-700 mt-0.5">เตรียมความพร้อมสัปดาห์นี้</div>
+          </div>
+        </div>
+
+        {/* Metric 5: QC Passed & Ready */}
+        <div className="col-span-2 sm:col-span-2 lg:col-span-1 p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-emerald-900">ผ่าน QC พร้อมส่ง</span>
+            <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="text-2xl font-bold text-emerald-700">{stats.qcPassedCount} <span className="text-xs font-normal text-emerald-800">รายการ</span></div>
+            <div className="text-xs text-emerald-800 mt-0.5 font-medium">พร้อมจัดส่ง {stats.qcPassedQty} ชิ้น</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Filter & Control Toolbar */}
+      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          {/* Quick Search */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={internalSearch}
+              onChange={(e) => setInternalSearch(e.target.value)}
+              placeholder="ค้นหาชื่อชิ้นงาน, เครื่องจักร, PD No., โครงการ..."
+              className="w-full pl-9 pr-3 py-1.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-sky-500 focus:bg-white"
+            />
+          </div>
+
+          {/* Machine & Action controls */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Machine dropdown */}
+            <div className="flex items-center gap-1 text-xs">
+              <Cpu className="w-3.5 h-3.5 text-slate-400" />
+              <select
+                value={selectedMachine}
+                onChange={(e) => setSelectedMachine(e.target.value)}
+                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 outline-none max-w-[170px] truncate"
+              >
+                <option value="all">ทุกเครื่องจักร ({machines.length})</option>
+                {machines.map((m) => (
+                  <option key={m.name} value={m.name}>
+                    {m.name} ({m.pendingItems} รอส่ง)
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Expand / Collapse All */}
+            <button
+              onClick={expandAll}
+              className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+            >
+              ขยายทุกวัน
+            </button>
+            <button
+              onClick={collapseAll}
+              className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+            >
+              ย่อทุกวัน
+            </button>
+          </div>
+        </div>
+
+        {/* Date Window Filter Buttons */}
+        <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-slate-100 text-xs">
+          <span className="text-slate-400 text-[11px] font-medium mr-1">ช่วงเวลาแผนส่งมอบ:</span>
+          
+          <button
+            onClick={() => setDateWindowFilter('all')}
+            className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer ${
+              dateWindowFilter === 'all'
+                ? 'bg-slate-800 text-white shadow-2xs'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            ทั้งหมด ({pendingItems.length})
+          </button>
+
+          <button
+            onClick={() => setDateWindowFilter('overdue')}
+            className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
+              dateWindowFilter === 'overdue'
+                ? 'bg-rose-600 text-white shadow-2xs'
+                : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+            }`}
+          >
+            <AlertTriangle className="w-3 h-3" />
+            เกินกำหนด ({stats.overdueCount})
+          </button>
+
+          <button
+            onClick={() => setDateWindowFilter('7days')}
+            className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
+              dateWindowFilter === '7days'
+                ? 'bg-amber-600 text-white shadow-2xs'
+                : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+            }`}
+          >
+            <Clock className="w-3 h-3" />
+            ภายใน 7 วัน ({stats.dueSoonCount})
+          </button>
+
+          <button
+            onClick={() => setDateWindowFilter('qc-ready')}
+            className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
+              dateWindowFilter === 'qc-ready'
+                ? 'bg-emerald-600 text-white shadow-2xs'
+                : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+            }`}
+          >
+            <CheckCircle2 className="w-3 h-3" />
+            ผ่าน QC แล้วพร้อมส่ง ({stats.qcPassedCount})
+          </button>
+        </div>
+
+        {/* Status Source View Switcher */}
+        <div className="flex items-center justify-between gap-3 pt-2.5 border-t border-slate-100 flex-wrap text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-slate-600 font-bold flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-blue-600" />
+              <span>แหล่งตรวจสอบสถานะในตาราง:</span>
+            </span>
+            <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
+              <button
+                onClick={() => setStatusSource('qc')}
+                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                  statusSource === 'qc'
+                    ? 'bg-white text-emerald-800 shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900 font-medium'
+                }`}
+              >
+                🛡️ QC Record (ผ่าน QC / ยังไม่เข้า)
+              </button>
+              <button
+                onClick={() => setStatusSource('overview')}
+                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                  statusSource === 'overview'
+                    ? 'bg-white text-blue-800 shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900 font-medium'
+                }`}
+              >
+                📊 Overview status (Completed / Active...)
+              </button>
+              <button
+                onClick={() => setStatusSource('dual')}
+                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                  statusSource === 'dual'
+                    ? 'bg-white text-purple-800 shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900 font-medium'
+                }`}
+              >
+                ⚡ แสดงทั้ง 2 แหล่ง (Dual)
+              </button>
+            </div>
+          </div>
+
+          {onOpenComparator && (
+            <button
+              onClick={onOpenComparator}
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200 font-semibold transition cursor-pointer"
+            >
+              <GitCompare className="w-3.5 h-3.5 text-blue-600" />
+              <span>เปิดตัวเทียบสถานะ PD แบบละเอียด</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 4. Daily Schedule Groups List */}
+      {dateGroups.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
+          <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-slate-800">ไม่มีรายการค้างส่งมอบตามเงื่อนไขที่เลือก</h3>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
+            รายการงานตามตัวกรองที่เลือกได้รับการจัดส่งครบถ้วนแล้ว หรือไม่มีงานที่ตรงกับเงื่อนไขการค้นหา
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {dateGroups.map((group) => {
+            const expanded = isExpanded(group.dateKey);
+            const thaiFullDay = formatThaiDayOfWeek(group.dateKey);
+            const allQcPassed = group.qcPassedCount === group.items.length && group.items.length > 0;
+
+            return (
+              <div 
+                key={group.dateKey}
+                className={`bg-white rounded-2xl border shadow-xs transition-all overflow-hidden ${
+                  group.isOverdue 
+                    ? 'border-rose-300 ring-1 ring-rose-200/60' 
+                    : group.isToday
+                    ? 'border-amber-400 ring-2 ring-amber-200'
+                    : 'border-slate-200'
+                }`}
+              >
+                {/* Daily Schedule Header Card */}
+                <div 
+                  onClick={() => toggleExpand(group.dateKey)}
+                  className={`p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer transition select-none ${
+                    group.isOverdue
+                      ? 'bg-gradient-to-r from-rose-50/90 via-rose-50/40 to-white hover:bg-rose-100/60'
+                      : group.isToday
+                      ? 'bg-gradient-to-r from-amber-50/90 via-amber-50/40 to-white hover:bg-amber-100/60'
+                      : 'bg-slate-50/70 hover:bg-slate-100/70'
+                  }`}
+                >
+                  {/* Left: Date & Urgency Indicator */}
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div className={`p-2.5 rounded-xl flex-shrink-0 ${
+                      group.isOverdue
+                        ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/30'
+                        : group.isToday
+                        ? 'bg-amber-500 text-white shadow-sm shadow-amber-500/30'
+                        : 'bg-sky-600 text-white shadow-sm shadow-sky-500/30'
+                    }`}>
+                      <Calendar className="w-5 h-5" />
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h2 className="text-base sm:text-lg font-bold text-slate-900">
+                          {thaiFullDay}
+                        </h2>
+
+                        {/* Relative timing badge */}
+                        {group.isOverdue && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                            <AlertTriangle className="w-3.5 h-3.5" />
+                            เกินกำหนด {Math.abs(group.daysDiff || 0)} วัน
+                          </span>
+                        )}
+                        {group.isToday && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 animate-pulse">
+                            ⚡ กำหนดส่งวันนี้
+                          </span>
+                        )}
+                        {group.isTomorrow && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+                            ⏳ ส่งพรุ่งนี้
+                          </span>
+                        )}
+                        {!group.isOverdue && !group.isToday && !group.isTomorrow && group.daysDiff !== null && group.daysDiff > 1 && (
+                          <span className="text-xs text-slate-500">
+                            (อีก {group.daysDiff} วัน)
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        เป้าหมายส่งมอบตามเอกสาร: <span className="font-mono font-semibold text-slate-700">{group.dateKey}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right: Summary Pills & Toggle */}
+                  <div className="flex items-center gap-3 self-end sm:self-center flex-wrap">
+                    {/* Items count & Qty */}
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-800 shadow-2xs">
+                      <Boxes className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{group.items.length} รายการ ({group.totalQty} ชิ้น)</span>
+                    </div>
+
+                    {/* QC Status indicator */}
+                    <div className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold border ${
+                      allQcPassed 
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                        : group.qcPassedCount > 0
+                        ? 'bg-sky-50 text-sky-800 border-sky-200'
+                        : 'bg-slate-100 text-slate-600 border-slate-200'
+                    }`}>
+                      <CheckCircle2 className={`w-3.5 h-3.5 ${allQcPassed ? 'text-emerald-600' : 'text-slate-400'}`} />
+                      <span>ผ่าน QC {group.qcPassedCount}/{group.items.length}</span>
+                    </div>
+
+                    {/* Quick Print Button for this specific day */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedPrintDate(group.dateKey);
+                        setIsPrintModalOpen(true);
+                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-700 border border-slate-300 text-xs font-semibold shadow-2xs transition active:scale-95 cursor-pointer"
+                      title="พิมพ์แผนเฉพาะวันนี้ หรือบันทึกเป็น PDF"
+                    >
+                      <Printer className="w-3.5 h-3.5 text-sky-600" />
+                      <span className="hidden md:inline">พิมพ์แผนวันนี้</span>
+                    </button>
+
+                    <div className="p-1 rounded-full text-slate-400 hover:text-slate-600">
+                      {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Expanded Table of parts scheduled for this day */}
+                {expanded && (
+                  <div className="border-t border-slate-200 p-0 overflow-x-auto">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="bg-slate-50/80 text-slate-600 font-semibold border-b border-slate-200">
+                        <tr>
+                          <th className="py-2.5 px-3 w-10 text-center">#</th>
+                          <th className="py-2.5 px-3 min-w-[130px]">ลูกค้า / โครงการ</th>
+                          <th className="py-2.5 px-3 min-w-[120px]">ชื่อเครื่องจักร</th>
+                          <th className="py-2.5 px-3 w-[calc(14ch+24px)] min-w-[calc(14ch+24px)] font-mono">เลขที่ Item</th>
+                          <th className="py-2.5 px-3 min-w-[200px]">ชื่อชิ้นงาน / รายละเอียด</th>
+                          <th className="py-2.5 px-3 text-center w-16">จำนวน</th>
+                          <th className="py-2.5 px-3 min-w-[120px]">Production Order</th>
+                          
+                          {/* Dynamic Status Header */}
+                          {statusSource === 'qc' && (
+                            <th className="py-2.5 px-3 min-w-[130px]">สถานะ QC Record</th>
+                          )}
+                          {statusSource === 'overview' && (
+                            <th className="py-2.5 px-3 min-w-[130px] bg-blue-50 text-blue-900">สถานะ Overview</th>
+                          )}
+                          {statusSource === 'dual' && (
+                            <>
+                              <th className="py-2.5 px-2.5 min-w-[110px] bg-blue-50/80 text-blue-900 text-center">1. Overview</th>
+                              <th className="py-2.5 px-2.5 min-w-[120px] bg-emerald-50/80 text-emerald-900 text-center">2. QC Record</th>
+                            </>
+                          )}
+
+                          <th className="py-2.5 px-3 min-w-[130px]">ประวัติเลื่อนเป้า (1 $\rightarrow$ 5)</th>
+                          <th className="py-2.5 px-3 min-w-[150px]">หมายเหตุ / ปลายทาง</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {group.items.map((item, idx) => {
+                          const customerName = item.customer || extractCustomer(item.projectName);
+                          return (
+                            <tr 
+                              key={item.id}
+                              className="hover:bg-sky-50/40 transition"
+                            >
+                              <td className="py-3 px-3 text-center text-slate-400 font-mono text-[11px]">
+                                {idx + 1}
+                              </td>
+
+                              {/* Customer & Project */}
+                              <td className="py-3 px-3">
+                                <div className="font-bold text-slate-900 truncate max-w-[140px]" title={customerName}>
+                                  {customerName}
+                                </div>
+                                <div className="text-[10px] text-slate-500 font-mono">
+                                  {item.projectCode}
+                                </div>
+                              </td>
+
+                              {/* Machine Name */}
+                              <td className="py-3 px-3 font-medium whitespace-nowrap">
+                                <button
+                                  onClick={() => onSelectMachineByName(item.machineName)}
+                                  className="font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center gap-1 text-left cursor-pointer"
+                                >
+                                  <Cpu className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                                  <span>{item.machineName}</span>
+                                </button>
+                                <div className="text-[10px] text-slate-400 truncate max-w-[130px]" title={item.projectName}>
+                                  {item.projectName}
+                                </div>
+                              </td>
+
+                              {/* Item Code */}
+                              <td className="py-3 px-3 font-mono font-medium text-slate-800 whitespace-nowrap">
+                                {item.itemCode || '-'}
+                              </td>
+
+                              {/* Item Description */}
+                              <td className="py-3 px-3 font-medium text-slate-900">
+                                <div>{item.itemName}</div>
+                                {item.docRef && (
+                                  <div className="text-[10px] text-slate-400 mt-0.5">
+                                    Ref: {item.docRef}
+                                  </div>
+                                )}
+                              </td>
+
+                              {/* Quantity */}
+                              <td className="py-3 px-3 text-center font-bold text-slate-900 text-sm">
+                                {item.qty}
+                              </td>
+
+                              {/* Production Order */}
+                              <td className="py-3 px-3 font-mono text-slate-700 text-[11px]">
+                                <div className="font-semibold text-slate-800">{item.prodOrder || '-'}</div>
+                                {item.poPr && <div className="text-[10px] text-slate-400">{item.poPr}</div>}
+                              </td>
+
+                              {/* Dynamic Status Display Cell */}
+                              {statusSource === 'qc' && (
+                                <td className="py-3 px-3">
+                                  {item.isQcPassed ? (
+                                    <div className="space-y-0.5">
+                                      <span 
+                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
+                                        title={`ผ่านการตรวจ QC: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'} (${item.qcTopic || ''})`}
+                                      >
+                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                        ผ่าน QC แล้ว
+                                      </span>
+                                      {item.qcDate && (
+                                        <div className="text-[10px] text-slate-500">
+                                          ตรวจ: {item.qcDate}
+                                        </div>
+                                      )}
+                                      {item.qcInspector && (
+                                        <div className="text-[10px] text-emerald-700">
+                                          ผู้ตรวจ: {item.qcInspector}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                                      <Clock className="w-3 h-3 text-slate-400" />
+                                      ยังไม่เข้า QC
+                                    </span>
+                                  )}
+                                </td>
+                              )}
+
+                              {statusSource === 'overview' && (
+                                <td className="py-3 px-3">
+                                  {item.overviewStatus === 'Completed' && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                      Completed
+                                    </span>
+                                  )}
+                                  {item.overviewStatus === 'Active' && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300">
+                                      <TrendingUp className="w-3 h-3 text-blue-600" />
+                                      Active
+                                    </span>
+                                  )}
+                                  {item.overviewStatus === 'Ready to Start' && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                                      <Clock className="w-3 h-3 text-amber-600" />
+                                      Ready to Start
+                                    </span>
+                                  )}
+                                  {item.overviewStatus === 'Planned' && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300">
+                                      📅 Planned
+                                    </span>
+                                  )}
+                                  {!item.overviewStatus && (
+                                    <span className="text-slate-400 text-[10px] italic">
+                                      {item.prodOrder ? 'ไม่พบใน Overview' : 'ไม่มีเลข PD'}
+                                    </span>
+                                  )}
+                                </td>
+                              )}
+
+                              {statusSource === 'dual' && (
+                                <>
+                                  <td className="py-3 px-2.5 bg-blue-50/20 text-center">
+                                    {item.overviewStatus === 'Completed' ? (
+                                      <span className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200">
+                                        ✓ Completed
+                                      </span>
+                                    ) : item.overviewStatus ? (
+                                      <span className="font-bold text-blue-700 text-[10px] px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200">
+                                        {item.overviewStatus}
+                                      </span>
+                                    ) : (
+                                      <span className="text-slate-400 text-[10px]">-</span>
+                                    )}
+                                  </td>
+                                  <td className="py-3 px-2.5 bg-emerald-50/20 text-center">
+                                    {item.isQcPassed ? (
+                                      <span className="font-bold text-emerald-800 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-200">
+                                        ผ่าน QC แล้ว
+                                      </span>
+                                    ) : (
+                                      <span className="text-slate-500 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200">
+                                        ยังไม่เข้า QC
+                                      </span>
+                                    )}
+                                  </td>
+                                </>
+                              )}
+
+                              {/* Milestone History */}
+                              <td className="py-3 px-3">
+                                <div className="flex items-center gap-1 text-[11px] font-mono">
+                                  {item.target1 && (
+                                    <span className={item.target2 ? 'line-through text-slate-400' : 'text-slate-700'}>
+                                      {formatCompactDate(item.target1)}
+                                    </span>
+                                  )}
+                                  {item.target2 && (
+                                    <>
+                                      <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
+                                      <span className={item.target3 ? 'line-through text-slate-400' : 'text-purple-700 font-medium'}>
+                                        {formatCompactDate(item.target2)}
+                                      </span>
+                                    </>
+                                  )}
+                                  {item.target3 && (
+                                    <>
+                                      <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
+                                      <span className="text-purple-700 font-medium">
+                                        {formatCompactDate(item.target3)}
+                                      </span>
+                                    </>
+                                  )}
+                                  {!item.target1 && <span className="text-slate-400">-</span>}
+                                </div>
+                              </td>
+
+                              {/* Remark / Delivery Destination */}
+                              <td className="py-3 px-3 text-slate-600 text-[11px] max-w-xs">
+                                <div>{item.remark || '-'}</div>
+                                {item.closed === '*' && (
+                                  <span className="text-[10px] text-amber-600 font-bold block mt-0.5">
+                                    ★ Closed (*)
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Print & PDF Modal */}
+      <DeliveryPlanPrintModal
+        isOpen={isPrintModalOpen}
+        onClose={() => {
+          setIsPrintModalOpen(false);
+          setSelectedPrintDate(null);
+        }}
+        items={items}
+        initialSelectedDate={selectedPrintDate}
+      />
+
+    </div>
+  );
+};

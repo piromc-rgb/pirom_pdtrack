@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-100 text-slate-900 selection:bg-sky-500 selection:text-white;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Print Styles for Delivery Plan PDF Export (A4 Portrait) */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 6mm 10mm 6mm;
+  }
+
+  /* 1. When the Delivery Plan print modal is active, completely hide #root (the whole web app) */
+  body.print-modal-active #root,
+  body:has(#delivery-plan-print-root) #root {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* 2. Base page & body formatting */
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 10px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* 3. Hide all UI controls, navigation, and non-print items */
+  header, 
+  nav, 
+  button, 
+  input,
+  select,
+  .no-print,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* 4. Reset modal portal container so it flows as a seamless document */
+  #delivery-plan-print-root,
+  .print-portal-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+  }
+
+  .print-modal-card {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-modal-scroll-area {
+    display: block !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* 5. Clean Printable Sheet (matching user preview exactly) */
+  .print-document {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    position: static !important;
+  }
+
+  /* 6. Table formatting for print */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  /* 7. Prevent elements from being sliced across page breaks */
+  /* ถ้าข้อมูลคร่อมหน้าให้ยกไปหน้าถัดไป */
+  tr,
+  .print-date-group,
+  .signature-block,
+  .page-break-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    break-inside: avoid-page !important;
+  }
+
+  .print-date-group {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: visible !important;
+    margin-bottom: 14px !important;
+  }
+
+  .signature-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-top: 16px !important;
+  }
+
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+}
+
