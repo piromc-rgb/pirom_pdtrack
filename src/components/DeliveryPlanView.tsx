@@ -821,11 +821,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                         <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                         ผ่าน QC แล้ว
                                       </span>
-                                      {item.qcDate && (
-                                        <div className="text-[10px] text-slate-500">
-                                          ตรวจ: {item.qcDate}
-                                        </div>
-                                      )}
+                                      <div className="text-[10px] text-slate-500 font-mono">
+                                        {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                      </div>
                                       {item.qcInspector && (
                                         <div className="text-[10px] text-emerald-700">
                                           ผู้ตรวจ: {item.qcInspector}
@@ -833,10 +831,13 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       )}
                                     </div>
                                   ) : (
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
-                                      <Clock className="w-3 h-3 text-slate-400" />
-                                      ยังไม่เข้า QC
-                                    </span>
+                                    <div>
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
+                                        <Clock className="w-3 h-3 text-slate-400" />
+                                        ยังไม่เข้า QC
+                                      </span>
+                                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">-</div>
+                                    </div>
                                   )}
                                 </td>
                               )}
@@ -871,6 +872,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       {item.prodOrder ? 'ไม่พบใน Overview' : 'ไม่มีเลข PD'}
                                     </span>
                                   )}
+                                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                    {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
+                                  </div>
                                 </td>
                               )}
 
@@ -878,27 +882,33 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                 <>
                                   <td className="py-3 px-2.5 bg-blue-50/20 text-center">
                                     {item.overviewStatus === 'Completed' ? (
-                                      <span className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200">
+                                      <span className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block">
                                         ✓ Completed
                                       </span>
                                     ) : item.overviewStatus ? (
-                                      <span className="font-bold text-blue-700 text-[10px] px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200">
+                                      <span className="font-bold text-blue-700 text-[10px] px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200 inline-block">
                                         {item.overviewStatus}
                                       </span>
                                     ) : (
                                       <span className="text-slate-400 text-[10px]">-</span>
                                     )}
+                                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                      {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
+                                    </div>
                                   </td>
                                   <td className="py-3 px-2.5 bg-emerald-50/20 text-center">
                                     {item.isQcPassed ? (
-                                      <span className="font-bold text-emerald-800 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-200">
+                                      <span className="font-bold text-emerald-800 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-200 inline-block">
                                         ผ่าน QC แล้ว
                                       </span>
                                     ) : (
-                                      <span className="text-slate-500 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200">
+                                      <span className="text-slate-500 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 inline-block">
                                         ยังไม่เข้า QC
                                       </span>
                                     )}
+                                    <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                      {item.isQcPassed && item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                    </div>
                                   </td>
                                 </>
                               )}

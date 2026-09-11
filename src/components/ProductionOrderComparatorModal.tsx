@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, OverviewMeta } from '../types';
 import { overviewStatusMap, qcStatusMap, extractPdNumbers } from '../services/sheetService';
+import { formatCompactDate } from '../utils/dateUtils';
 
 export type ComparisonSource = 'overview' | 'qc' | 'dual';
 export type ComparatorTab = 'system-items' | 'direct-input';
@@ -712,6 +713,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                                     (อะไหล่สั่งซื้อ)
                                   </span>
                                 )}
+                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                  {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
+                                </div>
                               </td>
 
                               <td className="py-2.5 px-3 text-[11px] text-slate-600">
@@ -748,6 +752,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                                     ไม่มีเลข PD
                                   </span>
                                 )}
+                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                  {item.isQcPassed && item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                </div>
                               </td>
 
                               <td className="py-2.5 px-3 text-[11px]">
@@ -777,16 +784,19 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                               {/* Overview status column */}
                               <td className="py-2.5 px-3 text-center border-r border-slate-200 bg-blue-50/20">
                                 {item.overviewStatus === 'Completed' ? (
-                                  <span className="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10.5px]">
+                                  <span className="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10.5px] inline-block">
                                     ✓ Completed
                                   </span>
                                 ) : item.overviewStatus ? (
-                                  <span className="font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[10.5px]">
+                                  <span className="font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[10.5px] inline-block">
                                     {item.overviewStatus}
                                   </span>
                                 ) : (
                                   <span className="text-slate-400 text-[10.5px]">-</span>
                                 )}
+                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                  {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
+                                </div>
                               </td>
 
                               {/* QC status column */}
@@ -797,10 +807,13 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                                     ผ่าน QC แล้ว
                                   </span>
                                 ) : (
-                                  <span className="text-slate-500 text-[10.5px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                                  <span className="text-slate-500 text-[10.5px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200 inline-block">
                                     ยังไม่เข้า QC
                                   </span>
                                 )}
+                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                  {item.isQcPassed && item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                </div>
                               </td>
 
                               {/* Comparison insight */}
