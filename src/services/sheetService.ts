@@ -314,6 +314,10 @@ export function parseOverviewCsv(csvText: string): {
   const projIdx = findCol(['Project', 'Project No', 'เลขที่โครงการ', 'โครงการ', 'projectCode']);
   const custIdx = findCol(['Customer', 'ลูกค้า', 'customer']);
   const statusIdx = findCol(['Order Status', 'Operation Status', 'Status', 'สถานะ', 'status']);
+  const opIdx = findCol(['Operation', 'ลำดับ']);
+  const wcIdx = findCol(['Work Center', 'WorkCenter', 'WC', 'เครื่อง']);
+  const opDescIdx = findCol(['r.ref.oper.desc', 'Operation Description', 'ชื่อ Operation', 'ชื่อกระบวนการ']);
+  const opStatusIdx = findCol(['Operation Status', 'สถานะ Operation']);
 
   const byPd: Record<string, OverviewMeta> = {};
   const byItem: Record<string, OverviewMeta> = {};
@@ -336,40 +340,78 @@ export function parseOverviewCsv(csvText: string): {
     const project = projIdx !== -1 && projIdx < r.length ? r[projIdx]?.trim().toUpperCase() : '';
     const customer = custIdx !== -1 && custIdx < r.length ? r[custIdx]?.trim() : '';
     const status = statusIdx !== -1 && statusIdx < r.length ? r[statusIdx]?.trim() : '';
+    const op = opIdx !== -1 && opIdx < r.length ? r[opIdx]?.trim() : '';
+    const wc = wcIdx !== -1 && wcIdx < r.length ? r[wcIdx]?.trim() : '';
+    const opDesc = opDescIdx !== -1 && opDescIdx < r.length ? r[opDescIdx]?.trim() : '';
+    const opStatus = opStatusIdx !== -1 && opStatusIdx < r.length ? r[opStatusIdx]?.trim() : '';
 
     if (!pdVal && !itemCode) continue;
 
+    const isReady = opStatus.toLowerCase() === 'ready to start';
+    const isActive = opStatus.toLowerCase() === 'active';
+    const opLabel = opDesc ? `Op ${op}: ${opDesc}${wc ? ` (${wc})` : ''}` : '';
+
     const meta: OverviewMeta = {
-      status: status || '',
+      status: status || opStatus || '',
       project: project || '',
       customer: customer || '',
       itemCode: itemCode || '',
       description: desc || '',
       prodOrder: pdVal || '',
+      readyOp: isReady ? opLabel : undefined,
+      readyOpDesc: isReady ? opDesc : undefined,
+      readyOpWc: isReady ? wc : undefined,
+      readyOpNo: isReady ? op : undefined,
+      hasReadyOp: isReady,
+      activeOp: isActive ? opLabel : undefined,
+      activeOpDesc: isActive ? opDesc : undefined,
+      activeOpWc: isActive ? wc : undefined,
+      activeOpNo: isActive ? op : undefined,
+      currentOp: isReady ? opLabel : isActive ? opLabel : undefined,
+      currentOpDesc: isReady ? opDesc : isActive ? opDesc : undefined,
+      currentOpStatus: isReady ? 'Ready to Start' : isActive ? 'Active' : undefined,
     };
 
-    const normStatus = (status || '').toLowerCase();
+    const normStatus = (status || opStatus || '').toLowerCase();
+
+    // Helper to merge operation info
+    const mergeMeta = (existing: OverviewMeta | undefined, incoming: OverviewMeta): OverviewMeta => {
+      if (!existing) return incoming;
+      const higherPriority = (priorityOrder[normStatus] || 0) > (priorityOrder[(existing.status || '').toLowerCase()] || 0);
+      return {
+        ...existing,
+        status: higherPriority ? incoming.status : existing.status,
+        project: incoming.project || existing.project,
+        customer: incoming.customer || existing.customer,
+        itemCode: incoming.itemCode || existing.itemCode,
+        description: incoming.description || existing.description,
+        prodOrder: incoming.prodOrder || existing.prodOrder,
+        readyOp: incoming.readyOp || existing.readyOp,
+        readyOpDesc: incoming.readyOpDesc || existing.readyOpDesc,
+        readyOpWc: incoming.readyOpWc || existing.readyOpWc,
+        readyOpNo: incoming.readyOpNo || existing.readyOpNo,
+        hasReadyOp: Boolean(incoming.readyOp || existing.readyOp),
+        activeOp: incoming.activeOp || existing.activeOp,
+        activeOpDesc: incoming.activeOpDesc || existing.activeOpDesc,
+        activeOpWc: incoming.activeOpWc || existing.activeOpWc,
+        activeOpNo: incoming.activeOpNo || existing.activeOpNo,
+        currentOp: incoming.readyOp || existing.readyOp || incoming.activeOp || existing.activeOp || existing.currentOp,
+        currentOpDesc: incoming.readyOpDesc || existing.readyOpDesc || incoming.activeOpDesc || existing.activeOpDesc || existing.currentOpDesc,
+        currentOpStatus: incoming.readyOp || existing.readyOp ? 'Ready to Start' : incoming.activeOp || existing.activeOp ? 'Active' : existing.currentOpStatus,
+      };
+    };
 
     // Index by PD
     if (pdVal) {
-      const existing = byPd[pdVal];
-      if (!existing || (priorityOrder[normStatus] || 0) > (priorityOrder[(existing.status || '').toLowerCase()] || 0)) {
-        byPd[pdVal] = meta;
-      }
+      byPd[pdVal] = mergeMeta(byPd[pdVal], meta);
     }
 
     // Index by Item Code
     if (itemCode) {
-      const existing = byItem[itemCode];
-      if (!existing || (priorityOrder[normStatus] || 0) > (priorityOrder[(existing.status || '').toLowerCase()] || 0)) {
-        byItem[itemCode] = meta;
-      }
+      byItem[itemCode] = mergeMeta(byItem[itemCode], meta);
       if (project) {
         const projKey = `${project}|${itemCode}`;
-        const existingProj = byProjItem[projKey];
-        if (!existingProj || (priorityOrder[normStatus] || 0) > (priorityOrder[(existingProj.status || '').toLowerCase()] || 0)) {
-          byProjItem[projKey] = meta;
-        }
+        byProjItem[projKey] = mergeMeta(byProjItem[projKey], meta);
       }
     }
   }
@@ -587,6 +629,19 @@ export function parseDeliveryCsvWithProduction(
       overviewCustomer: overviewMeta?.customer || '',
       overviewProject: overviewMeta?.project || '',
       overviewItemCode: overviewMeta?.itemCode || '',
+      // Joined Operation metadata
+      readyOp: overviewMeta?.readyOp || '',
+      readyOpDesc: overviewMeta?.readyOpDesc || '',
+      readyOpWc: overviewMeta?.readyOpWc || '',
+      readyOpNo: overviewMeta?.readyOpNo || undefined,
+      hasReadyOp: Boolean(overviewMeta?.readyOp),
+      activeOp: overviewMeta?.activeOp || '',
+      activeOpDesc: overviewMeta?.activeOpDesc || '',
+      activeOpWc: overviewMeta?.activeOpWc || '',
+      activeOpNo: overviewMeta?.activeOpNo || undefined,
+      currentOp: overviewMeta?.currentOp || '',
+      currentOpDesc: overviewMeta?.currentOpDesc || '',
+      currentOpStatus: overviewMeta?.currentOpStatus || '',
     });
   }
 
@@ -751,6 +806,18 @@ export async function fetchDeliveryData(
             overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
             overviewProject: overviewMeta?.project || item.overviewProject || '',
             overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
+            readyOp: overviewMeta?.readyOp || item.readyOp || '',
+            readyOpDesc: overviewMeta?.readyOpDesc || item.readyOpDesc || '',
+            readyOpWc: overviewMeta?.readyOpWc || item.readyOpWc || '',
+            readyOpNo: overviewMeta?.readyOpNo || item.readyOpNo || undefined,
+            hasReadyOp: Boolean(overviewMeta?.readyOp || item.readyOp),
+            activeOp: overviewMeta?.activeOp || item.activeOp || '',
+            activeOpDesc: overviewMeta?.activeOpDesc || item.activeOpDesc || '',
+            activeOpWc: overviewMeta?.activeOpWc || item.activeOpWc || '',
+            activeOpNo: overviewMeta?.activeOpNo || item.activeOpNo || undefined,
+            currentOp: overviewMeta?.currentOp || item.currentOp || '',
+            currentOpDesc: overviewMeta?.currentOpDesc || item.currentOpDesc || '',
+            currentOpStatus: overviewMeta?.currentOpStatus || item.currentOpStatus || '',
           };
         });
 
@@ -821,6 +888,18 @@ export async function fetchDeliveryData(
         overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
         overviewProject: overviewMeta?.project || item.overviewProject || '',
         overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
+        readyOp: overviewMeta?.readyOp || item.readyOp || '',
+        readyOpDesc: overviewMeta?.readyOpDesc || item.readyOpDesc || '',
+        readyOpWc: overviewMeta?.readyOpWc || item.readyOpWc || '',
+        readyOpNo: overviewMeta?.readyOpNo || item.readyOpNo || undefined,
+        hasReadyOp: Boolean(overviewMeta?.readyOp || item.readyOp),
+        activeOp: overviewMeta?.activeOp || item.activeOp || '',
+        activeOpDesc: overviewMeta?.activeOpDesc || item.activeOpDesc || '',
+        activeOpWc: overviewMeta?.activeOpWc || item.activeOpWc || '',
+        activeOpNo: overviewMeta?.activeOpNo || item.activeOpNo || undefined,
+        currentOp: overviewMeta?.currentOp || item.currentOp || '',
+        currentOpDesc: overviewMeta?.currentOpDesc || item.currentOpDesc || '',
+        currentOpStatus: overviewMeta?.currentOpStatus || item.currentOpStatus || '',
       };
     });
 

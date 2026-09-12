@@ -50,9 +50,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-3",
@@ -79,9 +82,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-4",
@@ -108,9 +114,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-5",
@@ -137,9 +146,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-6",
@@ -191,7 +203,8 @@
     "remark": "11/4/26 p-56799",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Printed"
   },
   {
     "id": "item-8",
@@ -245,7 +258,12 @@
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
     "overviewStatus": "Active",
-    "overviewCustomer": "Service Order"
+    "overviewCustomer": "Service Order",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-10",
@@ -298,9 +316,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
-    "overviewProject": "SO2600001"
+    "overviewProject": "SO2600001",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-12",
@@ -352,7 +373,11 @@
     "remark": "p-52918 คลังขอซื้อส่ง ลง กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-14",
@@ -378,7 +403,11 @@
     "remark": "p-52919",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-15",
@@ -404,7 +433,11 @@
     "remark": "p-52920",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-16",
@@ -430,7 +463,11 @@
     "remark": "p-52921",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-17",
@@ -456,7 +493,11 @@
     "remark": "p-52922",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-18",
@@ -508,7 +549,13 @@
     "remark": "p-52924",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "activeOp": "Op 20: ปรับแต่ง (DEA062)",
+    "activeOpDesc": "ปรับแต่ง",
+    "currentOp": "Op 20: ปรับแต่ง (DEA062)",
+    "currentOpDesc": "ปรับแต่ง",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-20",
@@ -690,7 +737,13 @@
     "remark": "p-58128",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "activeOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "activeOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "currentOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-27",
@@ -716,7 +769,15 @@
     "remark": "p-58129",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "readyOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "readyOpDesc": "ASSY ประกอบไฟฟ้า",
+    "readyOpWc": "DED001",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "currentOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOpStatus": "Ready to Start",
+    "overviewStatus": "Released"
   },
   {
     "id": "item-28",
@@ -795,9 +856,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-31",
@@ -824,9 +888,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-32",
@@ -853,9 +920,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-33",
@@ -882,9 +952,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-34",
@@ -911,9 +984,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-35",
@@ -940,9 +1016,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-36",
@@ -969,9 +1048,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-37",
@@ -998,9 +1080,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-38",
@@ -1027,9 +1112,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-39",
@@ -1056,9 +1144,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-40",
@@ -1085,9 +1176,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-41",
@@ -1114,9 +1208,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-42",
@@ -1143,9 +1240,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-43",
@@ -1172,9 +1272,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-44",
@@ -1201,9 +1304,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-45",
@@ -1230,9 +1336,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-46",
@@ -1259,9 +1368,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-47",
@@ -1288,9 +1400,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-48",
@@ -1317,9 +1432,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-49",
@@ -1348,7 +1466,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-50",
@@ -1401,9 +1524,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-52",
@@ -1430,7 +1556,7 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Printed",
     "overviewCustomer": "Service Order"
   },
   {
@@ -1458,7 +1584,7 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Active",
     "overviewCustomer": "Service Order"
   },
   {
@@ -1486,9 +1612,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-55",
@@ -1748,7 +1877,13 @@
     "remark": "p-58542",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-65",
@@ -1774,7 +1909,13 @@
     "remark": "p-58543",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-66",
@@ -1956,7 +2097,13 @@
     "remark": "p-58549",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "activeOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "activeOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "currentOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-73",
@@ -2008,7 +2155,8 @@
     "remark": "p-58551",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Printed"
   },
   {
     "id": "item-75",
@@ -2035,9 +2183,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-76",
@@ -2064,9 +2219,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 30: CNC VF7 (DEA023)",
+    "readyOpDesc": "CNC VF7",
+    "readyOpWc": "DEA023",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC VF7 (DEA023)",
+    "currentOpDesc": "CNC VF7",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-77",
@@ -2093,9 +2255,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: WIRE CUT (SUB027)",
+    "readyOpDesc": "WIRE CUT",
+    "readyOpWc": "SUB027",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: WIRE CUT (SUB027)",
+    "currentOpDesc": "WIRE CUT",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-78",
@@ -2122,9 +2291,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-79",
@@ -2151,9 +2327,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Released",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-80",
@@ -2180,9 +2363,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 50: เจียรไน (SUB004)",
+    "readyOpDesc": "เจียรไน",
+    "readyOpWc": "SUB004",
+    "hasReadyOp": true,
+    "currentOp": "Op 50: เจียรไน (SUB004)",
+    "currentOpDesc": "เจียรไน",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-81",
@@ -2211,7 +2401,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "activeOp": "Op 10: CNC ST30 (DEA022)",
+    "activeOpDesc": "CNC ST30",
+    "currentOp": "Op 10: CNC ST30 (DEA022)",
+    "currentOpDesc": "CNC ST30",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-82",
@@ -2238,9 +2433,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Released",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-83",
@@ -2267,7 +2469,7 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Active",
     "overviewCustomer": "Service Order"
   },
   {
@@ -2295,7 +2497,7 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Printed",
     "overviewCustomer": "Service Order"
   },
   {
@@ -2323,9 +2525,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 30: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-86",
@@ -2352,9 +2561,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-87",
@@ -2381,9 +2593,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-88",
@@ -2410,7 +2625,7 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
     "overviewProject": "BDM250015"
   },
@@ -2439,8 +2654,11 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
-    "overviewCustomer": "Service Order"
+    "overviewStatus": "Active",
+    "overviewCustomer": "Service Order",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-90",
@@ -2469,7 +2687,10 @@
     "closed": "*",
     "overviewStatus": "Completed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-91",
@@ -2496,9 +2717,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-92",
@@ -2525,9 +2749,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-93",
@@ -2554,8 +2781,11 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
-    "overviewCustomer": "Service Order"
+    "overviewStatus": "Active",
+    "overviewCustomer": "Service Order",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-94",
@@ -2582,9 +2812,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-95",
@@ -2611,9 +2844,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-96",
@@ -2640,9 +2876,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-97",
@@ -2669,9 +2908,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-98",
@@ -2698,9 +2940,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-99",
@@ -2727,9 +2972,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-100",
@@ -2756,9 +3004,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-101",
@@ -2785,9 +3036,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-102",
@@ -2814,9 +3068,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-103",
@@ -2843,9 +3100,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-104",
@@ -2872,9 +3132,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-105",
@@ -2901,9 +3164,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-106",
@@ -2930,9 +3196,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-107",
@@ -2959,9 +3228,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-108",
@@ -2988,9 +3260,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-109",
@@ -3017,9 +3292,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-110",
@@ -3046,9 +3324,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-111",
@@ -3077,7 +3358,10 @@
     "closed": "*",
     "overviewStatus": "Completed",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-112",
@@ -3104,9 +3388,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-113",
@@ -3133,9 +3420,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 30: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-114",
@@ -3162,7 +3456,7 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
     "overviewProject": "BDM250015"
   },
@@ -3191,9 +3485,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-116",
@@ -3222,7 +3519,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-117",
@@ -3251,7 +3553,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-118",
@@ -3278,9 +3585,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-119",
@@ -3307,9 +3617,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-120",
@@ -3336,9 +3649,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-121",
@@ -3365,9 +3681,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-122",
@@ -3394,9 +3713,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-123",
@@ -3423,9 +3745,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "readyOp": "Op 30: หุ้มยาง (SUB005)",
+    "readyOpDesc": "หุ้มยาง",
+    "readyOpWc": "SUB005",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: หุ้มยาง (SUB005)",
+    "currentOpDesc": "หุ้มยาง",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-124",
@@ -3452,9 +3781,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-125",
@@ -3483,7 +3815,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-126",
@@ -3510,9 +3847,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "readyOp": "Op 30: CNC HDT1870 (DEA025)",
+    "readyOpDesc": "CNC HDT1870",
+    "readyOpWc": "DEA025",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC HDT1870 (DEA025)",
+    "currentOpDesc": "CNC HDT1870",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-127",
@@ -3539,7 +3883,7 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
     "overviewProject": "MA2400053"
   },
@@ -3568,9 +3912,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "readyOp": "Op 30: CNC HDT1870 (DEA025)",
+    "readyOpDesc": "CNC HDT1870",
+    "readyOpWc": "DEA025",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC HDT1870 (DEA025)",
+    "currentOpDesc": "CNC HDT1870",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-129",
@@ -3597,9 +3948,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-130",
@@ -3626,9 +3980,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-131",
@@ -3655,9 +4012,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-132",
@@ -3684,9 +4044,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-133",
@@ -3713,9 +4076,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-134",
@@ -3742,9 +4108,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-135",
@@ -3771,9 +4140,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-136",
@@ -3800,9 +4172,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-137",
@@ -3829,9 +4204,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-138",
@@ -3858,9 +4236,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-139",
@@ -3887,9 +4268,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-140",
@@ -3916,9 +4300,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "readyOp": "Op 30: CNC ST30 (DEA022)",
+    "readyOpDesc": "CNC ST30",
+    "readyOpWc": "DEA022",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC ST30 (DEA022)",
+    "currentOpDesc": "CNC ST30",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-141",
@@ -3945,9 +4336,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-142",
@@ -3974,9 +4368,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-143",
@@ -4003,9 +4400,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-144",
@@ -4032,9 +4432,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-145",
@@ -4061,9 +4464,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-146",
@@ -4090,9 +4496,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-147",
@@ -4119,9 +4528,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-148",
@@ -4148,9 +4560,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-149",
@@ -4177,9 +4592,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-150",
@@ -4206,9 +4624,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-151",
@@ -4235,9 +4656,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-152",
@@ -4264,9 +4688,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-153",
@@ -4293,9 +4720,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-154",
@@ -4322,9 +4752,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-155",
@@ -4351,9 +4784,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-156",
@@ -4380,9 +4816,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-157",
@@ -4411,7 +4850,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-158",
@@ -4438,9 +4882,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-159",
@@ -4467,9 +4914,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-160",
@@ -4496,9 +4946,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-161",
@@ -4527,7 +4980,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-162",
@@ -4554,9 +5012,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Released",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "readyOpDesc": "ASSY ประกอบแมคคานิก",
+    "readyOpWc": "DEC001",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-163",
@@ -4583,9 +5048,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-164",
@@ -4612,9 +5080,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-165",
@@ -4641,9 +5112,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-166",
@@ -4670,9 +5144,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-167",
@@ -4699,9 +5176,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-168",
@@ -4728,9 +5208,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-169",
@@ -4759,7 +5242,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-170",
@@ -4786,9 +5274,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-171",
@@ -4815,9 +5306,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-172",
@@ -4844,9 +5338,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-173",
@@ -4873,9 +5370,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-174",
@@ -4902,9 +5402,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Ready to Start",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 20: CNC ST30 (DEA022)",
+    "readyOpDesc": "CNC ST30",
+    "readyOpWc": "DEA022",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC ST30 (DEA022)",
+    "currentOpDesc": "CNC ST30",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-175",
@@ -4931,9 +5438,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-176",
@@ -4960,9 +5470,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-177",
@@ -4989,9 +5502,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 30: ชุบชิงค์ (SUB001)",
+    "readyOpDesc": "ชุบชิงค์",
+    "readyOpWc": "SUB001",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: ชุบชิงค์ (SUB001)",
+    "currentOpDesc": "ชุบชิงค์",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-178",
@@ -5018,9 +5538,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 40: ชุบชิงค์ (SUB001)",
+    "readyOpDesc": "ชุบชิงค์",
+    "readyOpWc": "SUB001",
+    "hasReadyOp": true,
+    "currentOp": "Op 40: ชุบชิงค์ (SUB001)",
+    "currentOpDesc": "ชุบชิงค์",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-179",
@@ -5049,7 +5576,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-180",
@@ -5076,9 +5608,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 70: ชุบชิงค์ (SUB001)",
+    "readyOpDesc": "ชุบชิงค์",
+    "readyOpWc": "SUB001",
+    "hasReadyOp": true,
+    "currentOp": "Op 70: ชุบชิงค์ (SUB001)",
+    "currentOpDesc": "ชุบชิงค์",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-181",
@@ -5105,9 +5644,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 40: TAP (DEA052)",
+    "readyOpDesc": "TAP",
+    "readyOpWc": "DEA052",
+    "hasReadyOp": true,
+    "currentOp": "Op 40: TAP (DEA052)",
+    "currentOpDesc": "TAP",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-182",
@@ -5134,9 +5680,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-183",
@@ -5163,9 +5712,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-184",
@@ -5192,9 +5744,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-185",
@@ -5221,9 +5776,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-186",
@@ -5252,7 +5810,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-187",
@@ -5279,9 +5842,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Released",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-188",
@@ -5308,9 +5878,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "readyOp": "Op 30: ปรับแต่ง (DEA062)",
+    "readyOpDesc": "ปรับแต่ง",
+    "readyOpWc": "DEA062",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: ปรับแต่ง (DEA062)",
+    "currentOpDesc": "ปรับแต่ง",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-189",
@@ -5337,9 +5914,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-190",
@@ -5368,7 +5948,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-191",
@@ -5501,7 +6086,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-196",
@@ -5528,9 +6118,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-197",
@@ -5557,9 +6150,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-198",
@@ -5586,9 +6182,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-199",
@@ -5615,9 +6214,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-200",
@@ -5644,9 +6246,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-201",
@@ -5673,9 +6278,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-202",
@@ -5702,9 +6310,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-203",
@@ -5733,7 +6344,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-204",
@@ -5760,9 +6376,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "readyOp": "Op 30: CNC HDT1870 (DEA025)",
+    "readyOpDesc": "CNC HDT1870",
+    "readyOpWc": "DEA025",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC HDT1870 (DEA025)",
+    "currentOpDesc": "CNC HDT1870",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-205",
@@ -5789,7 +6412,7 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Printed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
     "overviewProject": "MA2500047"
   },
@@ -5818,9 +6441,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "readyOp": "Op 30: CNC HDT1870 (DEA025)",
+    "readyOpDesc": "CNC HDT1870",
+    "readyOpWc": "DEA025",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC HDT1870 (DEA025)",
+    "currentOpDesc": "CNC HDT1870",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-207",
@@ -5849,7 +6479,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-208",
@@ -5876,9 +6511,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-209",
@@ -5905,9 +6543,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-210",
@@ -5934,9 +6575,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-211",
@@ -5963,9 +6607,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-212",
@@ -5992,9 +6639,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-213",
@@ -6021,9 +6671,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-214",
@@ -6050,9 +6703,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-215",
@@ -6079,9 +6735,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-216",
@@ -6108,9 +6767,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-217",
@@ -6137,9 +6799,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-218",
@@ -6166,9 +6831,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Ready to Start",
+    "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "readyOp": "Op 30: CNC ST30 (DEA022)",
+    "readyOpDesc": "CNC ST30",
+    "readyOpWc": "DEA022",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC ST30 (DEA022)",
+    "currentOpDesc": "CNC ST30",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-219",
@@ -6195,9 +6867,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-220",
@@ -6224,9 +6899,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-221",
@@ -6253,9 +6931,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-222",
@@ -6282,9 +6963,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-223",
@@ -6310,7 +6994,13 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-224",
@@ -6339,7 +7029,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-225",
@@ -6365,7 +7060,13 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-226",
@@ -6391,7 +7092,13 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-227",
@@ -6446,7 +7153,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
-    "overviewProject": "SO2600001"
+    "overviewProject": "SO2600001",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-229",
@@ -6473,9 +7185,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
-    "overviewProject": "SO2600001"
+    "overviewProject": "SO2600001",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-230",
@@ -6502,7 +7217,7 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Printed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
     "overviewProject": "SO2600001"
   },
@@ -6531,7 +7246,7 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Printed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
     "overviewProject": "SO2600001"
   },
@@ -6562,7 +7277,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-233",
@@ -6589,9 +7309,14 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)",
-    "overviewProject": "SO2500003"
+    "overviewProject": "SO2500003",
+    "activeOp": "Op 30: ชุบชิงค์ (SUB038)",
+    "activeOpDesc": "ชุบชิงค์",
+    "currentOp": "Op 30: ชุบชิงค์ (SUB038)",
+    "currentOpDesc": "ชุบชิงค์",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-234",
@@ -6618,9 +7343,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)",
-    "overviewProject": "SO2500003"
+    "overviewProject": "SO2500003",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-235",
@@ -6646,7 +7374,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "overviewStatus": "Printed"
   },
   {
     "id": "item-236",
@@ -6672,7 +7401,11 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-237",
@@ -6698,7 +7431,11 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-238",
@@ -6751,9 +7488,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
-    "overviewProject": "SO2600001"
+    "overviewProject": "SO2600001",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-240",
@@ -6805,7 +7545,11 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-242",
@@ -6831,7 +7575,11 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-243",
@@ -6857,7 +7605,11 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-244",
@@ -6883,7 +7635,11 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-245",
@@ -6909,7 +7665,11 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-246",
@@ -6961,7 +7721,13 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "activeOp": "Op 20: ปรับแต่ง (DEA062)",
+    "activeOpDesc": "ปรับแต่ง",
+    "currentOp": "Op 20: ปรับแต่ง (DEA062)",
+    "currentOpDesc": "ปรับแต่ง",
+    "currentOpStatus": "Active",
+    "overviewStatus": "Active"
   },
   {
     "id": "item-248",
@@ -7432,7 +8198,12 @@
     "closed": "-",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-266",
@@ -7459,9 +8230,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-267",
@@ -7488,9 +8262,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-268",
@@ -7517,9 +8294,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-269",
@@ -7546,9 +8326,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-270",
@@ -7575,9 +8358,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "readyOp": "Op 30: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-271",
@@ -7604,9 +8394,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-272",
@@ -7633,9 +8426,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-273",
@@ -7662,9 +8458,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "-",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-274",
@@ -7691,9 +8490,14 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "activeOp": "Op 20: งานกลึง-ภายนอก (SUB026)",
+    "activeOpDesc": "งานกลึง-ภายนอก",
+    "currentOp": "Op 20: งานกลึง-ภายนอก (SUB026)",
+    "currentOpDesc": "งานกลึง-ภายนอก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-275",
@@ -7720,7 +8524,7 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Printed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
     "overviewProject": "BDM260010"
   },
@@ -7749,8 +8553,15 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
-    "overviewCustomer": "Service Order"
+    "overviewStatus": "Active",
+    "overviewCustomer": "Service Order",
+    "readyOp": "Op 20: CNC ST30 (DEA022)",
+    "readyOpDesc": "CNC ST30",
+    "readyOpWc": "DEA022",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC ST30 (DEA022)",
+    "currentOpDesc": "CNC ST30",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-277",
@@ -7777,9 +8588,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Ready to Start",
+    "overviewStatus": "Released",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-278",
@@ -7806,9 +8624,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "readyOp": "Op 30: ชุบชิงค์ (SUB001)",
+    "readyOpDesc": "ชุบชิงค์",
+    "readyOpWc": "SUB001",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: ชุบชิงค์ (SUB001)",
+    "currentOpDesc": "ชุบชิงค์",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-279",
@@ -7837,7 +8662,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM ขอนแก่นแหอวนคลังตลาด 3/1/2568-02/01/2569",
-    "overviewProject": "BDM250012"
+    "overviewProject": "BDM250012",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-280",
@@ -7864,9 +8694,16 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM ขอนแก่นแหอวนคลังตลาด 3/1/2568-02/01/2569",
-    "overviewProject": "BDM250012"
+    "overviewProject": "BDM250012",
+    "readyOp": "Op 60: ปรับแต่ง (DEA062)",
+    "readyOpDesc": "ปรับแต่ง",
+    "readyOpWc": "DEA062",
+    "hasReadyOp": true,
+    "currentOp": "Op 60: ปรับแต่ง (DEA062)",
+    "currentOpDesc": "ปรับแต่ง",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-281",
@@ -7919,9 +8756,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "WM  BRS (รอระบุวันที่เริ่มต้น-สุดสิ้น)",
-    "overviewProject": "WM2600002"
+    "overviewProject": "WM2600002",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-283",
@@ -7973,7 +8813,15 @@
     "remark": "คลังจ่ายแล้ว 21/8/26",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "readyOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "readyOpDesc": "ASSY ประกอบแมคคานิก",
+    "readyOpWc": "DEC001",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Ready to Start",
+    "overviewStatus": "Released"
   },
   {
     "id": "item-285",
@@ -8106,7 +8954,12 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "AAI-Line Shuttle Mezzanine P1.3 (QUO20240308-2)",
-    "overviewProject": "SO2500003"
+    "overviewProject": "SO2500003",
+    "activeOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "activeOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "currentOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-290",
@@ -8133,9 +8986,12 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-291",
@@ -8265,7 +9121,15 @@
     "remark": "21/4/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "readyOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "readyOpDesc": "ASSY ประกอบไฟฟ้า",
+    "readyOpWc": "DED001",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
+    "currentOpDesc": "ASSY ประกอบไฟฟ้า",
+    "currentOpStatus": "Ready to Start",
+    "overviewStatus": "Released"
   },
   {
     "id": "item-296",
@@ -8292,9 +9156,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM PTTGCL เริ่ม1/5/2567- 30/4/2569",
-    "overviewProject": "BDM240026"
+    "overviewProject": "BDM240026",
+    "readyOp": "Op 20: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-297",
@@ -8321,9 +9192,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 50: เจียรไน (SUB004)",
+    "readyOpDesc": "เจียรไน",
+    "readyOpWc": "SUB004",
+    "hasReadyOp": true,
+    "currentOp": "Op 50: เจียรไน (SUB004)",
+    "currentOpDesc": "เจียรไน",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-298",
@@ -8352,7 +9230,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "activeOp": "Op 10: CNC ST30 (DEA022)",
+    "activeOpDesc": "CNC ST30",
+    "currentOp": "Op 10: CNC ST30 (DEA022)",
+    "currentOpDesc": "CNC ST30",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-299",
@@ -8379,9 +9262,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-300",
@@ -8408,9 +9298,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 30: CNC VF7 (DEA023)",
+    "readyOpDesc": "CNC VF7",
+    "readyOpWc": "DEA023",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC VF7 (DEA023)",
+    "currentOpDesc": "CNC VF7",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-301",
@@ -8437,9 +9334,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: WIRE CUT (SUB027)",
+    "readyOpDesc": "WIRE CUT",
+    "readyOpWc": "SUB027",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: WIRE CUT (SUB027)",
+    "currentOpDesc": "WIRE CUT",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-302",
@@ -8466,9 +9370,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-303",
@@ -8495,9 +9406,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Released",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-304",
@@ -8524,9 +9442,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Released",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-305",
@@ -8553,9 +9478,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-306",
@@ -8582,9 +9510,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 30: CNC VF4 (DEA024)",
+    "readyOpDesc": "CNC VF4",
+    "readyOpWc": "DEA024",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: CNC VF4 (DEA024)",
+    "currentOpDesc": "CNC VF4",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-307",
@@ -8611,9 +9546,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-308",
@@ -8640,9 +9578,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-309",
@@ -8669,9 +9610,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 20: ปรับแต่ง (DEA062)",
+    "readyOpDesc": "ปรับแต่ง",
+    "readyOpWc": "DEA062",
+    "hasReadyOp": true,
+    "currentOp": "Op 20: ปรับแต่ง (DEA062)",
+    "currentOpDesc": "ปรับแต่ง",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-310",
@@ -8698,9 +9646,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Ready to Start",
+    "overviewStatus": "Released",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "readyOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "readyOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "readyOpWc": "DEA042",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
+    "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-311",
@@ -8729,7 +9684,10 @@
     "closed": "",
     "overviewStatus": "Completed",
     "overviewCustomer": "SR ทานตะวัน 22/7/69-21/7/70",
-    "overviewProject": "SR2600017"
+    "overviewProject": "SR2600017",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-312",
@@ -8758,7 +9716,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-313",
@@ -8785,9 +9748,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "readyOp": "Op 30: ทำสี (DEB021)",
+    "readyOpDesc": "ทำสี",
+    "readyOpWc": "DEB021",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: ทำสี (DEB021)",
+    "currentOpDesc": "ทำสี",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-314",
@@ -8814,9 +9784,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-315",
@@ -8843,9 +9816,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "readyOp": "Op 30: ทำสี (DEB021)",
+    "readyOpDesc": "ทำสี",
+    "readyOpWc": "DEB021",
+    "hasReadyOp": true,
+    "currentOp": "Op 30: ทำสี (DEB021)",
+    "currentOpDesc": "ทำสี",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-316",
@@ -8872,9 +9852,14 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "activeOp": "Op 30: ชุบชิงค์ (SUB029)",
+    "activeOpDesc": "ชุบชิงค์",
+    "currentOp": "Op 30: ชุบชิงค์ (SUB029)",
+    "currentOpDesc": "ชุบชิงค์",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-317",
@@ -8901,9 +9886,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-318",
@@ -8930,9 +9918,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-319",
@@ -8959,9 +9950,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-320",
@@ -8988,9 +9982,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-321",
@@ -9017,9 +10014,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-322",
@@ -9046,9 +10046,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-323",
@@ -9075,9 +10078,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-324",
@@ -9104,9 +10110,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM บุญถาวร 16/8/2568-15/8/2569",
-    "overviewProject": "BDM250028"
+    "overviewProject": "BDM250028",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-325",
@@ -9135,7 +10144,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-326",
@@ -9162,9 +10176,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-327",
@@ -9193,7 +10210,12 @@
     "closed": "",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "activeOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "activeOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
+    "currentOpDesc": "ASSY ประกอบแมคคานิก",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-328",
@@ -9220,9 +10242,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-329",
@@ -9249,9 +10274,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-330",
@@ -9278,9 +10306,12 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Completed",
+    "overviewStatus": "Closed",
     "overviewCustomer": "BDM BOT ขอนแก่น  1/11/2568-31/10/2570",
-    "overviewProject": "BDM250040"
+    "overviewProject": "BDM250040",
+    "currentOp": "เสร็จทุกขั้นตอน",
+    "currentOpDesc": "Completed",
+    "currentOpStatus": "Completed"
   },
   {
     "id": "item-331",
@@ -9307,9 +10338,14 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Planned",
+    "overviewStatus": "Active",
     "overviewCustomer": "BDM WHA GCL 1/5/2569-28/2/2570",
-    "overviewProject": "BDM260013"
+    "overviewProject": "BDM260013",
+    "activeOp": "Op 10: CNC CK6 (DEA027)",
+    "activeOpDesc": "CNC CK6",
+    "currentOp": "Op 10: CNC CK6 (DEA027)",
+    "currentOpDesc": "CNC CK6",
+    "currentOpStatus": "Active"
   },
   {
     "id": "item-332",
@@ -9336,9 +10372,16 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Ready to Start",
+    "overviewStatus": "Released",
     "overviewCustomer": "BDM WHA GCL 1/5/2569-28/2/2570",
-    "overviewProject": "BDM260013"
+    "overviewProject": "BDM260013",
+    "readyOp": "Op 10: เลื่อย (DEA011)",
+    "readyOpDesc": "เลื่อย",
+    "readyOpWc": "DEA011",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เลื่อย (DEA011)",
+    "currentOpDesc": "เลื่อย",
+    "currentOpStatus": "Ready to Start"
   },
   {
     "id": "item-333",
@@ -9365,8 +10408,15 @@
     "status": "รอดำเนินการ",
     "rawStatus": "",
     "closed": "",
-    "overviewStatus": "Ready to Start",
+    "overviewStatus": "Released",
     "overviewCustomer": "BDM WHA GCL 1/5/2569-28/2/2570",
-    "overviewProject": "BDM260013"
+    "overviewProject": "BDM260013",
+    "readyOp": "Op 10: เลื่อย (DEA011)",
+    "readyOpDesc": "เลื่อย",
+    "readyOpWc": "DEA011",
+    "hasReadyOp": true,
+    "currentOp": "Op 10: เลื่อย (DEA011)",
+    "currentOpDesc": "เลื่อย",
+    "currentOpStatus": "Ready to Start"
   }
 ]

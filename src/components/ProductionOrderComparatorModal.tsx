@@ -49,6 +49,8 @@ interface BatchResultRow {
   qcInspector: string;
   qcTopic: string;
   qcRemarks: string;
+  readyOp?: string;
+  readyOpDesc?: string;
 }
 
 export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorModalProps> = ({
@@ -228,6 +230,8 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
         qcInspector: qc?.inspector || (sysItem?.qcInspector || '-'),
         qcTopic: qc?.topic || (sysItem?.qcTopic || '-'),
         qcRemarks: qc?.remarks || (sysItem?.qcRemarks || '-'),
+        readyOp: ov?.readyOp || (sysItem?.readyOp || ''),
+        readyOpDesc: ov?.readyOpDesc || (sysItem?.readyOpDesc || ''),
       };
     });
 
@@ -735,6 +739,17 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                   {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
                                 </div>
+                                {item.readyOp && (
+                                  <div className="mt-1 flex justify-center">
+                                    <span 
+                                      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9.5px] font-semibold bg-amber-50 text-amber-900 border border-amber-300"
+                                      title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
+                                    >
+                                      <Clock className="w-2.5 h-2.5 text-amber-600 animate-pulse" />
+                                      <span>รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
+                                    </span>
+                                  </div>
+                                )}
                               </td>
 
                               <td className="py-2.5 px-3 text-[11px] text-slate-600">
@@ -1032,6 +1047,17 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                             <span className="text-slate-400 text-[10.5px] italic">
                               ไม่พบใน Overview
                             </span>
+                          )}
+                          {r.readyOp && (
+                            <div className="mt-1 flex justify-center">
+                              <span 
+                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9.5px] font-semibold bg-amber-50 text-amber-900 border border-amber-300"
+                                title={`Operation รอขึ้นทำงาน: ${r.readyOp}`}
+                              >
+                                <Clock className="w-2.5 h-2.5 text-amber-600 animate-pulse" />
+                                <span>รอขึ้น: {r.readyOpDesc || r.readyOp}</span>
+                              </span>
+                            </div>
                           )}
                         </td>
 

@@ -16,7 +16,8 @@ import {
   ChevronUp,
   SlidersHorizontal,
   Eye,
-  EyeOff
+  EyeOff,
+  Clock
 } from 'lucide-react';
 import { SearchCriteria, DeliveryItem } from '../types';
 
@@ -36,7 +37,16 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   matchedItemsCount,
 }) => {
   // Extract distinct lists for datalists / suggestions
-  const { docRefs, projectCodes, projectNames, docTypes, machineNames, requestDepts, actionTopics } = useMemo(() => {
+  const { 
+    docRefs, 
+    projectCodes, 
+    projectNames, 
+    docTypes, 
+    machineNames, 
+    requestDepts, 
+    actionTopics,
+    readyOpsWithCount
+  } = useMemo(() => {
     const refs = new Set<string>();
     const codes = new Set<string>();
     const names = new Set<string>();
@@ -44,6 +54,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     const machines = new Set<string>();
     const depts = new Set<string>();
     const topics = new Set<string>();
+    const readyOpsMap = new Map<string, number>();
 
     items.forEach(i => {
       if (i.docRef) refs.add(i.docRef.trim());
@@ -53,7 +64,14 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       if (i.machineName && i.machineName !== '(ไม่ระบุเครื่องจักร)') machines.add(i.machineName.trim());
       if (i.requestDept) depts.add(i.requestDept.trim());
       if (i.actionTopic) topics.add(i.actionTopic.trim());
+      if (i.readyOpDesc) {
+        const desc = i.readyOpDesc.trim();
+        readyOpsMap.set(desc, (readyOpsMap.get(desc) || 0) + 1);
+      }
     });
+
+    const readyOpsSorted = Array.from(readyOpsMap.entries())
+      .sort((a, b) => b[1] - a[1]);
 
     return {
       docRefs: Array.from(refs).sort(),
@@ -63,6 +81,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       machineNames: Array.from(machines).sort(),
       requestDepts: Array.from(depts).sort(),
       actionTopics: Array.from(topics).sort(),
+      readyOpsWithCount: readyOpsSorted,
     };
   }, [items]);
 
@@ -74,7 +93,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     searchCriteria.machineName ||
     searchCriteria.requestDept ||
     searchCriteria.actionTopic ||
-    (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all')
+    (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') ||
+    (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') ||
+    (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all')
   );
 
   const handleReset = () => {
@@ -87,6 +108,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       requestDept: '',
       actionTopic: '',
       qcStatus: 'all',
+      overviewStatus: 'all',
+      readyOpName: 'all',
+      operationStatus: 'all',
     });
   };
 
@@ -113,6 +137,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     if (searchCriteria.requestDept) count++;
     if (searchCriteria.actionTopic) count++;
     if (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') count++;
+    if (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') count++;
+    if (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all') count++;
     return count;
   }, [searchCriteria]);
 
@@ -195,6 +221,17 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               {searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-medium">
                   <span>QC: {searchCriteria.qcStatus === 'passed' ? 'ผ่านแล้ว' : 'ยังไม่เข้า'}</span>
+                </span>
+              )}
+              {searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 text-[11px] font-medium">
+                  <span>Overview: {searchCriteria.overviewStatus === 'none' ? 'ไม่มีสถานะ' : searchCriteria.overviewStatus}</span>
+                </span>
+              )}
+              {searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-900 border border-amber-300 text-[11px] font-semibold">
+                  <Clock className="w-3 h-3 text-amber-600" />
+                  <span>Op รอขึ้น: {searchCriteria.readyOpName === 'any_ready' ? 'มี Op รอขึ้น' : searchCriteria.readyOpName}</span>
                 </span>
               )}
             </div>
@@ -538,14 +575,64 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           </div>
         </div>
 
-        {(searchCriteria.requestDept || searchCriteria.actionTopic || (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all')) && (
+        {/* Overview Status Filter */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-slate-400 text-[11px]">สถานะ Overview:</span>
+          <select
+            value={searchCriteria.overviewStatus || 'all'}
+            onChange={(e) => updateField('overviewStatus', e.target.value)}
+            className={`px-2 py-1 rounded text-xs font-semibold outline-none border transition ${
+              searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all'
+                ? 'bg-blue-50 text-blue-900 border-blue-300 ring-1 ring-blue-300'
+                : 'bg-white text-slate-700 border-slate-200'
+            }`}
+          >
+            <option value="all">ทุกสถานะ Overview</option>
+            <option value="Active">⚡ Active (กำลังผลิต)</option>
+            <option value="Planned">📅 Planned (ตามแผน)</option>
+            <option value="Ready to Start">🕒 Ready to Start (รอเริ่ม)</option>
+            <option value="Completed">✓ Completed (เสร็จแล้ว)</option>
+            <option value="none">ไม่มีสถานะ / ไม่พบ</option>
+          </select>
+        </div>
+
+        {/* Ready Op Filter */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-amber-800 text-[11px] font-bold flex items-center gap-1">
+            <Clock className="w-3 h-3 text-amber-600" />
+            <span>Op รอขึ้นทำงาน:</span>
+          </span>
+          <select
+            value={searchCriteria.readyOpName || 'all'}
+            onChange={(e) => updateField('readyOpName', e.target.value)}
+            className={`px-2 py-1 rounded text-xs font-semibold outline-none border transition max-w-[190px] truncate ${
+              searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all'
+                ? 'bg-amber-100/90 text-amber-950 border-amber-400 ring-1 ring-amber-400'
+                : 'bg-white text-slate-700 border-slate-200'
+            }`}
+          >
+            <option value="all">ทุกขั้นตอน</option>
+            <option value="any_ready">⚡ เฉพาะมี Op รอขึ้นทำงาน ({readyOpsWithCount.reduce((a, b) => a + b[1], 0)})</option>
+            <optgroup label="เลือกตามชื่อขั้นตอน">
+              {readyOpsWithCount.map(([opName, count], i) => (
+                <option key={i} value={opName}>
+                  {opName} ({count})
+                </option>
+              ))}
+            </optgroup>
+          </select>
+        </div>
+
+        {(searchCriteria.requestDept || searchCriteria.actionTopic || (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') || (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') || (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all')) && (
           <button
             onClick={() => {
               updateField('requestDept', '');
               updateField('actionTopic', '');
               updateField('qcStatus', 'all');
+              updateField('overviewStatus', 'all');
+              updateField('readyOpName', 'all');
             }}
-            className="text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-auto"
+            className="text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-auto cursor-pointer"
           >
             ล้างตัวกรองเสริม
           </button>

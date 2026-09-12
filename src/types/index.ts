@@ -48,6 +48,20 @@ export interface DeliveryItem {
   overviewProject?: string;
   overviewItemCode?: string;
 
+  // Operation Enriched Fields (From Week 37 Status Overview Routing & Operations)
+  readyOp?: string;           // Operation ที่พร้อม/รอขึ้นทำงาน เช่น "Op 20: CNC VF4 (DEA024)"
+  readyOpDesc?: string;       // ชื่อ Operation เช่น "CNC VF4", "เครื่องอัดไฮดรอลิก"
+  readyOpWc?: string;         // Work Center เช่น "DEA024"
+  readyOpNo?: number | string;// หมายเลข Operation เช่น 20
+  hasReadyOp?: boolean;       // มี Operation ที่รอขึ้นทำงาน
+  activeOp?: string;          // Operation ที่กำลังทำอยู่ เช่น "Op 10: เลื่อย (DEA011)"
+  activeOpDesc?: string;      // ชื่อ Operation กำลังทำ
+  activeOpWc?: string;
+  activeOpNo?: number | string;
+  currentOp?: string;         // สถานะขั้นตอนปัจจุบัน
+  currentOpDesc?: string;
+  currentOpStatus?: string;
+
   // Computed fields
   isOverdue?: boolean;
   isDueSoon?: boolean;
@@ -62,6 +76,18 @@ export interface OverviewMeta {
   itemCode?: string;
   description?: string;
   prodOrder?: string;
+  readyOp?: string;
+  readyOpDesc?: string;
+  readyOpWc?: string;
+  readyOpNo?: number | string;
+  hasReadyOp?: boolean;
+  activeOp?: string;
+  activeOpDesc?: string;
+  activeOpWc?: string;
+  activeOpNo?: number | string;
+  currentOp?: string;
+  currentOpDesc?: string;
+  currentOpStatus?: string;
 }
 
 export interface MachineSummary {
@@ -97,6 +123,9 @@ export interface SearchCriteria {
   requestDept?: string;
   actionTopic?: string;
   qcStatus?: 'all' | 'passed' | 'pending';
+  overviewStatus?: string;  // 'all' | 'Active' | 'Planned' | 'Ready to Start' | 'Completed' | 'none'
+  readyOpName?: string;     // 'all' | 'any_ready' | specific operation description e.g. 'CNC VF4'
+  operationStatus?: string; // 'all' | 'ready' | 'active' | 'completed' | 'none'
 }
 
 export interface FilterState {

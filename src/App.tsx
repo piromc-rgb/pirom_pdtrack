@@ -37,7 +37,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('machines');
   const [statusFilter, setStatusFilter] = useState<'all' | 'in-progress' | 'overdue' | 'due-soon' | 'completed'>('all');
 
-  // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status
+  // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status + Overview & Ready Operation
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
     docRef: '',
     projectCode: '',
@@ -47,6 +47,9 @@ export function App() {
     requestDept: '',
     actionTopic: '',
     qcStatus: 'all',
+    overviewStatus: 'all',
+    readyOpName: 'all',
+    operationStatus: 'all',
   });
 
   // Modals
@@ -80,6 +83,26 @@ export function App() {
       if (searchCriteria.actionTopic && (!item.actionTopic || !item.actionTopic.toLowerCase().includes(searchCriteria.actionTopic.toLowerCase().trim()))) return false;
       if (searchCriteria.qcStatus === 'passed' && !item.isQcPassed) return false;
       if (searchCriteria.qcStatus === 'pending' && item.isQcPassed) return false;
+      if (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') {
+        if (searchCriteria.overviewStatus === 'none') {
+          if (item.overviewStatus) return false;
+        } else if ((item.overviewStatus || '').toLowerCase() !== searchCriteria.overviewStatus.toLowerCase()) {
+          return false;
+        }
+      }
+      if (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all') {
+        if (searchCriteria.readyOpName === 'any_ready') {
+          if (!item.hasReadyOp && !item.readyOp) return false;
+        } else if (!item.readyOpDesc?.toLowerCase().includes(searchCriteria.readyOpName.toLowerCase()) &&
+                   !item.readyOp?.toLowerCase().includes(searchCriteria.readyOpName.toLowerCase())) {
+          return false;
+        }
+      }
+      if (searchCriteria.operationStatus && searchCriteria.operationStatus !== 'all') {
+        if (searchCriteria.operationStatus === 'ready' && !item.hasReadyOp && !item.readyOp) return false;
+        if (searchCriteria.operationStatus === 'active' && !item.activeOp) return false;
+        if (searchCriteria.operationStatus === 'completed' && item.currentOpStatus !== 'Completed') return false;
+      }
       return true;
     });
 

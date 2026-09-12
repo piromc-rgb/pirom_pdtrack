@@ -59,10 +59,50 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   const [internalSearch, setInternalSearch] = useState('');
   const [selectedMachine, setSelectedMachine] = useState('all');
   const [dateWindowFilter, setDateWindowFilter] = useState<'all' | 'overdue' | 'today' | '7days' | 'month' | 'qc-ready'>('all');
+  const [overviewFilter, setOverviewFilter] = useState<string>('all');
+  const [readyOpFilter, setReadyOpFilter] = useState<string>('all');
   const [statusSource, setStatusSource] = useState<'qc' | 'overview' | 'dual'>('overview');
   const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [selectedPrintDate, setSelectedPrintDate] = useState<string | null>(null);
+
+  // Distinct ready operations and overview status counts for pending items
+  const { readyOpsWithCount, overviewCounts } = useMemo(() => {
+    const readyMap = new Map<string, number>();
+    const ovCounts: Record<string, number> = {
+      all: 0,
+      Active: 0,
+      Planned: 0,
+      'Ready to Start': 0,
+      Completed: 0,
+      none: 0,
+      hasReadyOp: 0,
+    };
+
+    items.forEach(i => {
+      if (i.status === 'ส่งแล้ว') return;
+      ovCounts.all++;
+      const st = i.overviewStatus || '';
+      if (st && ovCounts[st] !== undefined) {
+        ovCounts[st]++;
+      } else if (!st) {
+        ovCounts.none++;
+      }
+      if (i.hasReadyOp || i.readyOp) {
+        ovCounts.hasReadyOp++;
+      }
+      if (i.readyOpDesc) {
+        const desc = i.readyOpDesc.trim();
+        readyMap.set(desc, (readyMap.get(desc) || 0) + 1);
+      }
+    });
+
+    const sortedReady = Array.from(readyMap.entries()).sort((a, b) => b[1] - a[1]);
+    return {
+      readyOpsWithCount: sortedReady,
+      overviewCounts: ovCounts,
+    };
+  }, [items]);
 
   // 1. FILTER STRICTLY TO PENDING ITEMS ONLY ("แสดงเฉพาะงานที่ยังไม่ส่ง")
   const pendingItems = useMemo(() => {
@@ -81,6 +121,27 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       if (searchCriteria.qcStatus === 'passed' && !item.isQcPassed) return false;
       if (searchCriteria.qcStatus === 'pending' && item.isQcPassed) return false;
 
+      // Overview Status Filter (Toolbar or SearchCriteria)
+      const effectiveOverview = overviewFilter !== 'all' ? overviewFilter : (searchCriteria.overviewStatus || 'all');
+      if (effectiveOverview !== 'all') {
+        if (effectiveOverview === 'none') {
+          if (item.overviewStatus) return false;
+        } else if ((item.overviewStatus || '').toLowerCase() !== effectiveOverview.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Ready Operation Filter (Toolbar or SearchCriteria)
+      const effectiveReadyOp = readyOpFilter !== 'all' ? readyOpFilter : (searchCriteria.readyOpName || 'all');
+      if (effectiveReadyOp !== 'all') {
+        if (effectiveReadyOp === 'any_ready') {
+          if (!item.hasReadyOp && !item.readyOp) return false;
+        } else if (!item.readyOpDesc?.toLowerCase().includes(effectiveReadyOp.toLowerCase()) &&
+                   !item.readyOp?.toLowerCase().includes(effectiveReadyOp.toLowerCase())) {
+          return false;
+        }
+      }
+
       // Machine Dropdown filter
       if (selectedMachine !== 'all' && item.machineName !== selectedMachine) return false;
 
@@ -94,7 +155,10 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         const matchProj = item.projectName.toLowerCase().includes(term) || item.projectCode.toLowerCase().includes(term);
         const matchDept = item.requestDept?.toLowerCase().includes(term);
         const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
-        if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC) {
+        const matchReadyOp = item.readyOp?.toLowerCase().includes(term) || item.readyOpDesc?.toLowerCase().includes(term);
+        const matchActiveOp = item.activeOp?.toLowerCase().includes(term) || item.activeOpDesc?.toLowerCase().includes(term);
+        const matchOverview = item.overviewStatus?.toLowerCase().includes(term);
+        if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC && !matchReadyOp && !matchActiveOp && !matchOverview) {
           return false;
         }
       }
@@ -109,7 +173,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
       return true;
     });
-  }, [items, searchCriteria, selectedMachine, internalSearch, dateWindowFilter]);
+  }, [items, searchCriteria, selectedMachine, internalSearch, dateWindowFilter, overviewFilter, readyOpFilter]);
 
   // Overall statistics for pending items
   const stats = useMemo(() => {
@@ -235,6 +299,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       'ชื่อ Item / รายละเอียด',
       'จำนวน (Qty)',
       'Production Order (PD)',
+      'สถานะ Overview',
+      'Operation รอขึ้นทำงาน',
       'สถานะ QC',
       'วันที่ตรวจ QC',
       'ผู้ตรวจ QC',
@@ -266,6 +332,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
           `"${item.itemName.replace(/"/g, '""')}"`,
           String(item.qty),
           `"${item.prodOrder}"`,
+          `"${item.overviewStatus || '-'}"`,
+          `"${item.readyOp || item.activeOp || '-'}"`,
           item.isQcPassed ? '"ผ่าน QC แล้ว"' : '"ยังไม่เข้า QC"',
           `"${item.qcDate || ''}"`,
           `"${item.qcInspector || ''}"`,
@@ -531,6 +599,120 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
             <CheckCircle2 className="w-3 h-3" />
             ผ่าน QC แล้วพร้อมส่ง ({stats.qcPassedCount})
           </button>
+        </div>
+
+        {/* Overview Status & Ready Operation Filters */}
+        <div className="flex items-center gap-3 flex-wrap pt-2.5 border-t border-slate-100 text-xs">
+          {/* Overview Status Quick Buttons */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-slate-600 font-semibold flex items-center gap-1 text-[11px]">
+              <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+              <span>ตัวกรองสถานะ Overview:</span>
+            </span>
+            <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
+              <button
+                onClick={() => setOverviewFilter('all')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  overviewFilter === 'all'
+                    ? 'bg-white text-slate-900 shadow-2xs font-bold'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                ทั้งหมด
+              </button>
+              <button
+                onClick={() => setOverviewFilter(prev => prev === 'Active' ? 'all' : 'Active')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  overviewFilter === 'Active'
+                    ? 'bg-blue-600 text-white shadow-2xs font-bold'
+                    : 'text-blue-700 hover:bg-blue-50'
+                }`}
+              >
+                ⚡ Active ({overviewCounts.Active})
+              </button>
+              <button
+                onClick={() => setOverviewFilter(prev => prev === 'Planned' ? 'all' : 'Planned')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  overviewFilter === 'Planned'
+                    ? 'bg-purple-600 text-white shadow-2xs font-bold'
+                    : 'text-purple-700 hover:bg-purple-50'
+                }`}
+              >
+                📅 Planned ({overviewCounts.Planned})
+              </button>
+              <button
+                onClick={() => setOverviewFilter(prev => prev === 'Ready to Start' ? 'all' : 'Ready to Start')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  overviewFilter === 'Ready to Start'
+                    ? 'bg-amber-600 text-white shadow-2xs font-bold'
+                    : 'text-amber-700 hover:bg-amber-50'
+                }`}
+              >
+                🕒 Ready to Start ({overviewCounts['Ready to Start']})
+              </button>
+              <button
+                onClick={() => setOverviewFilter(prev => prev === 'Completed' ? 'all' : 'Completed')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  overviewFilter === 'Completed'
+                    ? 'bg-emerald-600 text-white shadow-2xs font-bold'
+                    : 'text-emerald-700 hover:bg-emerald-50'
+                }`}
+              >
+                ✓ Completed ({overviewCounts.Completed})
+              </button>
+            </div>
+          </div>
+
+          {/* Ready Operation Filter */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-amber-900 font-bold flex items-center gap-1 text-[11px]">
+              <Clock className="w-3.5 h-3.5 text-amber-600" />
+              <span>Op รอขึ้นทำงาน:</span>
+            </span>
+
+            <button
+              onClick={() => setReadyOpFilter(prev => prev === 'any_ready' ? 'all' : 'any_ready')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer border ${
+                readyOpFilter === 'any_ready'
+                  ? 'bg-amber-500 text-white border-amber-600 shadow-2xs'
+                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border-amber-200'
+              }`}
+            >
+              <Clock className="w-3 h-3 text-amber-600" />
+              <span>เฉพาะมี Op รอขึ้น ({overviewCounts.hasReadyOp})</span>
+            </button>
+
+            {readyOpsWithCount.length > 0 && (
+              <select
+                value={readyOpFilter !== 'any_ready' ? readyOpFilter : 'all'}
+                onChange={(e) => setReadyOpFilter(e.target.value)}
+                className={`px-2 py-1 rounded-lg border text-xs font-semibold outline-none max-w-[200px] truncate ${
+                  readyOpFilter !== 'all' && readyOpFilter !== 'any_ready'
+                    ? 'bg-amber-100 text-amber-950 border-amber-400 ring-1 ring-amber-400'
+                    : 'bg-white text-slate-700 border-slate-200'
+                }`}
+              >
+                <option value="all">เลือกขั้นตอนรอขึ้น ({readyOpsWithCount.length} ขั้นตอน)...</option>
+                {readyOpsWithCount.map(([opName, count], i) => (
+                  <option key={i} value={opName}>
+                    {opName} ({count} รายการ)
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {(overviewFilter !== 'all' || readyOpFilter !== 'all') && (
+              <button
+                onClick={() => {
+                  setOverviewFilter('all');
+                  setReadyOpFilter('all');
+                }}
+                className="text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-1 cursor-pointer"
+              >
+                ล้างตัวกรองสถานะ/Op
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Status Source View Switcher */}
@@ -875,6 +1057,27 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                     {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
                                   </div>
+                                  {item.readyOp ? (
+                                    <div className="mt-1 flex items-center">
+                                      <span 
+                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs"
+                                        title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
+                                      >
+                                        <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0 animate-pulse" />
+                                        <span className="truncate max-w-[155px]">รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
+                                      </span>
+                                    </div>
+                                  ) : item.activeOp ? (
+                                    <div className="mt-1 flex items-center">
+                                      <span 
+                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-900 border border-blue-200"
+                                        title={`Operation กำลังทำ: ${item.activeOp}`}
+                                      >
+                                        <TrendingUp className="w-2.5 h-2.5 text-blue-600 flex-shrink-0" />
+                                        <span className="truncate max-w-[155px]">กำลังทำ: {item.activeOpDesc || item.activeOp}</span>
+                                      </span>
+                                    </div>
+                                  ) : null}
                                 </td>
                               )}
 
@@ -895,6 +1098,26 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                       {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
                                     </div>
+                                    {item.readyOp ? (
+                                      <div className="mt-1 flex justify-center">
+                                        <span 
+                                          className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-900 border border-amber-300"
+                                          title={`Operation รอขึ้น: ${item.readyOp}`}
+                                        >
+                                          <Clock className="w-2 h-2 text-amber-600" />
+                                          <span className="truncate max-w-[90px]">{item.readyOpDesc || item.readyOp}</span>
+                                        </span>
+                                      </div>
+                                    ) : item.activeOp ? (
+                                      <div className="mt-1 flex justify-center">
+                                        <span 
+                                          className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-semibold bg-blue-100 text-blue-900 border border-blue-200"
+                                          title={`กำลังทำ: ${item.activeOp}`}
+                                        >
+                                          <span className="truncate max-w-[90px]">{item.activeOpDesc || item.activeOp}</span>
+                                        </span>
+                                      </div>
+                                    ) : null}
                                   </td>
                                   <td className="py-3 px-2.5 bg-emerald-50/20 text-center">
                                     {item.isQcPassed ? (

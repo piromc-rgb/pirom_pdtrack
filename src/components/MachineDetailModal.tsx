@@ -341,21 +341,38 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                         <td className="py-3 px-3.5 text-slate-600 font-mono text-[11px]">
                           <div className="font-semibold text-slate-800">{item.prodOrder || '-'}</div>
                           {item.poPr && <div className="text-slate-400">{item.poPr}</div>}
-                          {item.isQcPassed && (
-                            <div className="mt-1">
-                              <span 
-                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"
-                                title={`ผ่านการตรวจ QC: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'} (${item.qcTopic || ''})`}
-                              >
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> ผ่าน QC แล้ว
+                          <div className="flex items-center gap-1 mt-1 flex-wrap font-sans">
+                            {item.overviewStatus && (
+                              <span className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded ${
+                                item.overviewStatus === 'Completed'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : item.overviewStatus === 'Active'
+                                  ? 'bg-blue-100 text-blue-800'
+                                  : item.overviewStatus === 'Ready to Start'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-purple-100 text-purple-800'
+                              }`}>
+                                {item.overviewStatus}
                               </span>
-                              {item.qcInspector && (
-                                <div className="text-[10px] text-emerald-700 font-sans mt-0.5">
-                                  ผู้ตรวจ: {item.qcInspector}
-                                </div>
-                              )}
-                            </div>
-                          )}
+                            )}
+                            {item.readyOp && (
+                              <span 
+                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-semibold rounded bg-amber-50 text-amber-900 border border-amber-300"
+                                title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
+                              >
+                                <Clock className="w-2 h-2 text-amber-600" />
+                                <span>รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
+                              </span>
+                            )}
+                            {item.isQcPassed && (
+                              <span 
+                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"
+                                title={`ผ่านการตรวจ QC: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'}`}
+                              >
+                                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" /> ผ่าน QC แล้ว
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="py-3 px-3.5 text-center text-slate-500 whitespace-nowrap">
                           {item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
