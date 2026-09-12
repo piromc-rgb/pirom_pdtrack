@@ -35,6 +35,7 @@ import {
   getDaysDiff,
   extractCustomer 
 } from '../utils/dateUtils';
+import { isOverviewCompletedOrClosed } from '../services/sheetService';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
 export interface DeliveryDateGroup {
@@ -100,7 +101,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       if (i.status === 'ส่งแล้ว') return;
       ovCounts.all++;
       const st = i.overviewStatus || '';
-      if (st && ovCounts[st] !== undefined) {
+      if (isOverviewCompletedOrClosed(st)) {
+        ovCounts.Completed++;
+      } else if (st && ovCounts[st] !== undefined) {
         ovCounts[st]++;
       } else if (!st) {
         ovCounts.none++;
@@ -143,6 +146,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       if (effectiveOverview !== 'all') {
         if (effectiveOverview === 'none') {
           if (item.overviewStatus) return false;
+        } else if (effectiveOverview === 'Completed') {
+          if (!isOverviewCompletedOrClosed(item.overviewStatus)) return false;
         } else if ((item.overviewStatus || '').toLowerCase() !== effectiveOverview.toLowerCase()) {
           return false;
         }
@@ -174,7 +179,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
         const matchReadyOp = item.readyOp?.toLowerCase().includes(term) || item.readyOpDesc?.toLowerCase().includes(term);
         const matchActiveOp = item.activeOp?.toLowerCase().includes(term) || item.activeOpDesc?.toLowerCase().includes(term);
-        const matchOverview = item.overviewStatus?.toLowerCase().includes(term);
+        const isOvDone = isOverviewCompletedOrClosed(item.overviewStatus);
+        const matchOverview = item.overviewStatus?.toLowerCase().includes(term) || (isOvDone && ('เสร็จแล้ว'.includes(term) || term.includes('เสร็จ')));
         if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC && !matchReadyOp && !matchActiveOp && !matchOverview) {
           return false;
         }
@@ -349,7 +355,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
           `"${item.itemName.replace(/"/g, '""')}"`,
           String(item.qty),
           `"${item.prodOrder}"`,
-          `"${item.overviewStatus || '-'}"`,
+          `"${isOverviewCompletedOrClosed(item.overviewStatus) ? 'เสร็จแล้ว' : (item.overviewStatus || '-')}"`,
           `"${item.readyOp || item.activeOp || '-'}"`,
           item.isQcPassed ? '"ผ่าน QC แล้ว"' : '"ยังไม่เข้า QC"',
           `"${item.qcDate || ''}"`,
@@ -686,7 +692,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                     : 'text-emerald-700 hover:bg-emerald-50'
                 }`}
               >
-                ✓ Completed ({overviewCounts.Completed})
+                ✓ เสร็จแล้ว ({overviewCounts.Completed})
               </button>
             </div>
           </div>
@@ -1054,10 +1060,10 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
                               {statusSource === 'overview' && (
                                 <td className="py-3 px-3">
-                                  {item.overviewStatus === 'Completed' && (
+                                  {isOverviewCompletedOrClosed(item.overviewStatus) && (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                      Completed
+                                      เสร็จแล้ว
                                     </span>
                                   )}
                                   {item.overviewStatus === 'Active' && (
@@ -1075,6 +1081,11 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   {item.overviewStatus === 'Planned' && (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300">
                                       📅 Planned
+                                    </span>
+                                  )}
+                                  {item.overviewStatus && !isOverviewCompletedOrClosed(item.overviewStatus) && !['Active', 'Ready to Start', 'Planned'].includes(item.overviewStatus) && (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
+                                      {item.overviewStatus}
                                     </span>
                                   )}
                                   {!item.overviewStatus && (
@@ -1112,9 +1123,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               {statusSource === 'dual' && (
                                 <>
                                   <td className="py-3 px-2.5 bg-blue-50/20 text-center">
-                                    {item.overviewStatus === 'Completed' ? (
+                                    {isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                       <span className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block">
-                                        ✓ Completed
+                                        ✓ เสร็จแล้ว
                                       </span>
                                     ) : item.overviewStatus ? (
                                       <span className="font-bold text-blue-700 text-[10px] px-1.5 py-0.5 rounded bg-blue-50 border border-blue-200 inline-block">

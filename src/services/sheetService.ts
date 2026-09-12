@@ -324,10 +324,13 @@ export function parseOverviewCsv(csvText: string): {
   const byProjItem: Record<string, OverviewMeta> = {};
 
   const priorityOrder: Record<string, number> = {
-    'completed': 4,
-    'active': 3,
-    'ready to start': 2,
-    'planned': 1,
+    'active': 5,
+    'ready to start': 4,
+    'planned': 3,
+    'completed': 2,
+    'closed': 2,
+    'close': 2,
+    'เสร็จแล้ว': 2,
   };
 
   for (let i = 1; i < rows.length; i++) {
@@ -420,20 +423,70 @@ export function parseOverviewCsv(csvText: string): {
 }
 
 /**
- * Look up Overview Status from the Overview Status Map for any given PD numbers
+ * Helper to check if an Overview status represents Completed or Closed
+ * (เช่น 'Completed', 'Closed', 'Close', 'เสร็จแล้ว')
  */
-export function getOverviewStatusForPds(pds: string[]): OverviewMeta | undefined {
-  if (!pds || pds.length === 0) return undefined;
-  for (const p of pds) {
-    const clean = p.toUpperCase().trim();
-    const meta = overviewStatusMap[clean];
-    if (meta) return meta;
-  }
-  return undefined;
+export function isOverviewCompletedOrClosed(status?: string): boolean {
+  if (!status) return false;
+  const s = status.trim().toLowerCase();
+  return (
+    s === 'completed' ||
+    s === 'closed' ||
+    s === 'close' ||
+    s === 'เสร็จแล้ว' ||
+    s === 'เสร็จสิ้น' ||
+    s === 'finished' ||
+    s === 'done'
+  );
 }
 
 /**
- * Look up Overview Status prioritized by Item Code (เลขที่ Item), with fallback to PD Number
+ * Look up Overview Status from the Overview Status Map for any given PD numbers
+ * If all matched PDs are Completed or Closed ("complete หรือ close หมด"), mark as 'Closed' / 'เสร็จแล้ว'.
+ * Otherwise, prioritize in-progress status (Active > Ready to Start > Planned).
+ */
+export function getOverviewStatusForPds(pds: string[]): OverviewMeta | undefined {
+  if (!pds || pds.length === 0) return undefined;
+
+  const matchedMetas: OverviewMeta[] = [];
+  for (const p of pds) {
+    const clean = p.toUpperCase().trim();
+    const meta = overviewStatusMap[clean];
+    if (meta) matchedMetas.push(meta);
+  }
+
+  if (matchedMetas.length === 0) return undefined;
+  if (matchedMetas.length === 1) return matchedMetas[0];
+
+  // If ALL matched PDs are Completed or Closed ("complete หรือ close หมด")
+  const allFinished = matchedMetas.every(m => isOverviewCompletedOrClosed(m.status));
+  if (allFinished) {
+    return {
+      ...matchedMetas[0],
+      status: 'Closed',
+      currentOp: matchedMetas[0].currentOp || 'เสร็จทุกขั้นตอน',
+      currentOpDesc: matchedMetas[0].currentOpDesc || 'Completed',
+      currentOpStatus: 'Completed',
+    };
+  }
+
+  // If not all finished, prioritize in-progress operations
+  const inProgress = matchedMetas.filter(m => !isOverviewCompletedOrClosed(m.status));
+  const activeMeta = inProgress.find(m => m.status?.toLowerCase() === 'active' || m.currentOpStatus === 'Active');
+  if (activeMeta) return activeMeta;
+
+  const readyMeta = inProgress.find(m => m.status?.toLowerCase() === 'ready to start' || m.currentOpStatus === 'Ready to Start');
+  if (readyMeta) return readyMeta;
+
+  const plannedMeta = inProgress.find(m => m.status?.toLowerCase() === 'planned');
+  if (plannedMeta) return plannedMeta;
+
+  return inProgress[0] || matchedMetas[0];
+}
+
+/**
+ * Look up Overview Status prioritized by Item Code (เลขที่ Item), with fallback to PD Number.
+ * If specific PDs are provided, we also verify whether all PDs are completed/closed.
  */
 export function getOverviewStatusForItem(
   itemCode?: string,
@@ -442,6 +495,12 @@ export function getOverviewStatusForItem(
 ): OverviewMeta | undefined {
   const cleanCode = itemCode?.trim().toUpperCase();
   const cleanProj = projectCode?.trim().toUpperCase();
+
+  // If specific PDs are given, inspect them first to handle "complete หรือ close หมด" accurately
+  if (pds && pds.length > 0) {
+    const pdMeta = getOverviewStatusForPds(pds);
+    if (pdMeta) return pdMeta;
+  }
 
   // 1. Primary: match by Project Code + Item Code (Most accurate for project-specific orders)
   if (cleanProj && cleanCode) {
@@ -454,11 +513,6 @@ export function getOverviewStatusForItem(
   if (cleanCode) {
     const meta = overviewItemMap.byItem[cleanCode];
     if (meta) return meta;
-  }
-
-  // 3. Fallback: match by PD Number if available
-  if (pds && pds.length > 0) {
-    return getOverviewStatusForPds(pds);
   }
 
   return undefined;

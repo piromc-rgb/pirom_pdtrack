@@ -227,7 +227,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               )}
               {searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all' && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-800 border border-blue-200 text-[11px] font-medium">
-                  <span>Overview: {searchCriteria.overviewStatus === 'none' ? 'ไม่มีสถานะ' : searchCriteria.overviewStatus}</span>
+                  <span>Overview: {searchCriteria.overviewStatus === 'Completed' ? '✓ เสร็จแล้ว' : searchCriteria.overviewStatus === 'none' ? 'ไม่มีสถานะ' : searchCriteria.overviewStatus}</span>
                 </span>
               )}
               {searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all' && (
@@ -597,7 +597,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             <option value="Active">⚡ Active (กำลังผลิต)</option>
             <option value="Planned">📅 Planned (ตามแผน)</option>
             <option value="Ready to Start">🕒 Ready to Start (รอเริ่ม)</option>
-            <option value="Completed">✓ Completed (เสร็จแล้ว)</option>
+            <option value="Completed">✓ เสร็จแล้ว (Completed / Closed)</option>
             <option value="none">ไม่มีสถานะ / ไม่พบ</option>
           </select>
         </div>

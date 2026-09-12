@@ -23,7 +23,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { DeliveryItem, OverviewMeta } from '../types';
-import { overviewStatusMap, qcStatusMap, extractPdNumbers } from '../services/sheetService';
+import { overviewStatusMap, qcStatusMap, extractPdNumbers, isOverviewCompletedOrClosed } from '../services/sheetService';
 import { formatCompactDate } from '../utils/dateUtils';
 
 export type ComparisonSource = 'overview' | 'qc' | 'dual';
@@ -95,7 +95,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
       // Status chip filter
       if (statusFilter !== 'all') {
         if (source === 'overview') {
-          if (['Completed', 'Active', 'Ready to Start', 'Planned'].includes(statusFilter)) {
+          if (statusFilter === 'Completed') {
+            if (!isOverviewCompletedOrClosed(item.overviewStatus)) return false;
+          } else if (['Active', 'Ready to Start', 'Planned'].includes(statusFilter)) {
             if (item.overviewStatus !== statusFilter) return false;
           } else if (statusFilter === 'ไม่พบข้อมูล') {
             if (item.overviewStatus || !item.prodOrder) return false;
@@ -107,9 +109,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
           if (statusFilter === 'qc-pending' && (item.isQcPassed || !item.prodOrder)) return false;
           if (statusFilter === 'no-pd' && item.prodOrder) return false;
         } else if (source === 'dual') {
-          if (statusFilter === 'both-done' && (!item.isQcPassed || item.overviewStatus !== 'Completed')) return false;
-          if (statusFilter === 'prod-done-qc-pending' && (item.overviewStatus !== 'Completed' || item.isQcPassed)) return false;
-          if (statusFilter === 'in-production' && (!['Active', 'Planned', 'Ready to Start'].includes(item.overviewStatus || ''))) return false;
+          if (statusFilter === 'both-done' && (!item.isQcPassed || !isOverviewCompletedOrClosed(item.overviewStatus))) return false;
+          if (statusFilter === 'prod-done-qc-pending' && (!isOverviewCompletedOrClosed(item.overviewStatus) || item.isQcPassed)) return false;
+          if (statusFilter === 'in-production' && (!['Active', 'Planned', 'Ready to Start'].includes(item.overviewStatus || '') || isOverviewCompletedOrClosed(item.overviewStatus))) return false;
           if (statusFilter === 'no-pd' && item.prodOrder) return false;
         }
       }
@@ -154,7 +156,7 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
       // Overview status counts (อิงตามเลขที่ item หรือ PD)
       const st = it.overviewStatus;
-      if (st === 'Completed') ovCompleted++;
+      if (isOverviewCompletedOrClosed(st)) ovCompleted++;
       else if (st === 'Active') ovActive++;
       else if (st === 'Planned') ovPlanned++;
       else if (st === 'Ready to Start') ovReady++;
@@ -167,9 +169,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
       else qcNoPd++;
 
       // Dual status counts
-      if (st === 'Completed' && it.isQcPassed) bothDone++;
-      else if (st === 'Completed' && !it.isQcPassed) prodDoneQcPending++;
-      else if (['Active', 'Planned', 'Ready to Start'].includes(st || '')) inProd++;
+      if (isOverviewCompletedOrClosed(st) && it.isQcPassed) bothDone++;
+      else if (isOverviewCompletedOrClosed(st) && !it.isQcPassed) prodDoneQcPending++;
+      else if (['Active', 'Planned', 'Ready to Start'].includes(st || '') && !isOverviewCompletedOrClosed(st)) inProd++;
     });
 
     return {
@@ -472,7 +474,7 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                           : 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
                       }`}
                     >
-                      ✓ Completed ({stats.ovCompleted})
+                      ✓ เสร็จแล้ว ({stats.ovCompleted})
                     </button>
                     <button
                       onClick={() => setStatusFilter('Active')}
@@ -703,10 +705,10 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                           {source === 'overview' && (
                             <>
                               <td className="py-2.5 px-3 text-center border-r border-slate-200">
-                                {item.overviewStatus === 'Completed' && (
+                                {isOverviewCompletedOrClosed(item.overviewStatus) && (
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10.5px]">
                                     <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                    Completed
+                                    เสร็จแล้ว
                                   </span>
                                 )}
                                 {item.overviewStatus === 'Active' && (
@@ -724,6 +726,11 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                                 {item.overviewStatus === 'Planned' && (
                                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-purple-100 text-purple-800 border border-purple-300 text-[10.5px]">
                                     📅 Planned
+                                  </span>
+                                )}
+                                {item.overviewStatus && !isOverviewCompletedOrClosed(item.overviewStatus) && !['Active', 'Ready to Start', 'Planned'].includes(item.overviewStatus) && (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-slate-100 text-slate-700 border border-slate-300 text-[10.5px]">
+                                    {item.overviewStatus}
                                   </span>
                                 )}
                                 {!item.overviewStatus && item.prodOrder && (
@@ -817,9 +824,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                             <>
                               {/* Overview status column */}
                               <td className="py-2.5 px-3 text-center border-r border-slate-200 bg-blue-50/20">
-                                {item.overviewStatus === 'Completed' ? (
+                                {isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                   <span className="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded text-[10.5px] inline-block">
-                                    ✓ Completed
+                                    ✓ เสร็จแล้ว
                                   </span>
                                 ) : item.overviewStatus ? (
                                   <span className="font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded text-[10.5px] inline-block">
@@ -852,18 +859,18 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
                               {/* Comparison insight */}
                               <td className="py-2.5 px-3 text-[11px]">
-                                {item.overviewStatus === 'Completed' && item.isQcPassed && (
+                                {isOverviewCompletedOrClosed(item.overviewStatus) && item.isQcPassed && (
                                   <span className="text-emerald-700 font-bold flex items-center gap-1">
                                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                                     พร้อมส่งมอบสมบูรณ์ (ผลิตเสร็จ + QC ผ่าน)
                                   </span>
                                 )}
-                                {item.overviewStatus === 'Completed' && !item.isQcPassed && (
+                                {isOverviewCompletedOrClosed(item.overviewStatus) && !item.isQcPassed && (
                                   <span className="text-amber-800 font-medium">
                                     ⚡ ฝ่ายผลิตเสร็จแล้ว แต่รอคิวตรวจ QC
                                   </span>
                                 )}
-                                {item.overviewStatus && item.overviewStatus !== 'Completed' && (
+                                {item.overviewStatus && !isOverviewCompletedOrClosed(item.overviewStatus) && (
                                   <span className="text-blue-700">
                                     ⚙️ อยู่ระหว่างผลิตในโรงงาน ({item.overviewStatus})
                                   </span>
@@ -1021,10 +1028,10 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
                         {/* Overview Status */}
                         <td className="py-2.5 px-3 text-center border-r border-slate-200 bg-blue-50/20">
-                          {r.overviewStatus === 'Completed' && (
+                          {isOverviewCompletedOrClosed(r.overviewStatus) && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10.5px]">
                               <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                              Completed
+                              เสร็จแล้ว
                             </span>
                           )}
                           {r.overviewStatus === 'Active' && (
@@ -1041,6 +1048,11 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                           {r.overviewStatus === 'Planned' && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold bg-purple-100 text-purple-800 border border-purple-300 text-[10.5px]">
                               📅 Planned
+                            </span>
+                          )}
+                          {r.overviewStatus && !isOverviewCompletedOrClosed(r.overviewStatus) && !['Active', 'Ready to Start', 'Planned', 'ไม่พบใน Overview'].includes(r.overviewStatus) && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-700 border border-slate-300 text-[10.5px]">
+                              {r.overviewStatus}
                             </span>
                           )}
                           {(!r.overviewStatus || r.overviewStatus === 'ไม่พบใน Overview') && (

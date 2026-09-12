@@ -13,7 +13,8 @@ import { ProductionOrderComparatorModal } from './components/ProductionOrderComp
 import { 
   fetchDeliveryData, 
   buildMachineSummaries, 
-  getLastSyncTime 
+  getLastSyncTime,
+  isOverviewCompletedOrClosed
 } from './services/sheetService';
 import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
 import { 
@@ -88,6 +89,8 @@ export function App() {
       if (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') {
         if (searchCriteria.overviewStatus === 'none') {
           if (item.overviewStatus) return false;
+        } else if (searchCriteria.overviewStatus === 'Completed') {
+          if (!isOverviewCompletedOrClosed(item.overviewStatus)) return false;
         } else if ((item.overviewStatus || '').toLowerCase() !== searchCriteria.overviewStatus.toLowerCase()) {
           return false;
         }

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { MachineSummary, DeliveryItem } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
+import { isOverviewCompletedOrClosed } from '../services/sheetService';
 
 interface MachineDetailModalProps {
   machine: MachineSummary | null;
@@ -344,7 +345,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                           <div className="flex items-center gap-1 mt-1 flex-wrap font-sans">
                             {item.overviewStatus && (
                               <span className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded ${
-                                item.overviewStatus === 'Completed'
+                                isOverviewCompletedOrClosed(item.overviewStatus)
                                   ? 'bg-emerald-100 text-emerald-800'
                                   : item.overviewStatus === 'Active'
                                   ? 'bg-blue-100 text-blue-800'
@@ -352,7 +353,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                                   ? 'bg-amber-100 text-amber-800'
                                   : 'bg-purple-100 text-purple-800'
                               }`}>
-                                {item.overviewStatus}
+                                {isOverviewCompletedOrClosed(item.overviewStatus) ? '✓ เสร็จแล้ว' : item.overviewStatus}
                               </span>
                             )}
                             {item.readyOp && (
