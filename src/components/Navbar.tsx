@@ -54,13 +54,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xl font-bold tracking-tight text-slate-900">PD<span className="text-sky-600">Track</span></span>
-                <span className="hidden sm:inline-block px-2 py-0.5 text-xs font-semibold rounded-full bg-sky-100 text-sky-800 border border-sky-200">
-                  Machine Index
-                </span>
+                <span className="text-xl font-bold tracking-tight text-slate-900">AMW PD<span className="text-sky-600">Track</span></span>
               </div>
               <p className="text-xs text-slate-500 hidden md:block">
-                ระบบติดตามเป้าหมายการส่งมอบโดยใช้ชื่อเครื่องจักรเป็นดัชนี
+                ระบบติดตามเป้าหมายการส่งมอบอะไหล่ & ชิ้นส่วน
               </p>
             </div>
           </div>

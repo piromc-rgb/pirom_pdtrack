@@ -1003,6 +1003,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
     let dueSoonItems = 0;
     let rescheduledItems = 0;
     let qcPassedItems = 0;
+    let completedOrQcItems = 0;
     let totalQty = 0;
     let deliveredQty = 0;
 
@@ -1023,12 +1024,19 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
       if (item.requestDept) deptsSet.add(item.requestDept);
       if (item.actionTopic) topicsSet.add(item.actionTopic);
 
-      if (item.status === 'ส่งแล้ว') {
+      const isDelivered = item.status === 'ส่งแล้ว';
+      const isDoneOrQc = isDelivered || isOverviewCompletedOrClosed(item.overviewStatus) || Boolean(item.isQcPassed);
+
+      if (isDelivered) {
         deliveredItems++;
         deliveredQty += item.qty;
       } else {
         if (item.isOverdue) overdueItems++;
         else if (item.isDueSoon) dueSoonItems++;
+      }
+
+      if (isDoneOrQc) {
+        completedOrQcItems++;
       }
 
       if ((item.rescheduledCount || 0) > 0) {
@@ -1050,7 +1058,8 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
     }
 
     const pendingItems = totalItems - deliveredItems;
-    const progressPercent = totalItems > 0 ? Math.round((deliveredItems / totalItems) * 100) : 0;
+    // ความคืบหน้าคำนวณจาก Item ที่เสร็จแล้ว หรือ ผ่าน QC แล้ว ต่อ รายการ PD ทั้งหมด
+    const progressPercent = totalItems > 0 ? Math.round((completedOrQcItems / totalItems) * 100) : 0;
 
     let status: MachineSummary['status'] = 'in-progress';
     if (progressPercent === 100) {
@@ -1066,6 +1075,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
       hasMachine: name !== '(ไม่ระบุเครื่องจักร)',
       totalItems,
       deliveredItems,
+      completedOrQcItems,
       pendingItems,
       overdueItems,
       dueSoonItems,

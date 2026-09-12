@@ -95,6 +95,7 @@ export interface MachineSummary {
   hasMachine: boolean;
   totalItems: number;
   deliveredItems: number;
+  completedOrQcItems: number;
   pendingItems: number;
   overdueItems: number;
   dueSoonItems: number;

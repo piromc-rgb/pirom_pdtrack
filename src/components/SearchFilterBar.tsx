@@ -28,6 +28,9 @@ interface SearchFilterBarProps {
   matchedMachinesCount: number;
   matchedItemsCount: number;
   actions?: React.ReactNode;
+  statusFilter?: string;
+  onResetStatusFilter?: () => void;
+  onResetAll?: () => void;
 }
 
 export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
@@ -37,6 +40,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   matchedMachinesCount,
   matchedItemsCount,
   actions,
+  statusFilter,
+  onResetStatusFilter,
+  onResetAll,
 }) => {
   // Extract distinct lists for datalists / suggestions
   const { 
@@ -88,6 +94,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   }, [items]);
 
   const hasAnyFilter = Boolean(
+    (statusFilter && statusFilter !== 'all') ||
     searchCriteria.docRef ||
     searchCriteria.projectCode ||
     searchCriteria.projectName ||
@@ -97,7 +104,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     searchCriteria.actionTopic ||
     (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') ||
     (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') ||
-    (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all')
+    (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all') ||
+    (searchCriteria.operationStatus && searchCriteria.operationStatus !== 'all')
   );
 
   const handleReset = () => {
@@ -114,6 +122,12 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       readyOpName: 'all',
       operationStatus: 'all',
     });
+    if (onResetStatusFilter) {
+      onResetStatusFilter();
+    }
+    if (onResetAll) {
+      onResetAll();
+    }
   };
 
   const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
@@ -131,6 +145,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
   const activeFiltersCount = useMemo(() => {
     let count = 0;
+    if (statusFilter && statusFilter !== 'all') count++;
     if (searchCriteria.docRef) count++;
     if (searchCriteria.projectCode) count++;
     if (searchCriteria.projectName) count++;
@@ -141,8 +156,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     if (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') count++;
     if (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') count++;
     if (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all') count++;
+    if (searchCriteria.operationStatus && searchCriteria.operationStatus !== 'all') count++;
     return count;
-  }, [searchCriteria]);
+  }, [searchCriteria, statusFilter]);
 
   const updateField = (field: keyof SearchCriteria, value: string) => {
     setSearchCriteria(prev => ({
@@ -236,26 +252,40 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                   <span>Op รอขึ้น: {searchCriteria.readyOpName === 'any_ready' ? 'มี Op รอขึ้น' : searchCriteria.readyOpName}</span>
                 </span>
               )}
+              {statusFilter && statusFilter !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 text-[11px] font-medium">
+                  <span>สถานะ: {statusFilter === 'overdue' ? 'เกินกำหนด' : statusFilter === 'due-soon' ? 'ใกล้กำหนด' : statusFilter === 'in-progress' ? 'กำลังส่งมอบ' : statusFilter === 'completed' ? 'ส่งครบแล้ว' : statusFilter}</span>
+                </span>
+              )}
             </div>
           )}
         </div>
 
-        {/* Right side: Actions (ย้ายมาอยู่ข้างตัวกรอง) + Results indicator & Reset Button */}
+        {/* Right side: Actions + Results indicator & Reset Filter Button */}
         <div className="flex items-center gap-2 flex-wrap ml-auto">
           {actions}
+
+          {/* Dedicated Reset Filter Button */}
+          <button
+            onClick={handleReset}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all active:scale-95 cursor-pointer ${
+              hasAnyFilter
+                ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300 shadow-2xs font-bold'
+                : 'bg-white hover:bg-slate-50 text-slate-500 border-slate-200 shadow-2xs'
+            }`}
+            title={hasAnyFilter ? "รีเซ็ตตัวกรองและเงื่อนไขค้นหาทั้งหมด" : "รีเซ็ตตัวกรอง"}
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${hasAnyFilter ? 'text-rose-600' : 'text-slate-400'}`} />
+            <span>Reset กรอง</span>
+            {hasAnyFilter && (
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+            )}
+          </button>
+
           {hasAnyFilter && (
-            <div className="flex items-center gap-2 flex-wrap">
-              <div className="text-xs px-2.5 py-1.5 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 font-medium flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-sky-600" />
-                <span>ผลลัพธ์: {matchedMachinesCount} เครื่อง ({matchedItemsCount} รายการ)</span>
-              </div>
-              <button
-                onClick={handleReset}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>ล้างการค้นหา</span>
-              </button>
+            <div className="text-xs px-2.5 py-1.5 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 font-medium flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-sky-600" />
+              <span>ผลลัพธ์: {matchedMachinesCount} เครื่อง ({matchedItemsCount} รายการ)</span>
             </div>
           )}
         </div>
@@ -299,21 +329,29 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         {/* Results indicator & Reset & Actions & Collapse Button */}
         <div className="flex items-center gap-2 flex-wrap" onClick={e => e.stopPropagation()}>
           {actions}
+
+          {/* Dedicated Reset Filter Button */}
+          <button
+            onClick={handleReset}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all active:scale-95 cursor-pointer ${
+              hasAnyFilter
+                ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300 shadow-2xs font-bold'
+                : 'bg-white hover:bg-slate-50 text-slate-500 border-slate-200'
+            }`}
+            title={hasAnyFilter ? "รีเซ็ตตัวกรองและเงื่อนไขค้นหาทั้งหมด" : "รีเซ็ตตัวกรอง"}
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${hasAnyFilter ? 'text-rose-600' : 'text-slate-400'}`} />
+            <span>Reset กรอง</span>
+            {hasAnyFilter && (
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+            )}
+          </button>
+
           {hasAnyFilter && (
             <div className="text-xs px-2.5 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-200 font-medium flex items-center gap-1.5">
               <Check className="w-3.5 h-3.5 text-sky-600" />
               <span>ผลลัพธ์: {matchedMachinesCount} เครื่องจักร ({matchedItemsCount} รายการ)</span>
             </div>
-          )}
-
-          {hasAnyFilter && (
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>ล้างการค้นหา</span>
-            </button>
           )}
 
           {/* Button to Collapse back to 1 Icon */}
@@ -638,9 +676,10 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               updateField('overviewStatus', 'all');
               updateField('readyOpName', 'all');
             }}
-            className="text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-auto cursor-pointer"
+            className="inline-flex items-center gap-1 text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-auto cursor-pointer"
           >
-            ล้างตัวกรองเสริม
+            <RotateCcw className="w-3 h-3" />
+            <span>Reset กรองตัวเลือกเสริม</span>
           </button>
         )}
         </div>

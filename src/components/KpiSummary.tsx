@@ -7,8 +7,7 @@ import {
   TrendingUp, 
   History,
   Boxes,
-  Cpu,
-  ArrowRight
+  Cpu
 } from 'lucide-react';
 import { MachineSummary } from '../types';
 
@@ -55,42 +54,8 @@ export const KpiSummary: React.FC<KpiSummaryProps> = ({
       <div className="absolute left-1/3 bottom-0 translate-y-1/2 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
       <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-        {/* Left: Title, Badges & Overall Progress Gauge */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between xl:justify-start gap-3 shrink-0">
-          {/* Title & Quick Badges */}
-          <div className="space-y-1 min-w-max">
-            <h1 className="text-sm sm:text-base font-bold tracking-tight text-white flex items-center gap-2">
-              <span className="p-1 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 shrink-0">
-                <Cpu className="w-4 h-4" />
-              </span>
-              <span>ติดตามเป้าหมายการส่งมอบอะไหล่ & ชิ้นส่วน</span>
-            </h1>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {pdCompletedItems !== undefined && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-semibold border border-blue-500/30 whitespace-nowrap">
-                  <CheckCircle2 className="w-3 h-3 text-blue-400" />
-                  <span>PD เสร็จแล้ว {pdCompletedItems}/{totalItems} ({totalItems > 0 ? ((pdCompletedItems / totalItems) * 100).toFixed(1).replace('.0', '') : 0}%)</span>
-                </span>
-              )}
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-semibold border border-emerald-500/30 whitespace-nowrap">
-                <CheckCircle2 className="w-3 h-3" />
-                <span>ผ่าน QC แล้ว {qcPassedItems} รายการ</span>
-              </span>
-              {onOpenDeliveryPlan && (
-                <button
-                  onClick={onOpenDeliveryPlan}
-                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-500/25 hover:bg-amber-500/35 text-amber-300 text-[10px] font-semibold border border-amber-500/40 transition cursor-pointer whitespace-nowrap"
-                  title="เปิดแผนส่งมอบประจำวัน"
-                >
-                  <span>📦 แผนส่งมอบ ({pendingItems} รอส่ง)</span>
-                  <ArrowRight className="w-2.5 h-2.5" />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Delivery Completion Gauge Card */}
-          <div className="flex items-center gap-2.5 bg-white/10 backdrop-blur-xs px-3 py-2 rounded-xl border border-white/15 shrink-0">
+        {/* Delivery Completion Gauge Card */}
+        <div className="flex items-center gap-2.5 bg-white/10 backdrop-blur-xs px-3 py-2 rounded-xl border border-white/15 shrink-0">
             <div className="relative flex items-center justify-center">
               <svg className="w-11 h-11 transform -rotate-90">
                 <circle
@@ -131,7 +96,6 @@ export const KpiSummary: React.FC<KpiSummaryProps> = ({
               </div>
             </div>
           </div>
-        </div>
 
         {/* Right: 5 KPI Interactive Cards Grid (In 1 Row on Desktop) */}
         <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-2 flex-1 min-w-0">

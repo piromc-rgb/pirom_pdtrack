@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { 
   Calendar, 
   Clock, 
@@ -14,11 +14,9 @@ import {
   Search,
   Printer,
   Sparkles,
-  ShieldCheck,
   Building2,
   Briefcase,
   User,
-  Truck,
   RefreshCw,
   GitCompare,
   Layers,
@@ -343,7 +341,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   };
 
   // Export Delivery Plan to CSV
-  const handleExportCsv = () => {
+  const handleExportCsv = useCallback(() => {
     const headers = [
       'แผนวันที่ส่งมอบ',
       'สถานะกำหนดส่ง',
@@ -407,7 +405,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, [dateGroups]);
 
   // Register export and print actions with parent (e.g. for SearchFilterBar)
   useEffect(() => {
@@ -427,97 +425,6 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      
-      {/* Slim Plan Note */}
-      <div className="flex items-center justify-between gap-2 px-1 text-xs text-slate-500">
-        <div className="flex items-center gap-1.5 font-medium">
-          <Truck className="w-4 h-4 text-sky-600" />
-          <span className="font-bold text-slate-700">แผนการส่งมอบประจำวัน (Daily Delivery Schedule)</span>
-          <span className="text-slate-400 hidden sm:inline">• คัดกรองเฉพาะงานที่ยังไม่ส่งมอบ จัดตามเป้าส่งวันต่อวัน</span>
-        </div>
-      </div>
-
-      {/* 1. Key Metrics for Pending Plan */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-        {/* Metric 1: Total Pending */}
-        <div className="p-4 rounded-xl border border-sky-200 bg-sky-50/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-sky-900">งานรอส่งทั้งหมด</span>
-            <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
-              <Truck className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="text-2xl font-bold text-sky-950">{stats.totalItems} <span className="text-xs font-normal text-sky-700">รายการ</span></div>
-            <div className="text-xs text-sky-700 mt-0.5">รวมทั้งหมด {stats.totalQty} ชิ้น</div>
-          </div>
-        </div>
-
-        {/* Metric 2: Delivery Dates Count */}
-        <div className="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-600">วันที่ต้องจัดส่ง</span>
-            <div className="p-2 rounded-lg bg-slate-100 text-slate-700">
-              <Calendar className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="text-2xl font-bold text-slate-900">{dateGroups.length} <span className="text-xs font-normal text-slate-500">วัน</span></div>
-            <div className="text-xs text-slate-500 mt-0.5">ครอบคลุม {stats.machinesCount} เครื่องจักร</div>
-          </div>
-        </div>
-
-        {/* Metric 3: Overdue Backlog */}
-        <div className={`p-4 rounded-xl border flex flex-col justify-between ${
-          stats.overdueCount > 0 ? 'bg-rose-50/70 border-rose-200' : 'bg-white border-slate-200'
-        }`}>
-          <div className="flex items-center justify-between">
-            <span className={`text-xs font-semibold ${stats.overdueCount > 0 ? 'text-rose-900' : 'text-slate-600'}`}>
-              เกินกำหนดส่ง
-            </span>
-            <div className={`p-2 rounded-lg ${stats.overdueCount > 0 ? 'bg-rose-100 text-rose-700 animate-pulse' : 'bg-slate-100 text-slate-500'}`}>
-              <AlertTriangle className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className={`text-2xl font-bold ${stats.overdueCount > 0 ? 'text-rose-600' : 'text-slate-800'}`}>
-              {stats.overdueCount} <span className="text-xs font-normal text-slate-500">รายการ</span>
-            </div>
-            <div className="text-xs text-rose-600 mt-0.5 font-medium">
-              {stats.overdueCount > 0 ? 'ต้องเร่งรัดการจัดส่งทันที' : 'ไม่มีงานตกค้าง'}
-            </div>
-          </div>
-        </div>
-
-        {/* Metric 4: 7 Days Ahead */}
-        <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-900">กำหนดส่งใน 7 วัน</span>
-            <div className="p-2 rounded-lg bg-amber-100 text-amber-700">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="text-2xl font-bold text-amber-900">{stats.dueSoonCount} <span className="text-xs font-normal text-amber-700">รายการ</span></div>
-            <div className="text-xs text-amber-700 mt-0.5">เตรียมความพร้อมสัปดาห์นี้</div>
-          </div>
-        </div>
-
-        {/* Metric 5: QC Passed & Ready */}
-        <div className="col-span-2 sm:col-span-2 lg:col-span-1 p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 flex flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-900">ผ่าน QC พร้อมส่ง</span>
-            <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
-              <ShieldCheck className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2">
-            <div className="text-2xl font-bold text-emerald-700">{stats.qcPassedCount} <span className="text-xs font-normal text-emerald-800">รายการ</span></div>
-            <div className="text-xs text-emerald-800 mt-0.5 font-medium">พร้อมจัดส่ง {stats.qcPassedQty} ชิ้น</div>
-          </div>
-        </div>
-      </div>
-
       {/* 2. Filter & Control Toolbar */}
       <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
@@ -914,6 +821,23 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                             (อีก {group.daysDiff} วัน)
                           </span>
                         )}
+
+                        {/* PD Completed / Total & % badge placed right after เกินกำหนด */}
+                        <div 
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border transition shadow-2xs ${
+                            allPdDone 
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold'
+                              : group.pdCompletedCount > 0
+                              ? 'bg-blue-50 text-blue-900 border-blue-200'
+                              : 'bg-slate-100 text-slate-600 border-slate-200'
+                          }`}
+                          title={`PD ฝ่ายผลิตเสร็จแล้ว ${group.pdCompletedCount} จากทั้งหมด ${group.items.length} รายการ (คิดเป็น ${group.pdPercentText})`}
+                        >
+                          <CheckCircle2 className={`w-3.5 h-3.5 flex-shrink-0 ${
+                            allPdDone ? 'text-emerald-600' : group.pdCompletedCount > 0 ? 'text-blue-600' : 'text-slate-400'
+                          }`} />
+                          <span>PD เสร็จแล้ว {group.pdCompletedCount}/{group.items.length} ({group.pdPercentText})</span>
+                        </div>
                       </div>
 
                       <p className="text-xs text-slate-500 mt-0.5">
@@ -928,23 +852,6 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                     <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-800 shadow-2xs">
                       <Boxes className="w-3.5 h-3.5 text-slate-500" />
                       <span>{group.items.length} รายการ ({group.totalQty} ชิ้น)</span>
-                    </div>
-
-                    {/* PD Completed / Total & % */}
-                    <div 
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border shadow-2xs transition ${
-                        allPdDone 
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold'
-                          : group.pdCompletedCount > 0
-                          ? 'bg-blue-50 text-blue-900 border-blue-200'
-                          : 'bg-slate-100 text-slate-600 border-slate-200'
-                      }`}
-                      title={`PD ฝ่ายผลิตเสร็จแล้ว ${group.pdCompletedCount} จากทั้งหมด ${group.items.length} รายการ (คิดเป็น ${group.pdPercentText})`}
-                    >
-                      <CheckCircle2 className={`w-3.5 h-3.5 flex-shrink-0 ${
-                        allPdDone ? 'text-emerald-600' : group.pdCompletedCount > 0 ? 'text-blue-600' : 'text-slate-400'
-                      }`} />
-                      <span>PD เสร็จแล้ว {group.pdCompletedCount}/{group.items.length} ({group.pdPercentText})</span>
                     </div>
 
                     {/* QC Status indicator */}

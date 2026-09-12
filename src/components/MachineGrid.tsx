@@ -9,7 +9,8 @@ import {
   AlertTriangle, 
   Clock, 
   Calendar,
-  Layers
+  Layers,
+  RotateCcw
 } from 'lucide-react';
 import { MachineSummary, SearchCriteria } from '../types';
 import { MachineCard } from './MachineCard';
@@ -196,8 +197,23 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
         </div>
 
         {/* Dropdowns & View toggles */}
-        <div className="flex items-center gap-2 justify-between md:justify-end">
+        <div className="flex items-center gap-2 justify-between md:justify-end flex-wrap">
           
+          {/* Reset button if statusFilter or selectedProject is active */}
+          {(statusFilter !== 'all' || selectedProject !== 'all') && (
+            <button
+              onClick={() => {
+                setStatusFilter('all');
+                setSelectedProject('all');
+              }}
+              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-300 rounded-lg transition active:scale-95 cursor-pointer shadow-2xs whitespace-nowrap"
+              title="รีเซ็ตตัวกรองสถานะและโครงการกลับเป็นค่าเริ่มต้น"
+            >
+              <RotateCcw className="w-3 h-3 text-rose-600" />
+              <span>Reset กรอง</span>
+            </button>
+          )}
+
           {/* Project filter dropdown */}
           <div className="flex items-center gap-1 text-xs">
             <Filter className="w-3.5 h-3.5 text-slate-400 hidden sm:inline" />
@@ -288,9 +304,9 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
                   <th className="py-3 px-4">ชื่อเครื่องจักร</th>
                   <th className="py-3 px-4">โครงการ</th>
                   <th className="py-3 px-4 text-center">ความคืบหน้า</th>
-                  <th className="py-3 px-4 text-center">ส่งแล้ว/ทั้งหมด</th>
+                  <th className="py-3 px-4 text-center">เสร็จ/ผ่าน QC</th>
                   <th className="py-3 px-4 text-center">เกินกำหนด</th>
-                  <th className="py-3 px-4">เป้าหมายส่งมอบล่าสุด</th>
+                  <th className="py-3 px-4">เป้ากำหนดส่งล่าสุด</th>
                   <th className="py-3 px-4 text-center">สถานะ</th>
                   <th className="py-3 px-4 text-right">การจัดการ</th>
                 </tr>
@@ -328,7 +344,7 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
                         </div>
                       </td>
                       <td className="py-3.5 px-4 text-center font-medium text-slate-800">
-                        {machine.deliveredItems} / {machine.totalItems}
+                        {machine.completedOrQcItems ?? machine.deliveredItems} / {machine.totalItems}
                       </td>
                       <td className="py-3.5 px-4 text-center">
                         {hasOverdue ? (

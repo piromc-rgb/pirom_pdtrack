@@ -30,7 +30,21 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
   if (!machine) return null;
 
   const [itemSearch, setItemSearch] = useState('');
-  const [itemStatusFilter, setItemStatusFilter] = useState<'all' | 'delivered' | 'pending' | 'overdue' | 'rescheduled' | 'qc-passed'>('all');
+  const [itemStatusFilter, setItemStatusFilter] = useState<'all' | 'delivered' | 'pending' | 'overdue' | 'rescheduled' | 'qc-passed' | 'done-or-qc'>('all');
+
+  // Calculate completed or QC passed count (Item ที่เสร็จแล้ว หรือ ผ่าน QC แล้ว)
+  const completedOrQcCount = useMemo(() => {
+    if (machine.completedOrQcItems !== undefined) return machine.completedOrQcItems;
+    return machine.items.filter(item => 
+      item.status === 'ส่งแล้ว' || 
+      isOverviewCompletedOrClosed(item.overviewStatus) || 
+      Boolean(item.isQcPassed)
+    ).length;
+  }, [machine]);
+
+  const progressPercent = useMemo(() => {
+    return machine.totalItems > 0 ? Math.round((completedOrQcCount / machine.totalItems) * 100) : 0;
+  }, [completedOrQcCount, machine.totalItems]);
 
   // Filter items of this machine
   const filteredItems = useMemo(() => {
@@ -57,6 +71,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
       if (itemStatusFilter === 'overdue' && !item.isOverdue) return false;
       if (itemStatusFilter === 'rescheduled' && (item.rescheduledCount || 0) === 0) return false;
       if (itemStatusFilter === 'qc-passed' && !item.isQcPassed) return false;
+      if (itemStatusFilter === 'done-or-qc' && !(item.status === 'ส่งแล้ว' || isOverviewCompletedOrClosed(item.overviewStatus) || item.isQcPassed)) return false;
 
       return true;
     });
@@ -156,7 +171,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                   <span>{machine.projects.join(', ') || 'ไม่ระบุโครงการ'}</span>
                 </span>
                 <span>•</span>
-                <span>เป้าหมายส่งมอบล่าสุด: <strong>{machine.latestTarget ? formatThaiDate(machine.latestTarget) : '-'}</strong></span>
+                <span>เป้ากำหนดส่งล่าสุด: <strong>{machine.latestTarget ? formatThaiDate(machine.latestTarget) : '-'}</strong></span>
               </div>
             </div>
           </div>
@@ -179,24 +194,34 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
         </div>
 
         {/* Machine Stats Ribbon */}
-        <div className="bg-slate-50 border-b border-slate-200 px-6 py-3 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+        <div className="bg-slate-50 border-b border-slate-200 px-6 py-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-xs">
           <div>
             <span className="text-slate-400">ความคืบหน้าภาพรวม</span>
             <div className="flex items-center gap-2 mt-1">
               <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
                 <div 
-                  className={`h-full rounded-full ${isCompleted ? 'bg-emerald-500' : hasOverdue ? 'bg-rose-500' : 'bg-sky-500'}`}
-                  style={{ width: `${machine.progressPercent}%` }}
+                  className={`h-full rounded-full ${progressPercent === 100 ? 'bg-emerald-500' : hasOverdue ? 'bg-rose-500' : 'bg-sky-500'}`}
+                  style={{ width: `${progressPercent}%` }}
                 />
               </div>
-              <span className="font-bold text-slate-800">{machine.progressPercent}%</span>
+              <span className="font-bold text-slate-800">{progressPercent}%</span>
             </div>
           </div>
 
           <div>
-            <span className="text-slate-400">รายการชิ้นส่วนที่ส่งแล้ว</span>
+            <span className="text-slate-400">เสร็จแล้ว หรือ ผ่าน QC แล้ว</span>
             <div className="font-semibold text-slate-800 text-sm mt-0.5">
-              {machine.deliveredItems} / {machine.totalItems} รายการ
+              {completedOrQcCount} / {machine.totalItems} รายการ
+            </div>
+          </div>
+
+          <div>
+            <span className="text-slate-400">เป้ากำหนดส่งล่าสุด</span>
+            <div className="flex items-center gap-1.5 font-semibold text-sm mt-0.5">
+              <Calendar className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+              <span className={hasOverdue ? 'text-rose-600 font-bold' : 'text-slate-800'}>
+                {machine.latestTarget ? formatThaiDate(machine.latestTarget) : 'ตามแผนงาน'}
+              </span>
             </div>
           </div>
 
@@ -268,6 +293,17 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
               }`}
             >
               ส่งแล้ว ({machine.deliveredItems})
+            </button>
+            <button
+              onClick={() => setItemStatusFilter('done-or-qc')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap flex items-center gap-1 ${
+                itemStatusFilter === 'done-or-qc'
+                  ? 'bg-emerald-700 text-white shadow-xs'
+                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-300 font-semibold'
+              }`}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>เสร็จ/ผ่าน QC ({completedOrQcCount})</span>
             </button>
             <button
               onClick={() => setItemStatusFilter('rescheduled')}

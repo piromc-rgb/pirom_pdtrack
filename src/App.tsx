@@ -248,6 +248,8 @@ export function App() {
         <SearchFilterBar
           searchCriteria={searchCriteria}
           setSearchCriteria={setSearchCriteria}
+          statusFilter={statusFilter}
+          onResetStatusFilter={() => setStatusFilter('all')}
           items={items}
           matchedMachinesCount={matchedMachinesCount}
           matchedItemsCount={matchedItemsCount}
@@ -377,8 +379,8 @@ export function App() {
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
         <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-700">PDTrack</span>
-            <span>- ระบบติดตามเป้าหมายการส่งมอบโดยใช้ชื่อเครื่องจักรเป็นดัชนี</span>
+            <span className="font-semibold text-slate-700">AMW PDTrack</span>
+            <span>- ระบบติดตามเป้าหมายการส่งมอบ</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 flex-wrap">
             <span>ผสาน 4 แหล่งข้อมูล: Check list ส่งมอบ + Record ฝ่ายผลิต + QC + Status Overview</span>
