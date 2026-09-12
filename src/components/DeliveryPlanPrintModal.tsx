@@ -31,6 +31,7 @@ import {
   getDaysDiff,
   extractCustomer
 } from '../utils/dateUtils';
+import { isOverviewCompletedOrClosed } from '../services/sheetService';
 
 interface DeliveryPlanPrintModalProps {
   isOpen: boolean;
@@ -151,6 +152,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
       items: DeliveryItem[];
       totalQty: number;
       qcPassedCount: number;
+      pdCompletedCount: number;
     }
 
     interface Group {
@@ -164,6 +166,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
       sets: SetGroup[];
       totalQty: number;
       qcPassedCount: number;
+      pdCompletedCount: number;
       customersCount: number;
       machinesCount: number;
     }
@@ -186,6 +189,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
           sets: [],
           totalQty: 0,
           qcPassedCount: 0,
+          pdCompletedCount: 0,
           customersCount: 0,
           machinesCount: 0,
         };
@@ -194,6 +198,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
       groups[dateKey].items.push(item);
       groups[dateKey].totalQty += item.qty;
       if (item.isQcPassed) groups[dateKey].qcPassedCount++;
+      if (isOverviewCompletedOrClosed(item.overviewStatus)) groups[dateKey].pdCompletedCount++;
     });
 
     // Sort chronologically by date
@@ -226,12 +231,14 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
             items: [],
             totalQty: 0,
             qcPassedCount: 0,
+            pdCompletedCount: 0,
           });
         }
         const s = setsMap.get(setKey)!;
         s.items.push(it);
         s.totalQty += it.qty;
         if (it.isQcPassed) s.qcPassedCount++;
+        if (isOverviewCompletedOrClosed(it.overviewStatus)) s.pdCompletedCount++;
       });
 
       group.customersCount = uniqueCust.size;
@@ -707,7 +714,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
                         )}
 
                         <div className="text-slate-600 font-medium hidden sm:inline text-[10px]">
-                          <strong>{group.items.length}</strong> รายการ | <strong>{group.totalQty}</strong> ชิ้น | ผ่าน QC <strong className="text-emerald-700">{group.qcPassedCount}</strong>
+                          <strong>{group.items.length}</strong> รายการ | <strong>{group.totalQty}</strong> ชิ้น | PD เสร็จแล้ว <strong className="text-blue-800">{group.pdCompletedCount}/{group.items.length} ({group.items.length > 0 ? ((group.pdCompletedCount / group.items.length) * 100).toFixed(1).replace('.0', '') : 0}%)</strong> | ผ่าน QC <strong className="text-emerald-700">{group.qcPassedCount}</strong>
                         </div>
                       </div>
                     </div>
@@ -744,7 +751,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
 
                             {/* Set Count Pill */}
                             <div className="text-[9.5px] text-slate-500 font-medium whitespace-nowrap">
-                              <strong>{set.items.length}</strong> รายการ | <strong>{set.totalQty}</strong> ชิ้น | ผ่าน QC <strong className="text-emerald-700">{set.qcPassedCount}</strong>
+                              <strong>{set.items.length}</strong> รายการ | <strong>{set.totalQty}</strong> ชิ้น | PD เสร็จ <strong className="text-blue-800">{set.pdCompletedCount}/{set.items.length}</strong> | ผ่าน QC <strong className="text-emerald-700">{set.qcPassedCount}</strong>
                             </div>
                           </div>
 
@@ -843,6 +850,9 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
                       </span>
                       <div className="flex items-center gap-3">
                         <span>จำนวนชิ้นงานรวม: <strong className="text-slate-900 font-bold">{group.totalQty.toLocaleString()} ชิ้น</strong></span>
+                        <span className="text-blue-800 font-semibold">
+                          PD เสร็จแล้ว: <strong>{group.pdCompletedCount}/{group.items.length} ({group.items.length > 0 ? ((group.pdCompletedCount / group.items.length) * 100).toFixed(1).replace('.0', '') : 0}%)</strong>
+                        </span>
                         <span className="text-emerald-700 font-semibold">
                           ผ่าน QC แล้ว: <strong>{group.qcPassedCount}</strong> รายการ
                         </span>

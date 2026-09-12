@@ -21,6 +21,7 @@ interface KpiSummaryProps {
   dueSoonItems: number;
   rescheduledItems: number;
   qcPassedItems?: number;
+  pdCompletedItems?: number;
   onFilterStatus?: (status: 'all' | 'in-progress' | 'overdue' | 'due-soon' | 'completed') => void;
   onOpenDeliveryPlan?: () => void;
   activeStatusFilter?: string;
@@ -35,6 +36,7 @@ export const KpiSummary: React.FC<KpiSummaryProps> = ({
   dueSoonItems,
   rescheduledItems,
   qcPassedItems = 0,
+  pdCompletedItems,
   onFilterStatus,
   onOpenDeliveryPlan,
   activeStatusFilter = 'all',
@@ -64,6 +66,12 @@ export const KpiSummary: React.FC<KpiSummaryProps> = ({
               <span>ติดตามเป้าหมายการส่งมอบอะไหล่ & ชิ้นส่วน</span>
             </h1>
             <div className="flex items-center gap-1.5 flex-wrap">
+              {pdCompletedItems !== undefined && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-semibold border border-blue-500/30 whitespace-nowrap">
+                  <CheckCircle2 className="w-3 h-3 text-blue-400" />
+                  <span>PD เสร็จแล้ว {pdCompletedItems}/{totalItems} ({totalItems > 0 ? ((pdCompletedItems / totalItems) * 100).toFixed(1).replace('.0', '') : 0}%)</span>
+                </span>
+              )}
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-semibold border border-emerald-500/30 whitespace-nowrap">
                 <CheckCircle2 className="w-3 h-3" />
                 <span>ผ่าน QC แล้ว {qcPassedItems} รายการ</span>

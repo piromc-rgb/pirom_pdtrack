@@ -36,7 +36,16 @@ export function App() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(getLastSyncTime());
   const [isLive, setIsLive] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<ActiveTab>('machines');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab === 'delivery-plan' || tab === 'items' || tab === 'analytics' || tab === 'timeline') {
+        return tab as ActiveTab;
+      }
+    }
+    return 'machines';
+  });
   const [selectedMachine, setSelectedMachine] = useState<MachineSummary | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isComparatorOpen, setIsComparatorOpen] = useState<boolean>(false);
@@ -73,6 +82,7 @@ export function App() {
   const dueSoonItems = useMemo(() => items.filter(i => i.isDueSoon).length, [items]);
   const rescheduledItems = useMemo(() => items.filter(i => (i.rescheduledCount || 0) > 0).length, [items]);
   const qcPassedItems = useMemo(() => items.filter(i => i.isQcPassed).length, [items]);
+  const pdCompletedItems = useMemo(() => items.filter(i => isOverviewCompletedOrClosed(i.overviewStatus)).length, [items]);
 
   // Compute matching counts for the SearchFilterBar
   const { matchedMachinesCount, matchedItemsCount } = useMemo(() => {
@@ -225,6 +235,7 @@ export function App() {
           dueSoonItems={dueSoonItems}
           rescheduledItems={rescheduledItems}
           qcPassedItems={qcPassedItems}
+          pdCompletedItems={pdCompletedItems}
           onFilterStatus={(status) => {
             setStatusFilter(status);
             setActiveTab('machines');

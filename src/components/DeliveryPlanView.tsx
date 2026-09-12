@@ -49,6 +49,9 @@ export interface DeliveryDateGroup {
   daysDiff: number | null;
   totalQty: number;
   qcPassedCount: number;
+  pdCompletedCount: number;
+  pdPercent: number;
+  pdPercentText: string;
   machines: Set<string>;
   items: DeliveryItem[];
 }
@@ -205,6 +208,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     let dueSoonCount = 0;
     let qcPassedCount = 0;
     let qcPassedQty = 0;
+    let pdCompletedCount = 0;
     const machineSet = new Set<string>();
 
     pendingItems.forEach(i => {
@@ -215,10 +219,16 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         qcPassedCount++;
         qcPassedQty += i.qty;
       }
+      if (isOverviewCompletedOrClosed(i.overviewStatus)) {
+        pdCompletedCount++;
+      }
       if (i.machineName && i.machineName !== '(ไม่ระบุเครื่องจักร)') {
         machineSet.add(i.machineName);
       }
     });
+
+    const pdPercent = pendingItems.length > 0 ? (pdCompletedCount / pendingItems.length) * 100 : 0;
+    const pdPercentText = pdPercent % 1 === 0 ? `${pdPercent}%` : `${pdPercent.toFixed(1)}%`;
 
     return {
       totalItems: pendingItems.length,
@@ -227,6 +237,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       dueSoonCount,
       qcPassedCount,
       qcPassedQty,
+      pdCompletedCount,
+      pdPercent,
+      pdPercentText,
       machinesCount: machineSet.size,
     };
   }, [pendingItems]);
@@ -243,6 +256,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         daysDiff: number | null;
         totalQty: number;
         qcPassedCount: number;
+        pdCompletedCount: number;
+        pdPercent: number;
+        pdPercentText: string;
         machines: Set<string>;
         items: DeliveryItem[];
       } 
@@ -266,6 +282,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
           daysDiff,
           totalQty: 0,
           qcPassedCount: 0,
+          pdCompletedCount: 0,
+          pdPercent: 0,
+          pdPercentText: '0%',
           machines: new Set<string>(),
           items: []
         };
@@ -273,8 +292,19 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
       groups[dateKey].totalQty += item.qty;
       if (item.isQcPassed) groups[dateKey].qcPassedCount++;
+      if (isOverviewCompletedOrClosed(item.overviewStatus)) {
+        groups[dateKey].pdCompletedCount++;
+      }
       if (item.machineName) groups[dateKey].machines.add(item.machineName);
       groups[dateKey].items.push(item);
+    });
+
+    // Compute percentage for each date group
+    Object.values(groups).forEach(g => {
+      const total = g.items.length;
+      const pct = total > 0 ? (g.pdCompletedCount / total) * 100 : 0;
+      g.pdPercent = pct;
+      g.pdPercentText = pct % 1 === 0 ? `${pct}%` : `${pct.toFixed(1)}%`;
     });
 
     // Sort chronologically:
@@ -691,8 +721,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                     ? 'bg-emerald-600 text-white shadow-2xs font-bold'
                     : 'text-emerald-700 hover:bg-emerald-50'
                 }`}
+                title={`PD ที่เสร็จแล้ว ${overviewCounts.Completed} จาก ${overviewCounts.all} รายการ (${stats.pdPercentText})`}
               >
-                ✓ เสร็จแล้ว ({overviewCounts.Completed})
+                ✓ เสร็จแล้ว ({overviewCounts.Completed}/{overviewCounts.all} - {stats.pdPercentText})
               </button>
             </div>
           </div>
@@ -819,6 +850,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
             const expanded = isExpanded(group.dateKey);
             const thaiFullDay = formatThaiDayOfWeek(group.dateKey);
             const allQcPassed = group.qcPassedCount === group.items.length && group.items.length > 0;
+            const allPdDone = group.pdCompletedCount === group.items.length && group.items.length > 0;
 
             return (
               <div 
@@ -891,11 +923,28 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                   </div>
 
                   {/* Right: Summary Pills & Toggle */}
-                  <div className="flex items-center gap-3 self-end sm:self-center flex-wrap">
+                  <div className="flex items-center gap-2 sm:gap-2.5 self-end sm:self-center flex-wrap">
                     {/* Items count & Qty */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-800 shadow-2xs">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg bg-white border border-slate-200 text-xs font-semibold text-slate-800 shadow-2xs">
                       <Boxes className="w-3.5 h-3.5 text-slate-500" />
                       <span>{group.items.length} รายการ ({group.totalQty} ชิ้น)</span>
+                    </div>
+
+                    {/* PD Completed / Total & % */}
+                    <div 
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border shadow-2xs transition ${
+                        allPdDone 
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold'
+                          : group.pdCompletedCount > 0
+                          ? 'bg-blue-50 text-blue-900 border-blue-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                      }`}
+                      title={`PD ฝ่ายผลิตเสร็จแล้ว ${group.pdCompletedCount} จากทั้งหมด ${group.items.length} รายการ (คิดเป็น ${group.pdPercentText})`}
+                    >
+                      <CheckCircle2 className={`w-3.5 h-3.5 flex-shrink-0 ${
+                        allPdDone ? 'text-emerald-600' : group.pdCompletedCount > 0 ? 'text-blue-600' : 'text-slate-400'
+                      }`} />
+                      <span>PD เสร็จแล้ว {group.pdCompletedCount}/{group.items.length} ({group.pdPercentText})</span>
                     </div>
 
                     {/* QC Status indicator */}
