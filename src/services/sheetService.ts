@@ -8,20 +8,45 @@ import itemPdMap from '../data/itemPdMap.json';
 import { DeliveryItem, MachineSummary, OverviewMeta } from '../types';
 import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer } from '../utils/dateUtils';
 
-export const overviewStatusMap = defaultOverviewData as Record<string, OverviewMeta>;
-export const overviewItemMap = defaultOverviewItemMap as {
+// Initialize with bundled data, or restore cached live overview if available
+let initialOverviewStatusMap = defaultOverviewData as Record<string, OverviewMeta>;
+let initialOverviewItemMap = defaultOverviewItemMap as {
   byItem: Record<string, OverviewMeta>;
   byProjItem: Record<string, OverviewMeta>;
 };
+
+const STORAGE_OVERVIEW_CACHE_KEY = 'pdtrack_cached_overview_v1';
+try {
+  const cachedOverview = localStorage.getItem(STORAGE_OVERVIEW_CACHE_KEY);
+  if (cachedOverview) {
+    const parsedCache = JSON.parse(cachedOverview);
+    if (parsedCache.byPd && Object.keys(parsedCache.byPd).length > 0) {
+      initialOverviewStatusMap = { ...defaultOverviewData, ...parsedCache.byPd };
+    }
+    if (parsedCache.byItem && parsedCache.byProjItem) {
+      initialOverviewItemMap = {
+        byItem: { ...defaultOverviewItemMap.byItem, ...parsedCache.byItem },
+        byProjItem: { ...defaultOverviewItemMap.byProjItem, ...parsedCache.byProjItem },
+      };
+    }
+  }
+} catch (e) {
+  // ignore storage error
+}
+
+export let overviewStatusMap = initialOverviewStatusMap;
+export let overviewItemMap = initialOverviewItemMap;
 export const qcStatusMap = defaultQcData as Record<string, QcMeta>;
 
 export const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1l5FbiznQNUhIpUNuma9iivKzYvcaCTiL7Z_9mDcCijE/edit?gid=472754949#gid=472754949';
 export const DEFAULT_PRODUCTION_URL = 'https://docs.google.com/spreadsheets/d/1YLgaxdeJR_MCHJhFkoAPAJfGmvUJB2K9GPgirYqlhPE/edit?gid=1308741309#gid=1308741309';
 export const DEFAULT_QC_URL = 'https://docs.google.com/spreadsheets/d/1w8B0DyG7PEy_YLHM5HCI_eVU_nt4HvA8xHWShuLRL_8/edit?gid=1814251242#gid=1814251242';
+export const DEFAULT_OVERVIEW_URL = '';
 
 const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
+const STORAGE_OVERVIEW_URL_KEY = 'pdtrack_overview_sheet_url';
 const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v4';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
@@ -84,6 +109,14 @@ export function getSavedQcUrl(): string {
 
 export function saveQcUrl(url: string): void {
   localStorage.setItem(STORAGE_QC_URL_KEY, url.trim());
+}
+
+export function getSavedOverviewUrl(): string {
+  return localStorage.getItem(STORAGE_OVERVIEW_URL_KEY) || DEFAULT_OVERVIEW_URL;
+}
+
+export function saveOverviewUrl(url: string): void {
+  localStorage.setItem(STORAGE_OVERVIEW_URL_KEY, url.trim());
 }
 
 export function getLastSyncTime(): string | null {
@@ -254,6 +287,94 @@ export function parseQcCsv(csvText: string): Record<string, QcMeta> {
   }
 
   return qcMap;
+}
+
+/**
+ * Parses raw CSV of Google Sheet 4 (Status Overview ฝ่ายผลิต)
+ * Matches columns: Production Order, Item Code, Description, Project, Customer, Order Status
+ */
+export function parseOverviewCsv(csvText: string): {
+  byPd: Record<string, OverviewMeta>;
+  byItem: Record<string, OverviewMeta>;
+  byProjItem: Record<string, OverviewMeta>;
+} {
+  const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
+  const rows = parsed.data;
+  if (!rows || rows.length < 2) {
+    return { byPd: {}, byItem: {}, byProjItem: {} };
+  }
+
+  const headers = rows[0].map(h => h.trim().replace(/\n/g, ' '));
+  const findCol = (keywords: string[]) => 
+    headers.findIndex(h => keywords.some(k => h.toLowerCase() === k.toLowerCase() || h.toLowerCase().includes(k.toLowerCase())));
+
+  const pdIdx = findCol(['Production Order', 'Prod Order', 'PD No', 'PD No.', 'PD', 'prodOrder']);
+  const itemIdx = findCol(['Item_4', 'Item_5', 'Item Code', 'Item No', 'รหัส Item', 'เลขที่ Item', 'itemCode']);
+  const descIdx = findCol(['Description', 'Item Name', 'ชื่อ Item', 'รายละเอียด', 'description']);
+  const projIdx = findCol(['Project', 'Project No', 'เลขที่โครงการ', 'โครงการ', 'projectCode']);
+  const custIdx = findCol(['Customer', 'ลูกค้า', 'customer']);
+  const statusIdx = findCol(['Order Status', 'Operation Status', 'Status', 'สถานะ', 'status']);
+
+  const byPd: Record<string, OverviewMeta> = {};
+  const byItem: Record<string, OverviewMeta> = {};
+  const byProjItem: Record<string, OverviewMeta> = {};
+
+  const priorityOrder: Record<string, number> = {
+    'completed': 4,
+    'active': 3,
+    'ready to start': 2,
+    'planned': 1,
+  };
+
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || r.length === 0) continue;
+
+    const pdVal = pdIdx !== -1 && pdIdx < r.length ? r[pdIdx]?.trim().toUpperCase() : '';
+    const itemCode = itemIdx !== -1 && itemIdx < r.length ? r[itemIdx]?.trim().toUpperCase() : '';
+    const desc = descIdx !== -1 && descIdx < r.length ? r[descIdx]?.trim() : '';
+    const project = projIdx !== -1 && projIdx < r.length ? r[projIdx]?.trim().toUpperCase() : '';
+    const customer = custIdx !== -1 && custIdx < r.length ? r[custIdx]?.trim() : '';
+    const status = statusIdx !== -1 && statusIdx < r.length ? r[statusIdx]?.trim() : '';
+
+    if (!pdVal && !itemCode) continue;
+
+    const meta: OverviewMeta = {
+      status: status || '',
+      project: project || '',
+      customer: customer || '',
+      itemCode: itemCode || '',
+      description: desc || '',
+      prodOrder: pdVal || '',
+    };
+
+    const normStatus = (status || '').toLowerCase();
+
+    // Index by PD
+    if (pdVal) {
+      const existing = byPd[pdVal];
+      if (!existing || (priorityOrder[normStatus] || 0) > (priorityOrder[(existing.status || '').toLowerCase()] || 0)) {
+        byPd[pdVal] = meta;
+      }
+    }
+
+    // Index by Item Code
+    if (itemCode) {
+      const existing = byItem[itemCode];
+      if (!existing || (priorityOrder[normStatus] || 0) > (priorityOrder[(existing.status || '').toLowerCase()] || 0)) {
+        byItem[itemCode] = meta;
+      }
+      if (project) {
+        const projKey = `${project}|${itemCode}`;
+        const existingProj = byProjItem[projKey];
+        if (!existingProj || (priorityOrder[normStatus] || 0) > (priorityOrder[(existingProj.status || '').toLowerCase()] || 0)) {
+          byProjItem[projKey] = meta;
+        }
+      }
+    }
+  }
+
+  return { byPd, byItem, byProjItem };
 }
 
 /**
@@ -473,31 +594,43 @@ export function parseDeliveryCsvWithProduction(
 }
 
 /**
- * Fetch data connecting all 3 Google Sheets:
+ * Fetch data connecting up to 4 Google Sheets:
  * 1. Delivery Sheet 1 (Check list ส่งมอบ)
  * 2. Production Sheet 2 (Record รับ - จ่าย Production)
  * 3. QC Sheet 3 (QC Checklist ผ่านการตรวจสอบ)
+ * 4. Overview Sheet 4 (Status Overview ฝ่ายผลิต)
  */
 export async function fetchDeliveryData(
   customUrl?: string, 
   customProdUrl?: string,
-  customQcUrl?: string
+  customQcUrl?: string,
+  customOverviewUrl?: string
 ): Promise<{ items: DeliveryItem[]; fromLive: boolean; error?: string }> {
   const sheetUrl = customUrl || getSavedSheetUrl();
   const prodUrl = customProdUrl || getSavedProdUrl();
   const qcUrl = customQcUrl || getSavedQcUrl();
+  const overviewUrl = customOverviewUrl !== undefined ? customOverviewUrl : getSavedOverviewUrl();
 
   const csvUrl1 = getCsvExportUrl(sheetUrl);
   const csvUrl2 = getCsvExportUrl(prodUrl);
   const csvUrl3 = getCsvExportUrl(qcUrl);
+  const hasOverviewUrl = !!(overviewUrl && overviewUrl.trim());
+  const csvUrl4 = hasOverviewUrl ? getCsvExportUrl(overviewUrl.trim()) : '';
 
   try {
-    // Fetch all 3 sheets in parallel
-    const [res1, res2, res3] = await Promise.allSettled([
+    // Fetch all requested sheets in parallel
+    const fetchPromises: Promise<Response>[] = [
       fetch(csvUrl1, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
       fetch(csvUrl2, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
       fetch(csvUrl3, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
-    ]);
+    ];
+    if (csvUrl4) {
+      fetchPromises.push(
+        fetch(csvUrl4, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } })
+      );
+    }
+
+    const [res1, res2, res3, res4] = await Promise.allSettled(fetchPromises);
 
     if (res1.status !== 'fulfilled' || !res1.value.ok) {
       throw new Error('ไม่สามารถดึงข้อมูลจาก Google Sheet 1 (Check list ส่งมอบ) ได้');
@@ -530,6 +663,28 @@ export async function fetchDeliveryData(
         }
       } catch (qcErr) {
         console.warn('Could not parse live QC Sheet, using cached QC data:', qcErr);
+      }
+    }
+
+    // Overview Sheet 4 map
+    if (res4 && res4.status === 'fulfilled' && res4.value.ok) {
+      try {
+        const csvText4 = await res4.value.text();
+        const liveOverview = parseOverviewCsv(csvText4);
+        if (Object.keys(liveOverview.byPd).length > 0 || Object.keys(liveOverview.byItem).length > 0) {
+          overviewStatusMap = { ...defaultOverviewData, ...liveOverview.byPd };
+          overviewItemMap = {
+            byItem: { ...defaultOverviewItemMap.byItem, ...liveOverview.byItem },
+            byProjItem: { ...defaultOverviewItemMap.byProjItem, ...liveOverview.byProjItem },
+          };
+          try {
+            localStorage.setItem(STORAGE_OVERVIEW_CACHE_KEY, JSON.stringify(liveOverview));
+          } catch (storageErr) {
+            console.warn('Cannot save live overview to localStorage:', storageErr);
+          }
+        }
+      } catch (overviewErr) {
+        console.warn('Could not parse live Overview Sheet, using bundled overview data:', overviewErr);
       }
     }
 

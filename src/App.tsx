@@ -98,19 +98,24 @@ export function App() {
     }, 4500);
   }, []);
 
-  // Fetch / Sync Data from all 3 Google Sheets
-  const loadData = useCallback(async (customUrl?: string, customProdUrl?: string, customQcUrl?: string) => {
+  // Fetch / Sync Data from all Google Sheets (Up to 4 sources)
+  const loadData = useCallback(async (
+    customUrl?: string, 
+    customProdUrl?: string, 
+    customQcUrl?: string,
+    customOverviewUrl?: string
+  ) => {
     setIsLoading(true);
     try {
-      const result = await fetchDeliveryData(customUrl, customProdUrl, customQcUrl);
+      const result = await fetchDeliveryData(customUrl, customProdUrl, customQcUrl, customOverviewUrl);
       setItems(result.items);
       setIsLive(result.fromLive);
       setLastSyncTime(new Date().toISOString());
 
       if (result.fromLive) {
-        showToast('success', `เชื่อมโยง 3 สเปรดชีตสดสำเร็จ (${result.items.length} รายการ พร้อมข้อมูลฝ่ายผลิต & QC)`);
+        showToast('success', `เชื่อมโยงสเปรดชีตสดสำเร็จ (${result.items.length} รายการ พร้อมข้อมูลฝ่ายผลิต, QC & Status Overview)`);
       } else {
-        showToast('warning', result.error || 'โหลดข้อมูลสำรองที่เชื่อมโยง 3 สเปรดชีตแล้ว');
+        showToast('warning', result.error || 'โหลดข้อมูลสำรองที่เชื่อมโยงเรียบร้อยแล้ว');
       }
     } catch (err: any) {
       console.error('Failed to load delivery data:', err);
@@ -295,9 +300,9 @@ export function App() {
             <span>- ระบบติดตามเป้าหมายการส่งมอบโดยใช้ชื่อเครื่องจักรเป็นดัชนี</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 flex-wrap">
-            <span>ผสาน 2 สเปรดชีต: Check list ส่งมอบ (472754949) + Record รับ-จ่าย (1308741309)</span>
+            <span>ผสาน 4 แหล่งข้อมูล: Check list ส่งมอบ + Record ฝ่ายผลิต + QC + Status Overview</span>
             <span>•</span>
-            <span>สถานะ: {isLive ? 'Online Dual-Sync' : 'Offline Linked Cache'}</span>
+            <span>สถานะ: {isLive ? 'Online Multi-Sync' : 'Offline Linked Cache'}</span>
           </div>
         </div>
       </footer>
