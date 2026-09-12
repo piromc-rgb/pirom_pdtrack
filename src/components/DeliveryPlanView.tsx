@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   Calendar, 
   Clock, 
@@ -33,9 +33,24 @@ import {
   isDateOverdue, 
   isDateDueSoon,
   getDaysDiff,
-  extractCustomer
+  extractCustomer 
 } from '../utils/dateUtils';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
+
+export interface DeliveryDateGroup {
+  dateKey: string;
+  parsedDate: Date | null;
+  thaiFormatted: string;
+  shortFormatted: string;
+  isOverdue: boolean;
+  isToday: boolean;
+  isTomorrow: boolean;
+  daysDiff: number | null;
+  totalQty: number;
+  qcPassedCount: number;
+  machines: Set<string>;
+  items: DeliveryItem[];
+}
 
 interface DeliveryPlanViewProps {
   items: DeliveryItem[];
@@ -45,6 +60,7 @@ interface DeliveryPlanViewProps {
   onRefresh?: () => void;
   onOpenComparator?: () => void;
   isLoading?: boolean;
+  onRegisterActions?: (actions: { exportCsv: () => void; openPrint: () => void } | null) => void;
 }
 
 export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
@@ -55,6 +71,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   onRefresh,
   onOpenComparator,
   isLoading,
+  onRegisterActions,
 }) => {
   const [internalSearch, setInternalSearch] = useState('');
   const [selectedMachine, setSelectedMachine] = useState('all');
@@ -356,69 +373,35 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     document.body.removeChild(link);
   };
 
-  return (
-    <div className="space-y-6">
-      
-      {/* 1. Header Banner & Plan Philosophy */}
-      <div className="bg-gradient-to-r from-blue-900 via-sky-900 to-slate-900 rounded-2xl p-5 sm:p-6 text-white shadow-md relative overflow-hidden">
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-200 text-xs font-semibold border border-sky-500/30">
-              <Truck className="w-4 h-4 text-sky-400" />
-              <span>แผนการส่งมอบประจำวัน (Daily Delivery Schedule)</span>
-            </div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-              แผนการส่งมอบชิ้นส่วนตามวันที่กำหนดส่ง
-            </h1>
-            <p className="text-xs sm:text-sm text-sky-100/80 leading-relaxed">
-              * ระบบยึดตามเป้าการส่งวันไหน คือแผนการส่งมอบของวันนั้น โดยคัดกรองเฉพาะ <strong>งานที่ยังไม่ส่งมอบ</strong> เพื่อเตรียมความพร้อมในการประกอบและขนส่ง
-            </p>
-          </div>
+  // Register export and print actions with parent (e.g. for SearchFilterBar)
+  useEffect(() => {
+    if (onRegisterActions) {
+      onRegisterActions({
+        exportCsv: handleExportCsv,
+        openPrint: () => {
+          setSelectedPrintDate('all');
+          setIsPrintModalOpen(true);
+        }
+      });
+      return () => {
+        onRegisterActions(null);
+      };
+    }
+  }, [onRegisterActions, handleExportCsv]);
 
-          {/* Quick Action Buttons */}
-          <div className="flex items-center gap-2.5 flex-wrap">
-            {onOpenComparator && (
-              <button
-                onClick={onOpenComparator}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-blue-600/80 hover:bg-blue-600 text-white border border-blue-400/40 shadow-xs transition active:scale-95 cursor-pointer"
-              >
-                <GitCompare className="w-4 h-4 text-blue-200" />
-                <span>ตัวเทียบ Production Order</span>
-              </button>
-            )}
-            {onRefresh && (
-              <button
-                onClick={onRefresh}
-                disabled={isLoading}
-                title="กดเพื่อดึงข้อมูลล่าสุดจาก Google Sheets และอัปเดตเลขที่ PD"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-sky-300' : 'text-sky-300'}`} />
-                <span>{isLoading ? 'กำลังอัปเดต...' : 'อัปเดตข้อมูล'}</span>
-              </button>
-            )}
-            <button
-              onClick={handleExportCsv}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-sky-50 shadow transition active:scale-95 cursor-pointer"
-            >
-              <Download className="w-4 h-4 text-sky-600" />
-              <span>ส่งออกแผนส่งมอบ (CSV)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedPrintDate('all');
-                setIsPrintModalOpen(true);
-              }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-md shadow-sky-950/20 transition active:scale-95 cursor-pointer border border-sky-400/30"
-            >
-              <Printer className="w-4 h-4" />
-              <span>พิมพ์แผน / บันทึกเป็น PDF</span>
-            </button>
-          </div>
+  return (
+    <div className="space-y-4 sm:space-y-5">
+      
+      {/* Slim Plan Note */}
+      <div className="flex items-center justify-between gap-2 px-1 text-xs text-slate-500">
+        <div className="flex items-center gap-1.5 font-medium">
+          <Truck className="w-4 h-4 text-sky-600" />
+          <span className="font-bold text-slate-700">แผนการส่งมอบประจำวัน (Daily Delivery Schedule)</span>
+          <span className="text-slate-400 hidden sm:inline">• คัดกรองเฉพาะงานที่ยังไม่ส่งมอบ จัดตามเป้าส่งวันต่อวัน</span>
         </div>
       </div>
 
-      {/* 2. Key Metrics for Pending Plan */}
+      {/* 1. Key Metrics for Pending Plan */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         {/* Metric 1: Total Pending */}
         <div className="p-4 rounded-xl border border-sky-200 bg-sky-50/50 flex flex-col justify-between">
@@ -499,23 +482,22 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         </div>
       </div>
 
-      {/* 3. Filter & Control Toolbar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          {/* Quick Search */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={internalSearch}
-              onChange={(e) => setInternalSearch(e.target.value)}
-              placeholder="ค้นหาชื่อชิ้นงาน, เครื่องจักร, PD No., โครงการ..."
-              className="w-full pl-9 pr-3 py-1.5 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-sky-500 focus:bg-white"
-            />
-          </div>
+      {/* 2. Filter & Control Toolbar */}
+      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+          {/* Quick Search & Machine Controls */}
+          <div className="flex items-center gap-2 flex-wrap flex-1">
+            <div className="relative flex-1 min-w-[200px] max-w-sm">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={internalSearch}
+                onChange={(e) => setInternalSearch(e.target.value)}
+                placeholder="ค้นหาชื่อชิ้นงาน, เครื่องจักร, PD No., โครงการ..."
+                className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-sky-500 focus:bg-white"
+              />
+            </div>
 
-          {/* Machine & Action controls */}
-          <div className="flex items-center gap-2 flex-wrap">
             {/* Machine dropdown */}
             <div className="flex items-center gap-1 text-xs">
               <Cpu className="w-3.5 h-3.5 text-slate-400" />
@@ -534,17 +516,63 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
             </div>
 
             {/* Expand / Collapse All */}
+            <div className="flex items-center gap-1">
+              <button
+                onClick={expandAll}
+                className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              >
+                ขยายทุกวัน
+              </button>
+              <button
+                onClick={collapseAll}
+                className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              >
+                ย่อทุกวัน
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Action Buttons (ย้ายมาอยู่ข้างตัวกรอง เพื่อประหยัดพื้นที่) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap shrink-0">
+            {onOpenComparator && (
+              <button
+                onClick={onOpenComparator}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition active:scale-95 cursor-pointer"
+                title="เปิดหน้าต่างเปรียบเทียบสถานะ Production Order"
+              >
+                <GitCompare className="w-3.5 h-3.5 text-blue-200" />
+                <span>ตัวเทียบ Production Order</span>
+              </button>
+            )}
+            {onRefresh && (
+              <button
+                onClick={onRefresh}
+                disabled={isLoading}
+                title="กดเพื่อดึงข้อมูลล่าสุดจาก Google Sheets และอัปเดตเลขที่ PD"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-sky-400' : 'text-sky-400'}`} />
+                <span>{isLoading ? 'กำลังอัปเดต...' : 'อัปเดตข้อมูล'}</span>
+              </button>
+            )}
             <button
-              onClick={expandAll}
-              className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              onClick={handleExportCsv}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-800 hover:bg-slate-100 border border-slate-300 shadow-xs transition active:scale-95 cursor-pointer"
+              title="ส่งออกแผนส่งมอบประจำวันเป็นไฟล์ CSV"
             >
-              ขยายทุกวัน
+              <Download className="w-3.5 h-3.5 text-sky-600" />
+              <span>ส่งออกแผนส่งมอบ (CSV)</span>
             </button>
             <button
-              onClick={collapseAll}
-              className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              onClick={() => {
+                setSelectedPrintDate('all');
+                setIsPrintModalOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition active:scale-95 cursor-pointer border border-sky-400/30"
+              title="พิมพ์หรือบันทึกแผนส่งมอบเป็นเอกสาร PDF"
             >
-              ย่อทุกวัน
+              <Printer className="w-3.5 h-3.5" />
+              <span>พิมพ์แผน / บันทึกเป็น PDF</span>
             </button>
           </div>
         </div>

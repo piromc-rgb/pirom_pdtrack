@@ -23,19 +23,25 @@ import {
   LayoutGrid, 
   Calendar, 
   Layers,
-  Cpu
+  Cpu,
+  GitCompare,
+  RefreshCw,
+  Download,
+  Printer
 } from 'lucide-react';
 
 export function App() {
   const [items, setItems] = useState<DeliveryItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isLive, setIsLive] = useState<boolean>(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(getLastSyncTime());
-  const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'warning' | 'info'; text: string } | null>(null);
-
-  // Navigation & Status Filtering
+  const [isLive, setIsLive] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<ActiveTab>('machines');
+  const [selectedMachine, setSelectedMachine] = useState<MachineSummary | null>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
+  const [isComparatorOpen, setIsComparatorOpen] = useState<boolean>(false);
+  const [deliveryActions, setDeliveryActions] = useState<{ exportCsv: () => void; openPrint: () => void } | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'in-progress' | 'overdue' | 'due-soon' | 'completed'>('all');
+  const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'warning' | 'info'; text: string } | null>(null);
 
   // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status + Overview & Ready Operation
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
@@ -52,10 +58,6 @@ export function App() {
     operationStatus: 'all',
   });
 
-  // Modals
-  const [selectedMachine, setSelectedMachine] = useState<MachineSummary | null>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
-  const [isComparatorOpen, setIsComparatorOpen] = useState<boolean>(false);
 
   // Compute machine summaries whenever items change
   const machines = useMemo(() => {
@@ -235,6 +237,47 @@ export function App() {
           items={items}
           matchedMachinesCount={matchedMachinesCount}
           matchedItemsCount={matchedItemsCount}
+          actions={
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap shrink-0">
+              <button
+                onClick={() => setIsComparatorOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition active:scale-95 cursor-pointer"
+                title="เปิดหน้าต่างเปรียบเทียบสถานะ Production Order"
+              >
+                <GitCompare className="w-3.5 h-3.5 text-blue-200" />
+                <span>ตัวเทียบ Production Order</span>
+              </button>
+              <button
+                onClick={() => loadData()}
+                disabled={isLoading}
+                title="กดเพื่อดึงข้อมูลล่าสุดจาก Google Sheets และอัปเดตเลขที่ PD"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-sky-400' : 'text-sky-400'}`} />
+                <span>{isLoading ? 'กำลังอัปเดต...' : 'อัปเดตข้อมูล'}</span>
+              </button>
+              {activeTab === 'delivery-plan' && (
+                <>
+                  <button
+                    onClick={() => deliveryActions?.exportCsv()}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-800 hover:bg-slate-100 border border-slate-300 shadow-xs transition active:scale-95 cursor-pointer"
+                    title="ดาวน์โหลดข้อมูลแผนส่งมอบประจำวันเป็นไฟล์ CSV"
+                  >
+                    <Download className="w-3.5 h-3.5 text-sky-600" />
+                    <span>ส่งออกแผนส่งมอบ (CSV)</span>
+                  </button>
+                  <button
+                    onClick={() => deliveryActions?.openPrint()}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition active:scale-95 cursor-pointer border border-sky-400/30"
+                    title="พิมพ์หรือบันทึกแผนส่งมอบเป็นเอกสาร PDF"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>พิมพ์แผน / บันทึกเป็น PDF</span>
+                  </button>
+                </>
+              )}
+            </div>
+          }
         />
 
         {/* Tab 1: Machine Index (Primary Request) */}
@@ -258,6 +301,7 @@ export function App() {
             onRefresh={() => loadData()}
             onOpenComparator={() => setIsComparatorOpen(true)}
             isLoading={isLoading}
+            onRegisterActions={setDeliveryActions}
           />
         )}
 

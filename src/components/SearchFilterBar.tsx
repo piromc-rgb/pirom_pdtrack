@@ -27,6 +27,7 @@ interface SearchFilterBarProps {
   items: DeliveryItem[];
   matchedMachinesCount: number;
   matchedItemsCount: number;
+  actions?: React.ReactNode;
 }
 
 export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
@@ -35,6 +36,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   items,
   matchedMachinesCount,
   matchedItemsCount,
+  actions,
 }) => {
   // Extract distinct lists for datalists / suggestions
   const { 
@@ -238,22 +240,25 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           )}
         </div>
 
-        {/* Results indicator & Reset Button when collapsed */}
-        {hasAnyFilter && (
-          <div className="flex items-center gap-2">
-            <div className="text-xs px-2.5 py-1.5 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 font-medium flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-sky-600" />
-              <span>ผลลัพธ์: {matchedMachinesCount} เครื่อง ({matchedItemsCount} รายการ)</span>
+        {/* Right side: Actions (ย้ายมาอยู่ข้างตัวกรอง) + Results indicator & Reset Button */}
+        <div className="flex items-center gap-2 flex-wrap ml-auto">
+          {actions}
+          {hasAnyFilter && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="text-xs px-2.5 py-1.5 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 font-medium flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-sky-600" />
+                <span>ผลลัพธ์: {matchedMachinesCount} เครื่อง ({matchedItemsCount} รายการ)</span>
+              </div>
+              <button
+                onClick={handleReset}
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>ล้างการค้นหา</span>
+              </button>
             </div>
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>ล้างการค้นหา</span>
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
@@ -291,8 +296,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           </div>
         </div>
 
-        {/* Results indicator & Reset & Collapse Button */}
-        <div className="flex items-center gap-2" onClick={e => e.stopPropagation()}>
+        {/* Results indicator & Reset & Actions & Collapse Button */}
+        <div className="flex items-center gap-2 flex-wrap" onClick={e => e.stopPropagation()}>
+          {actions}
           {hasAnyFilter && (
             <div className="text-xs px-2.5 py-1 rounded-full bg-sky-50 text-sky-800 border border-sky-200 font-medium flex items-center gap-1.5">
               <Check className="w-3.5 h-3.5 text-sky-600" />
