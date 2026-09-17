@@ -380,7 +380,14 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                           <div className="font-semibold text-slate-800">{item.prodOrder || '-'}</div>
                           {item.poPr && <div className="text-slate-400">{item.poPr}</div>}
                           <div className="flex items-center gap-1 mt-1 flex-wrap font-sans">
-                            {item.overviewStatus && (
+                            {item.lastCompletedOp ? (
+                              <span 
+                                className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
+                                title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
+                              >
+                                ✓ เสร็จแล้ว : {item.lastCompletedOp}
+                              </span>
+                            ) : item.overviewStatus ? (
                               <span className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded ${
                                 isOverviewCompletedOrClosed(item.overviewStatus)
                                   ? 'bg-emerald-100 text-emerald-800'
@@ -392,14 +399,18 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                               }`}>
                                 {isOverviewCompletedOrClosed(item.overviewStatus) ? '✓ เสร็จแล้ว' : item.overviewStatus}
                               </span>
-                            )}
+                            ) : null}
                             {item.activeOp ? (
                               <span 
                                 className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-semibold rounded bg-blue-50 text-blue-900 border border-blue-200"
                                 title={`Operation กำลังทำ: ${item.activeOp}`}
                               >
                                 <TrendingUp className="w-2 h-2 text-blue-600" />
-                                <span>กำลังทำ: {item.activeOpDesc || item.activeOp}</span>
+                                <span>
+                                  {item.lastCompletedOp 
+                                    ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` 
+                                    : `กำลังทำ: ${item.activeOpDesc || item.activeOp}`}
+                                </span>
                               </span>
                             ) : item.readyOp ? (
                               <span 
@@ -407,7 +418,11 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                                 title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
                               >
                                 <Clock className="w-2 h-2 text-amber-600" />
-                                <span>รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
+                                <span>
+                                  {item.lastCompletedOp 
+                                    ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` 
+                                    : `รอขึ้น: ${item.readyOpDesc || item.readyOp}`}
+                                </span>
                               </span>
                             ) : null}
                             {item.isQcPassed && (

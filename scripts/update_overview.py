@@ -123,8 +123,13 @@ def process_overview_file(filepath):
         break
     
     def find_col(keywords):
+        # 1. Exact match first
         for i, h in enumerate(headers):
-            if any(k.lower() == h.lower() or k.lower() in h.lower() for k in keywords):
+            if any(k.strip().lower() == h.strip().lower() for k in keywords):
+                return i
+        # 2. Substring match
+        for i, h in enumerate(headers):
+            if any(k.strip().lower() in h.strip().lower() for k in keywords):
                 return i
         return -1
     
@@ -201,23 +206,16 @@ def process_overview_file(filepath):
     for pd_val, data in orders.items():
         ops = sorted(data['ops'], key=lambda x: x['opNum'])
         
-        active_op = None
-        ready_op = None
-        first_pending_op = None
-        all_completed = len(ops) > 0 and all(o['opStatus'].lower() in ['completed', 'close', 'closed', 'เสร็จแล้ว'] for o in ops)
+        completed_ops = [o for o in ops if o['opStatus'].lower() in ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น']]
+        active_ops = [o for o in ops if o['opStatus'].lower() == 'active']
+        ready_ops = [o for o in ops if o['opStatus'].lower() == 'ready to start']
+        pending_ops = [o for o in ops if o['opStatus'].lower() not in ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น', 'active']]
         
-        for o in ops:
-            s_lower = o['opStatus'].lower()
-            if s_lower == 'active':
-                active_op = o
-                break
-            elif s_lower == 'ready to start':
-                if not ready_op:
-                    ready_op = o
-            elif s_lower not in ['completed', 'close', 'closed', 'เสร็จแล้ว']:
-                if not first_pending_op:
-                    first_pending_op = o
-                    
+        all_completed = len(ops) > 0 and len(completed_ops) == len(ops)
+        last_completed_op = completed_ops[-1] if completed_ops else None
+        active_op = active_ops[0] if active_ops else None
+        ready_op = ready_ops[0] if ready_ops else (pending_ops[0] if pending_ops else None)
+        
         # Construct meta
         final_status = data['orderStatus'] or ''
         meta = {
@@ -229,7 +227,20 @@ def process_overview_file(filepath):
             'prodOrder': pd_val,
         }
         
-        if active_op:
+        # Record latest completed operation if any
+        if last_completed_op:
+            meta['lastCompletedOp'] = f"Op {last_completed_op['op']}"
+            meta['lastCompletedOpDesc'] = last_completed_op['desc']
+            meta['lastCompletedOpWc'] = last_completed_op['wc']
+            meta['lastCompletedOpNo'] = last_completed_op['op']
+        
+        if all_completed or (data['orderStatus'] and data['orderStatus'].lower() in ['closed', 'completed', 'เสร็จแล้ว', 'เสร็จสิ้น']):
+            meta['status'] = 'Closed'
+            meta['isAllCompleted'] = True
+            meta['currentOp'] = 'เสร็จทุกขั้นตอน'
+            meta['currentOpDesc'] = 'Completed'
+            meta['currentOpStatus'] = 'Completed'
+        elif active_op:
             wc = active_op['wc']
             label = f"Op {active_op['op']}: {active_op['desc']}{f' ({wc})' if wc else ''}"
             meta['activeOp'] = label
@@ -240,26 +251,19 @@ def process_overview_file(filepath):
             meta['currentOpDesc'] = active_op['desc']
             meta['currentOpStatus'] = 'Active'
             meta['status'] = 'Active'
-        elif ready_op or first_pending_op:
-            # If no op is Active, the next pending op is "รอขึ้น" (waiting to start)
-            target_op = ready_op or first_pending_op
-            wc = target_op['wc']
-            label = f"Op {target_op['op']}: {target_op['desc']}{f' ({wc})' if wc else ''}"
+        elif ready_op:
+            # The next pending op is "รอขึ้น" (waiting to start)
+            wc = ready_op['wc']
+            label = f"Op {ready_op['op']}: {ready_op['desc']}{f' ({wc})' if wc else ''}"
             meta['readyOp'] = label
-            meta['readyOpDesc'] = target_op['desc']
+            meta['readyOpDesc'] = ready_op['desc']
             meta['readyOpWc'] = wc
-            meta['readyOpNo'] = target_op['op']
+            meta['readyOpNo'] = ready_op['op']
             meta['hasReadyOp'] = True
             meta['currentOp'] = label
-            meta['currentOpDesc'] = target_op['desc']
-            meta['currentOpStatus'] = 'Ready to Start' if ready_op else 'Planned'
-            if not meta['status'] or meta['status'].lower() in ['printed', 'created', 'released']:
-                meta['status'] = 'Ready to Start' if ready_op else 'Planned'
-        elif all_completed or (data['orderStatus'] and data['orderStatus'].lower() in ['closed', 'completed', 'เสร็จแล้ว']):
-            meta['status'] = 'Closed'
-            meta['currentOp'] = 'เสร็จทุกขั้นตอน'
-            meta['currentOpDesc'] = 'Completed'
-            meta['currentOpStatus'] = 'Completed'
+            meta['currentOpDesc'] = ready_op['desc']
+            meta['currentOpStatus'] = 'Ready to Start' if ready_op['opStatus'].lower() == 'ready to start' else 'Planned'
+            meta['status'] = 'Ready to Start' if ready_op['opStatus'].lower() == 'ready to start' else 'Planned'
             
         byPd[pd_val] = meta
         

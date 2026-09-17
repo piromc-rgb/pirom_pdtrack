@@ -15,7 +15,7 @@ let initialOverviewItemMap = defaultOverviewItemMap as {
   byProjItem: Record<string, OverviewMeta>;
 };
 
-const STORAGE_OVERVIEW_CACHE_KEY = 'pdtrack_cached_overview_v2';
+const STORAGE_OVERVIEW_CACHE_KEY = 'pdtrack_cached_overview_v3';
 try {
   const cachedOverview = localStorage.getItem(STORAGE_OVERVIEW_CACHE_KEY);
   if (cachedOverview) {
@@ -47,7 +47,7 @@ const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
 const STORAGE_OVERVIEW_URL_KEY = 'pdtrack_overview_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v5';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v6';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -305,8 +305,13 @@ export function parseOverviewCsv(csvText: string): {
   }
 
   const headers = rows[0].map(h => h.trim().replace(/\n/g, ' '));
-  const findCol = (keywords: string[]) => 
-    headers.findIndex(h => keywords.some(k => h.toLowerCase() === k.toLowerCase() || h.toLowerCase().includes(k.toLowerCase())));
+  const findCol = (keywords: string[]) => {
+    // 1. Exact match first
+    const exact = headers.findIndex(h => keywords.some(k => h.toLowerCase() === k.toLowerCase()));
+    if (exact !== -1) return exact;
+    // 2. Substring match
+    return headers.findIndex(h => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
+  };
 
   const pdIdx = findCol(['Production Order', 'Prod Order', 'PD No', 'PD No.', 'PD', 'prodOrder']);
   const itemIdx = findCol(['Item_4', 'Item_5', 'Item Code', 'Item No', 'รหัส Item', 'เลขที่ Item', 'itemCode']);
@@ -352,6 +357,7 @@ export function parseOverviewCsv(csvText: string): {
 
     const isReady = opStatus.toLowerCase() === 'ready to start';
     const isActive = opStatus.toLowerCase() === 'active';
+    const isCompleted = ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น'].includes(opStatus.toLowerCase());
     const opLabel = opDesc ? `Op ${op}: ${opDesc}${wc ? ` (${wc})` : ''}` : '';
 
     const meta: OverviewMeta = {
@@ -373,6 +379,10 @@ export function parseOverviewCsv(csvText: string): {
       currentOp: isReady ? opLabel : isActive ? opLabel : undefined,
       currentOpDesc: isReady ? opDesc : isActive ? opDesc : undefined,
       currentOpStatus: isReady ? 'Ready to Start' : isActive ? 'Active' : undefined,
+      lastCompletedOp: isCompleted ? `Op ${op}` : undefined,
+      lastCompletedOpDesc: isCompleted ? opDesc : undefined,
+      lastCompletedOpWc: isCompleted ? wc : undefined,
+      lastCompletedOpNo: isCompleted ? op : undefined,
     };
 
     const normStatus = (status || opStatus || '').toLowerCase();
@@ -401,6 +411,11 @@ export function parseOverviewCsv(csvText: string): {
         currentOp: incoming.readyOp || existing.readyOp || incoming.activeOp || existing.activeOp || existing.currentOp,
         currentOpDesc: incoming.readyOpDesc || existing.readyOpDesc || incoming.activeOpDesc || existing.activeOpDesc || existing.currentOpDesc,
         currentOpStatus: incoming.readyOp || existing.readyOp ? 'Ready to Start' : incoming.activeOp || existing.activeOp ? 'Active' : existing.currentOpStatus,
+        lastCompletedOp: incoming.lastCompletedOp || existing.lastCompletedOp,
+        lastCompletedOpDesc: incoming.lastCompletedOpDesc || existing.lastCompletedOpDesc,
+        lastCompletedOpWc: incoming.lastCompletedOpWc || existing.lastCompletedOpWc,
+        lastCompletedOpNo: incoming.lastCompletedOpNo || existing.lastCompletedOpNo,
+        isAllCompleted: incoming.isAllCompleted ?? existing.isAllCompleted,
       };
     };
 
@@ -701,6 +716,11 @@ export function parseDeliveryCsvWithProduction(
       currentOp: overviewMeta?.currentOp || '',
       currentOpDesc: overviewMeta?.currentOpDesc || '',
       currentOpStatus: overviewMeta?.currentOpStatus || '',
+      lastCompletedOp: overviewMeta?.lastCompletedOp || '',
+      lastCompletedOpDesc: overviewMeta?.lastCompletedOpDesc || '',
+      lastCompletedOpWc: overviewMeta?.lastCompletedOpWc || '',
+      lastCompletedOpNo: overviewMeta?.lastCompletedOpNo || undefined,
+      isAllCompleted: overviewMeta?.isAllCompleted || false,
     });
   }
 

@@ -61,6 +61,11 @@ export interface DeliveryItem {
   currentOp?: string;         // สถานะขั้นตอนปัจจุบัน
   currentOpDesc?: string;
   currentOpStatus?: string;
+  lastCompletedOp?: string;   // ขั้นตอนล่าสุดที่เสร็จแล้ว เช่น "Op 10"
+  lastCompletedOpDesc?: string;// รายละเอียดขั้นตอนล่าสุดที่เสร็จแล้ว เช่น "CNC Laser 2"
+  lastCompletedOpWc?: string;  // Work Center ขั้นตอนล่าสุดที่เสร็จแล้ว
+  lastCompletedOpNo?: number | string; // เลข Op ล่าสุดที่เสร็จแล้ว เช่น 10
+  isAllCompleted?: boolean;   // เสร็จสิ้นทุกขั้นตอน
 
   // Computed fields
   isOverdue?: boolean;
@@ -88,6 +93,11 @@ export interface OverviewMeta {
   currentOp?: string;
   currentOpDesc?: string;
   currentOpStatus?: string;
+  lastCompletedOp?: string;
+  lastCompletedOpDesc?: string;
+  lastCompletedOpWc?: string;
+  lastCompletedOpNo?: number | string;
+  isAllCompleted?: boolean;
 }
 
 export interface MachineSummary {

@@ -349,7 +349,14 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                     <td className="py-3 px-3 font-mono text-[11px] text-slate-600">
                       <div className="font-semibold text-slate-800">{item.prodOrder || '-'}</div>
                       <div className="flex items-center gap-1 mt-1 flex-wrap">
-                        {item.overviewStatus && (
+                        {item.lastCompletedOp ? (
+                          <span 
+                            className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
+                            title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
+                          >
+                            ✓ เสร็จแล้ว : {item.lastCompletedOp}
+                          </span>
+                        ) : item.overviewStatus ? (
                           <span className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded ${
                             isOverviewCompletedOrClosed(item.overviewStatus)
                               ? 'bg-emerald-100 text-emerald-800'
@@ -361,14 +368,18 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                           }`}>
                             {isOverviewCompletedOrClosed(item.overviewStatus) ? '✓ เสร็จแล้ว' : item.overviewStatus}
                           </span>
-                        )}
+                        ) : null}
                         {item.activeOp ? (
                           <span 
                             className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-semibold rounded bg-blue-50 text-blue-900 border border-blue-200"
                             title={`Operation กำลังทำ: ${item.activeOp}`}
                           >
                             <TrendingUp className="w-2 h-2 text-blue-600" />
-                            <span>กำลังทำ: {item.activeOpDesc || item.activeOp}</span>
+                            <span>
+                              {item.lastCompletedOp 
+                                ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` 
+                                : `กำลังทำ: ${item.activeOpDesc || item.activeOp}`}
+                            </span>
                           </span>
                         ) : item.readyOp ? (
                           <span 
@@ -376,7 +387,11 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                             title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
                           >
                             <Clock className="w-2 h-2 text-amber-600" />
-                            <span>รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
+                            <span>
+                              {item.lastCompletedOp 
+                                ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` 
+                                : `รอขึ้น: ${item.readyOpDesc || item.readyOp}`}
+                            </span>
                           </span>
                         ) : null}
                         {item.isQcPassed && (

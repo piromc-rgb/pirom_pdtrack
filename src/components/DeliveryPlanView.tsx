@@ -1016,39 +1016,42 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
                               {statusSource === 'overview' && (
                                 <td className="py-3 px-3">
-                                  {isOverviewCompletedOrClosed(item.overviewStatus) && (
+                                  {item.lastCompletedOp ? (
+                                    <span 
+                                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
+                                      title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
+                                    >
+                                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                      เสร็จแล้ว : {item.lastCompletedOp}
+                                    </span>
+                                  ) : isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                                       เสร็จแล้ว
                                     </span>
-                                  )}
-                                  {item.overviewStatus === 'Active' && (
+                                  ) : item.overviewStatus === 'Active' ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300">
                                       <TrendingUp className="w-3 h-3 text-blue-600" />
                                       Active
                                     </span>
-                                  )}
-                                  {item.overviewStatus === 'Ready to Start' && (
+                                  ) : item.overviewStatus === 'Ready to Start' ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
                                       <Clock className="w-3 h-3 text-amber-600" />
                                       Ready to Start
                                     </span>
-                                  )}
-                                  {item.overviewStatus === 'Planned' && (
+                                  ) : item.overviewStatus === 'Planned' ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-purple-800 border border-purple-300">
                                       📅 Planned
                                     </span>
-                                  )}
-                                  {item.overviewStatus && !isOverviewCompletedOrClosed(item.overviewStatus) && !['Active', 'Ready to Start', 'Planned'].includes(item.overviewStatus) && (
+                                  ) : item.overviewStatus && !isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-300">
                                       {item.overviewStatus}
                                     </span>
-                                  )}
-                                  {!item.overviewStatus && (
+                                  ) : !item.overviewStatus ? (
                                     <span className="text-slate-400 text-[10px] italic">
                                       {item.prodOrder ? 'ไม่พบใน Overview' : 'ไม่มีเลข PD'}
                                     </span>
-                                  )}
+                                  ) : null}
                                   <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                     {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
                                   </div>
@@ -1059,7 +1062,11 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                         title={`Operation กำลังทำ: ${item.activeOp}`}
                                       >
                                         <TrendingUp className="w-2.5 h-2.5 text-blue-600 flex-shrink-0" />
-                                        <span className="truncate max-w-[155px]">กำลังทำ: {item.activeOpDesc || item.activeOp}</span>
+                                        <span className="truncate max-w-[155px]">
+                                          {item.lastCompletedOp 
+                                            ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` 
+                                            : `กำลังทำ: ${item.activeOpDesc || item.activeOp}`}
+                                        </span>
                                       </span>
                                     </div>
                                   ) : item.readyOp ? (
@@ -1069,7 +1076,11 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                         title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
                                       >
                                         <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0 animate-pulse" />
-                                        <span className="truncate max-w-[155px]">รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
+                                        <span className="truncate max-w-[155px]">
+                                          {item.lastCompletedOp 
+                                            ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` 
+                                            : `รอขึ้น: ${item.readyOpDesc || item.readyOp}`}
+                                        </span>
                                       </span>
                                     </div>
                                   ) : null}
@@ -1079,7 +1090,14 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               {statusSource === 'dual' && (
                                 <>
                                   <td className="py-3 px-2.5 bg-blue-50/20 text-center">
-                                    {isOverviewCompletedOrClosed(item.overviewStatus) ? (
+                                    {item.lastCompletedOp ? (
+                                      <span 
+                                        className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block"
+                                        title={`เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
+                                      >
+                                        ✓ เสร็จแล้ว : {item.lastCompletedOp}
+                                      </span>
+                                    ) : isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                       <span className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block">
                                         ✓ เสร็จแล้ว
                                       </span>
@@ -1093,23 +1111,28 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                       {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
                                     </div>
-                                    {item.readyOp ? (
+                                    {item.activeOp ? (
+                                      <div className="mt-1 flex justify-center">
+                                        <span 
+                                          className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-semibold bg-blue-100 text-blue-900 border border-blue-200"
+                                          title={`กำลังทำ: ${item.activeOp}`}
+                                        >
+                                          <TrendingUp className="w-2 h-2 text-blue-600" />
+                                          <span className="truncate max-w-[90px]">
+                                            {item.lastCompletedOp ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` : (item.activeOpDesc || item.activeOp)}
+                                          </span>
+                                        </span>
+                                      </div>
+                                    ) : item.readyOp ? (
                                       <div className="mt-1 flex justify-center">
                                         <span 
                                           className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-semibold bg-amber-100 text-amber-900 border border-amber-300"
                                           title={`Operation รอขึ้น: ${item.readyOp}`}
                                         >
                                           <Clock className="w-2 h-2 text-amber-600" />
-                                          <span className="truncate max-w-[90px]">{item.readyOpDesc || item.readyOp}</span>
-                                        </span>
-                                      </div>
-                                    ) : item.activeOp ? (
-                                      <div className="mt-1 flex justify-center">
-                                        <span 
-                                          className="inline-flex items-center gap-0.5 px-1 py-0.5 rounded text-[9px] font-semibold bg-blue-100 text-blue-900 border border-blue-200"
-                                          title={`กำลังทำ: ${item.activeOp}`}
-                                        >
-                                          <span className="truncate max-w-[90px]">{item.activeOpDesc || item.activeOp}</span>
+                                          <span className="truncate max-w-[90px]">
+                                            {item.lastCompletedOp ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` : (item.readyOpDesc || item.readyOp)}
+                                          </span>
                                         </span>
                                       </div>
                                     ) : null}
