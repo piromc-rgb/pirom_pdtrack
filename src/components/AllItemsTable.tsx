@@ -354,7 +354,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                             className="px-1.5 py-0.5 text-[9.5px] font-bold rounded bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
                             title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
                           >
-                            ✓ เสร็จแล้ว : {item.lastCompletedOp}
+                            ✓ เสร็จแล้ว : {item.lastCompletedOpDesc || item.lastCompletedOp}
                           </span>
                         ) : item.overviewStatus ? (
                           <span className={`px-1.5 py-0.5 text-[9.5px] font-bold rounded ${
@@ -375,11 +375,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                             title={`Operation กำลังทำ: ${item.activeOp}`}
                           >
                             <TrendingUp className="w-2 h-2 text-blue-600" />
-                            <span>
-                              {item.lastCompletedOp 
-                                ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` 
-                                : `กำลังทำ: ${item.activeOpDesc || item.activeOp}`}
-                            </span>
+                            <span>กำลังทำ : {item.activeOpDesc || item.activeOp}</span>
                           </span>
                         ) : item.readyOp ? (
                           <span 
@@ -387,11 +383,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                             title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
                           >
                             <Clock className="w-2 h-2 text-amber-600" />
-                            <span>
-                              {item.lastCompletedOp 
-                                ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` 
-                                : `รอขึ้น: ${item.readyOpDesc || item.readyOp}`}
-                            </span>
+                            <span>รอขึ้น : {item.readyOpDesc || item.readyOp}</span>
                           </span>
                         ) : null}
                         {item.isQcPassed && (

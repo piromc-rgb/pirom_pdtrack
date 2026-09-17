@@ -1019,10 +1019,10 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   {item.lastCompletedOp ? (
                                     <span 
                                       className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
-                                      title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
+                                      title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}${item.lastCompletedOpWc ? ` [${item.lastCompletedOpWc}]` : ''}`}
                                     >
                                       <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                      เสร็จแล้ว : {item.lastCompletedOp}
+                                      เสร็จแล้ว : {item.lastCompletedOpDesc || item.lastCompletedOp}
                                     </span>
                                   ) : isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
@@ -1063,9 +1063,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       >
                                         <TrendingUp className="w-2.5 h-2.5 text-blue-600 flex-shrink-0" />
                                         <span className="truncate max-w-[155px]">
-                                          {item.lastCompletedOp 
-                                            ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` 
-                                            : `กำลังทำ: ${item.activeOpDesc || item.activeOp}`}
+                                          กำลังทำ : {item.activeOpDesc || item.activeOp}
                                         </span>
                                       </span>
                                     </div>
@@ -1077,9 +1075,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       >
                                         <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0 animate-pulse" />
                                         <span className="truncate max-w-[155px]">
-                                          {item.lastCompletedOp 
-                                            ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` 
-                                            : `รอขึ้น: ${item.readyOpDesc || item.readyOp}`}
+                                          รอขึ้น : {item.readyOpDesc || item.readyOp}
                                         </span>
                                       </span>
                                     </div>
@@ -1095,7 +1091,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                         className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block"
                                         title={`เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
                                       >
-                                        ✓ เสร็จแล้ว : {item.lastCompletedOp}
+                                        ✓ เสร็จแล้ว : {item.lastCompletedOpDesc || item.lastCompletedOp}
                                       </span>
                                     ) : isOverviewCompletedOrClosed(item.overviewStatus) ? (
                                       <span className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block">
@@ -1118,9 +1114,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                           title={`กำลังทำ: ${item.activeOp}`}
                                         >
                                           <TrendingUp className="w-2 h-2 text-blue-600" />
-                                          <span className="truncate max-w-[90px]">
-                                            {item.lastCompletedOp ? `กำลังทำ : Op ${item.activeOpNo || item.activeOp}` : (item.activeOpDesc || item.activeOp)}
-                                          </span>
+                                          <span className="truncate max-w-[90px]">กำลังทำ : {item.activeOpDesc || item.activeOp}</span>
                                         </span>
                                       </div>
                                     ) : item.readyOp ? (
@@ -1130,9 +1124,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                           title={`Operation รอขึ้น: ${item.readyOp}`}
                                         >
                                           <Clock className="w-2 h-2 text-amber-600" />
-                                          <span className="truncate max-w-[90px]">
-                                            {item.lastCompletedOp ? `รอขึ้น : Op ${item.readyOpNo || item.readyOp}` : (item.readyOpDesc || item.readyOp)}
-                                          </span>
+                                          <span className="truncate max-w-[90px]">รอขึ้น : {item.readyOpDesc || item.readyOp}</span>
                                         </span>
                                       </div>
                                     ) : null}
