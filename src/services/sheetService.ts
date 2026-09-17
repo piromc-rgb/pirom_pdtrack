@@ -15,7 +15,7 @@ let initialOverviewItemMap = defaultOverviewItemMap as {
   byProjItem: Record<string, OverviewMeta>;
 };
 
-const STORAGE_OVERVIEW_CACHE_KEY = 'pdtrack_cached_overview_v1';
+const STORAGE_OVERVIEW_CACHE_KEY = 'pdtrack_cached_overview_v2';
 try {
   const cachedOverview = localStorage.getItem(STORAGE_OVERVIEW_CACHE_KEY);
   if (cachedOverview) {
@@ -47,7 +47,7 @@ const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
 const STORAGE_OVERVIEW_URL_KEY = 'pdtrack_overview_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v4';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v5';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -485,8 +485,10 @@ export function getOverviewStatusForPds(pds: string[]): OverviewMeta | undefined
 }
 
 /**
- * Look up Overview Status prioritized by Item Code (เลขที่ Item), with fallback to PD Number.
- * If specific PDs are provided, we also verify whether all PDs are completed/closed.
+ * Look up Overview Status prioritized by specific PD Number(s) when available.
+ * If specific PDs are provided, we check them directly and do NOT inherit another PD's status
+ * (since the same Item Code can be used across multiple machines and production orders).
+ * Only when NO PD is specified on the item, we fall back to Project Code + Item Code / Item Code lookup.
  */
 export function getOverviewStatusForItem(
   itemCode?: string,
@@ -496,20 +498,23 @@ export function getOverviewStatusForItem(
   const cleanCode = itemCode?.trim().toUpperCase();
   const cleanProj = projectCode?.trim().toUpperCase();
 
-  // If specific PDs are given, inspect them first to handle "complete หรือ close หมด" accurately
+  // 1. Primary: If specific PDs are given, inspect ONLY those PDs.
+  // We MUST NOT fall back to item code / project matching when PDs are provided,
+  // because multiple machines or orders share the same blueprint (Item Code),
+  // and borrowing another PD's progress would report false machine statuses.
   if (pds && pds.length > 0) {
-    const pdMeta = getOverviewStatusForPds(pds);
-    if (pdMeta) return pdMeta;
+    return getOverviewStatusForPds(pds);
   }
 
-  // 1. Primary: match by Project Code + Item Code (Most accurate for project-specific orders)
+  // 2. Only if the item has NO PD specified (e.g. blank prodOrder in delivery sheet),
+  // look up by Project Code + Item Code:
   if (cleanProj && cleanCode) {
     const projKey = `${cleanProj}|${cleanCode}`;
     const meta = overviewItemMap.byProjItem[projKey];
     if (meta) return meta;
   }
 
-  // 2. Secondary: match by Item Code directly
+  // 3. Secondary fallback: match by Item Code directly (only when NO PD is specified)
   if (cleanCode) {
     const meta = overviewItemMap.byItem[cleanCode];
     if (meta) return meta;
@@ -856,22 +861,22 @@ export async function fetchDeliveryData(
             qcTopic: item.qcTopic || firstQcMeta?.topic || '',
             qcRemarks: item.qcRemarks || firstQcMeta?.remarks || '',
             qcPdList: matchedQcPds.length > 0 ? matchedQcPds : item.qcPdList,
-            overviewStatus: overviewMeta?.status || item.overviewStatus || '',
-            overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
-            overviewProject: overviewMeta?.project || item.overviewProject || '',
-            overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
-            readyOp: overviewMeta?.readyOp || item.readyOp || '',
-            readyOpDesc: overviewMeta?.readyOpDesc || item.readyOpDesc || '',
-            readyOpWc: overviewMeta?.readyOpWc || item.readyOpWc || '',
-            readyOpNo: overviewMeta?.readyOpNo || item.readyOpNo || undefined,
-            hasReadyOp: Boolean(overviewMeta?.readyOp || item.readyOp),
-            activeOp: overviewMeta?.activeOp || item.activeOp || '',
-            activeOpDesc: overviewMeta?.activeOpDesc || item.activeOpDesc || '',
-            activeOpWc: overviewMeta?.activeOpWc || item.activeOpWc || '',
-            activeOpNo: overviewMeta?.activeOpNo || item.activeOpNo || undefined,
-            currentOp: overviewMeta?.currentOp || item.currentOp || '',
-            currentOpDesc: overviewMeta?.currentOpDesc || item.currentOpDesc || '',
-            currentOpStatus: overviewMeta?.currentOpStatus || item.currentOpStatus || '',
+            overviewStatus: overviewMeta?.status || '',
+            overviewCustomer: overviewMeta?.customer || '',
+            overviewProject: overviewMeta?.project || '',
+            overviewItemCode: overviewMeta?.itemCode || '',
+            readyOp: overviewMeta?.readyOp || '',
+            readyOpDesc: overviewMeta?.readyOpDesc || '',
+            readyOpWc: overviewMeta?.readyOpWc || '',
+            readyOpNo: overviewMeta?.readyOpNo || undefined,
+            hasReadyOp: Boolean(overviewMeta?.readyOp),
+            activeOp: overviewMeta?.activeOp || '',
+            activeOpDesc: overviewMeta?.activeOpDesc || '',
+            activeOpWc: overviewMeta?.activeOpWc || '',
+            activeOpNo: overviewMeta?.activeOpNo || undefined,
+            currentOp: overviewMeta?.currentOp || '',
+            currentOpDesc: overviewMeta?.currentOpDesc || '',
+            currentOpStatus: overviewMeta?.currentOpStatus || '',
           };
         });
 
@@ -938,22 +943,22 @@ export async function fetchDeliveryData(
         qcTopic: firstQcMeta?.topic || '',
         qcRemarks: firstQcMeta?.remarks || '',
         qcPdList: matchedQcPds,
-        overviewStatus: overviewMeta?.status || item.overviewStatus || '',
-        overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
-        overviewProject: overviewMeta?.project || item.overviewProject || '',
-        overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
-        readyOp: overviewMeta?.readyOp || item.readyOp || '',
-        readyOpDesc: overviewMeta?.readyOpDesc || item.readyOpDesc || '',
-        readyOpWc: overviewMeta?.readyOpWc || item.readyOpWc || '',
-        readyOpNo: overviewMeta?.readyOpNo || item.readyOpNo || undefined,
-        hasReadyOp: Boolean(overviewMeta?.readyOp || item.readyOp),
-        activeOp: overviewMeta?.activeOp || item.activeOp || '',
-        activeOpDesc: overviewMeta?.activeOpDesc || item.activeOpDesc || '',
-        activeOpWc: overviewMeta?.activeOpWc || item.activeOpWc || '',
-        activeOpNo: overviewMeta?.activeOpNo || item.activeOpNo || undefined,
-        currentOp: overviewMeta?.currentOp || item.currentOp || '',
-        currentOpDesc: overviewMeta?.currentOpDesc || item.currentOpDesc || '',
-        currentOpStatus: overviewMeta?.currentOpStatus || item.currentOpStatus || '',
+        overviewStatus: overviewMeta?.status || '',
+        overviewCustomer: overviewMeta?.customer || '',
+        overviewProject: overviewMeta?.project || '',
+        overviewItemCode: overviewMeta?.itemCode || '',
+        readyOp: overviewMeta?.readyOp || '',
+        readyOpDesc: overviewMeta?.readyOpDesc || '',
+        readyOpWc: overviewMeta?.readyOpWc || '',
+        readyOpNo: overviewMeta?.readyOpNo || undefined,
+        hasReadyOp: Boolean(overviewMeta?.readyOp),
+        activeOp: overviewMeta?.activeOp || '',
+        activeOpDesc: overviewMeta?.activeOpDesc || '',
+        activeOpWc: overviewMeta?.activeOpWc || '',
+        activeOpNo: overviewMeta?.activeOpNo || undefined,
+        currentOp: overviewMeta?.currentOp || '',
+        currentOpDesc: overviewMeta?.currentOpDesc || '',
+        currentOpStatus: overviewMeta?.currentOpStatus || '',
       };
     });
 

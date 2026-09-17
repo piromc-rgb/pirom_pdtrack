@@ -1052,17 +1052,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                     {item.targetLatest ? formatCompactDate(item.targetLatest) : item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
                                   </div>
-                                  {item.readyOp ? (
-                                    <div className="mt-1 flex items-center">
-                                      <span 
-                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs"
-                                        title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
-                                      >
-                                        <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0 animate-pulse" />
-                                        <span className="truncate max-w-[155px]">รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
-                                      </span>
-                                    </div>
-                                  ) : item.activeOp ? (
+                                  {item.activeOp ? (
                                     <div className="mt-1 flex items-center">
                                       <span 
                                         className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-900 border border-blue-200"
@@ -1070,6 +1060,16 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       >
                                         <TrendingUp className="w-2.5 h-2.5 text-blue-600 flex-shrink-0" />
                                         <span className="truncate max-w-[155px]">กำลังทำ: {item.activeOpDesc || item.activeOp}</span>
+                                      </span>
+                                    </div>
+                                  ) : item.readyOp ? (
+                                    <div className="mt-1 flex items-center">
+                                      <span 
+                                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs"
+                                        title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
+                                      >
+                                        <Clock className="w-2.5 h-2.5 text-amber-600 flex-shrink-0 animate-pulse" />
+                                        <span className="truncate max-w-[155px]">รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
                                       </span>
                                     </div>
                                   ) : null}

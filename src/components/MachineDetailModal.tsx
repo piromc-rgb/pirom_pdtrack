@@ -15,7 +15,8 @@ import {
   Boxes,
   Building2,
   Share2,
-  AlertCircle
+  AlertCircle,
+  TrendingUp
 } from 'lucide-react';
 import { MachineSummary, DeliveryItem } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
@@ -392,7 +393,15 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                                 {isOverviewCompletedOrClosed(item.overviewStatus) ? '✓ เสร็จแล้ว' : item.overviewStatus}
                               </span>
                             )}
-                            {item.readyOp && (
+                            {item.activeOp ? (
+                              <span 
+                                className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-semibold rounded bg-blue-50 text-blue-900 border border-blue-200"
+                                title={`Operation กำลังทำ: ${item.activeOp}`}
+                              >
+                                <TrendingUp className="w-2 h-2 text-blue-600" />
+                                <span>กำลังทำ: {item.activeOpDesc || item.activeOp}</span>
+                              </span>
+                            ) : item.readyOp ? (
                               <span 
                                 className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9.5px] font-semibold rounded bg-amber-50 text-amber-900 border border-amber-300"
                                 title={`Operation รอขึ้นทำงาน: ${item.readyOp}`}
@@ -400,7 +409,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                                 <Clock className="w-2 h-2 text-amber-600" />
                                 <span>รอขึ้น: {item.readyOpDesc || item.readyOp}</span>
                               </span>
-                            )}
+                            ) : null}
                             {item.isQcPassed && (
                               <span 
                                 className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"
