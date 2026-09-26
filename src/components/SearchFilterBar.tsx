@@ -25,6 +25,7 @@ interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
   setSearchCriteria: React.Dispatch<React.SetStateAction<SearchCriteria>>;
   items: DeliveryItem[];
+  tagCounts?: { all: number; Service: number; Project: number };
   matchedMachinesCount: number;
   matchedItemsCount: number;
   actions?: React.ReactNode;
@@ -37,6 +38,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   searchCriteria,
   setSearchCriteria,
   items,
+  tagCounts,
   matchedMachinesCount,
   matchedItemsCount,
   actions,
@@ -95,6 +97,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
   const hasAnyFilter = Boolean(
     (statusFilter && statusFilter !== 'all') ||
+    (searchCriteria.workTag && searchCriteria.workTag !== 'all') ||
     searchCriteria.docRef ||
     searchCriteria.projectCode ||
     searchCriteria.projectName ||
@@ -110,6 +113,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
   const handleReset = () => {
     setSearchCriteria({
+      workTag: 'all',
       docRef: '',
       projectCode: '',
       projectName: '',
@@ -146,6 +150,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   const activeFiltersCount = useMemo(() => {
     let count = 0;
     if (statusFilter && statusFilter !== 'all') count++;
+    if (searchCriteria.workTag && searchCriteria.workTag !== 'all') count++;
     if (searchCriteria.docRef) count++;
     if (searchCriteria.projectCode) count++;
     if (searchCriteria.projectName) count++;
@@ -167,11 +172,84 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     }));
   };
 
-  // 1. Collapsed State: Compact 1-Icon Button
+  const currentWorkTag = searchCriteria.workTag || 'all';
+
+  const workTagSelector = (
+    <div className="inline-flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-300 shadow-2xs">
+      <span className="text-[11px] font-bold text-slate-600 px-2 flex items-center gap-1 select-none">
+        <Tag className="w-3.5 h-3.5 text-indigo-600" />
+        <span>แสดงข้อมูล:</span>
+      </span>
+      <button
+        type="button"
+        onClick={() => updateField('workTag', 'all')}
+        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+          currentWorkTag === 'all'
+            ? 'bg-slate-900 text-white shadow-xs'
+            : 'text-slate-600 hover:bg-slate-100'
+        }`}
+        title="แสดงทั้งงาน Service และงานโครงการ (Project)"
+      >
+        <span>ทั้งคู่</span>
+        {tagCounts && (
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+            currentWorkTag === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+          }`}>
+            {tagCounts.all}
+          </span>
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => updateField('workTag', 'Service')}
+        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+          currentWorkTag === 'Service'
+            ? 'bg-sky-600 text-white shadow-xs'
+            : 'text-sky-700 hover:bg-sky-50'
+        }`}
+        title="แสดงเฉพาะงานเดิมจาก Check list ส่งมอบ (TAG: Service)"
+      >
+        <span className="w-2 h-2 rounded-full bg-current opacity-80"></span>
+        <span>Service</span>
+        {tagCounts && (
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+            currentWorkTag === 'Service' ? 'bg-white/20 text-white' : 'bg-sky-100 text-sky-800'
+          }`}>
+            {tagCounts.Service}
+          </span>
+        )}
+      </button>
+      <button
+        type="button"
+        onClick={() => updateField('workTag', 'Project')}
+        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+          currentWorkTag === 'Project'
+            ? 'bg-violet-600 text-white shadow-xs'
+            : 'text-violet-700 hover:bg-violet-50'
+        }`}
+        title="แสดงเฉพาะงานโครงการ สั่งผลิตเครื่องจักรตาม Machine List (TAG: Project)"
+      >
+        <span className="w-2 h-2 rounded-full bg-current opacity-80"></span>
+        <span>Project</span>
+        {tagCounts && (
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+            currentWorkTag === 'Project' ? 'bg-white/20 text-white' : 'bg-violet-100 text-violet-800'
+          }`}>
+            {tagCounts.Project}
+          </span>
+        )}
+      </button>
+    </div>
+  );
+
+  // 1. Collapsed State: Compact 1-Icon Button + Always-Visible TAG Selector
   if (isCollapsed) {
     return (
       <div className="flex items-center justify-between gap-3 flex-wrap animate-in fade-in duration-150 py-1">
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Prominent TAG Selector: ทั้งคู่ | Service | Project */}
+          {workTagSelector}
+
           {/* The Single Icon Button to expand */}
           <button
             onClick={toggleCollapse}
@@ -301,7 +379,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         onClick={toggleCollapse}
         className="px-5 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3 cursor-pointer select-none hover:bg-slate-100/80 transition"
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5 flex-wrap">
           <div className={`p-1.5 rounded-lg transition ${hasAnyFilter ? 'bg-blue-600 text-white shadow-xs' : 'bg-sky-100 text-sky-700'}`}>
             <Filter className="w-4 h-4" />
           </div>
@@ -328,6 +406,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
         {/* Results indicator & Reset & Actions & Collapse Button */}
         <div className="flex items-center gap-2 flex-wrap" onClick={e => e.stopPropagation()}>
+          {workTagSelector}
           {actions}
 
           {/* Dedicated Reset Filter Button */}

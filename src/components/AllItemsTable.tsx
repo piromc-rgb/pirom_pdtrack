@@ -161,6 +161,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
   // Export to CSV
   const handleExport = () => {
     const headers = [
+      'TAG',
       'Document number Reference',
       'เลขที่โครงการ',
       'ชื่อโครงการ',
@@ -184,6 +185,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
     ];
 
     const rows = filteredItems.map(i => [
+      `"${i.workTag || 'Service'}"`,
       `"${i.docRef}"`,
       `"${i.projectCode}"`,
       `"${i.projectName.replace(/"/g, '""')}"`,
@@ -314,10 +316,21 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                       {globalIdx}
                     </td>
 
-                    {/* Doc Number Ref */}
+                    {/* Doc Number Ref + TAG */}
                     <td className="py-3 px-3 font-mono text-slate-700 whitespace-nowrap">
-                      <div>{item.docRef || '-'}</div>
-                      <div className="text-[10px] text-slate-400">{item.projectCode}</div>
+                      <div className="flex items-center gap-1.5 flex-wrap font-sans">
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
+                            item.workTag === 'Project'
+                              ? 'bg-violet-100 text-violet-800 border-violet-300'
+                              : 'bg-sky-100 text-sky-800 border-sky-300'
+                          }`}
+                        >
+                          {item.workTag || 'Service'}
+                        </span>
+                        <span className="font-mono">{item.docRef || '-'}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-0.5">{item.projectCode}</div>
                     </td>
 
                     {/* Machine Column (Clickable) */}

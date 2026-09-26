@@ -53,8 +53,9 @@ export function App() {
   const [statusFilter, setStatusFilter] = useState<'all' | 'in-progress' | 'overdue' | 'due-soon' | 'completed'>('all');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'warning' | 'info'; text: string } | null>(null);
 
-  // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status + Overview & Ready Operation
+  // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status + Overview & Ready Operation + Work Tag (Service / Project)
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
+    workTag: 'all',
     docRef: '',
     projectCode: '',
     projectName: '',
@@ -68,25 +69,45 @@ export function App() {
     operationStatus: 'all',
   });
 
-
-  // Compute machine summaries whenever items change
-  const machines = useMemo(() => {
-    return buildMachineSummaries(items);
+  // Counts by TAG ("Service" vs "Project" vs "ทั้งคู่")
+  const tagCounts = useMemo(() => {
+    let service = 0;
+    let project = 0;
+    items.forEach(i => {
+      if (i.workTag === 'Project') project++;
+      else service++;
+    });
+    return {
+      all: items.length,
+      Service: service,
+      Project: project,
+    };
   }, [items]);
 
-  // Overall KPI counts
-  const totalItems = items.length;
-  const deliveredItems = useMemo(() => items.filter(i => i.status === 'ส่งแล้ว').length, [items]);
+  // Filter items by selected workTag ('all' | 'Service' | 'Project')
+  const tagFilteredItems = useMemo(() => {
+    if (!searchCriteria.workTag || searchCriteria.workTag === 'all') return items;
+    return items.filter(i => (i.workTag || 'Service') === searchCriteria.workTag);
+  }, [items, searchCriteria.workTag]);
+
+  // Compute machine summaries whenever tagFilteredItems change
+  const machines = useMemo(() => {
+    return buildMachineSummaries(tagFilteredItems);
+  }, [tagFilteredItems]);
+
+  // Overall KPI counts (reflecting active workTag selection)
+  const totalItems = tagFilteredItems.length;
+  const deliveredItems = useMemo(() => tagFilteredItems.filter(i => i.status === 'ส่งแล้ว').length, [tagFilteredItems]);
   const pendingItems = totalItems - deliveredItems;
-  const overdueItems = useMemo(() => items.filter(i => i.isOverdue).length, [items]);
-  const dueSoonItems = useMemo(() => items.filter(i => i.isDueSoon).length, [items]);
-  const rescheduledItems = useMemo(() => items.filter(i => (i.rescheduledCount || 0) > 0).length, [items]);
-  const qcPassedItems = useMemo(() => items.filter(i => i.isQcPassed).length, [items]);
-  const pdCompletedItems = useMemo(() => items.filter(i => isOverviewCompletedOrClosed(i.overviewStatus)).length, [items]);
+  const overdueItems = useMemo(() => tagFilteredItems.filter(i => i.isOverdue).length, [tagFilteredItems]);
+  const dueSoonItems = useMemo(() => tagFilteredItems.filter(i => i.isDueSoon).length, [tagFilteredItems]);
+  const rescheduledItems = useMemo(() => tagFilteredItems.filter(i => (i.rescheduledCount || 0) > 0).length, [tagFilteredItems]);
+  const qcPassedItems = useMemo(() => tagFilteredItems.filter(i => i.isQcPassed).length, [tagFilteredItems]);
+  const pdCompletedItems = useMemo(() => tagFilteredItems.filter(i => isOverviewCompletedOrClosed(i.overviewStatus)).length, [tagFilteredItems]);
 
   // Compute matching counts for the SearchFilterBar
   const { matchedMachinesCount, matchedItemsCount } = useMemo(() => {
-    const matchedItems = items.filter(item => {
+    const matchedItems = tagFilteredItems.filter(item => {
       if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase().trim())) return false;
       if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
@@ -126,7 +147,7 @@ export function App() {
       matchedMachinesCount: uniqueMachines.size,
       matchedItemsCount: matchedItems.length,
     };
-  }, [items, searchCriteria]);
+  }, [tagFilteredItems, searchCriteria]);
 
   // Show auto-dismiss toast
   const showToast = useCallback((type: 'success' | 'warning' | 'info', text: string) => {
@@ -244,13 +265,14 @@ export function App() {
           onOpenDeliveryPlan={() => setActiveTab('delivery-plan')}
         />
 
-        {/* 5-Field Dedicated Search Filter Panel with Production Dept & Topic */}
+        {/* 5-Field Dedicated Search Filter Panel with Production Dept & Topic + Work Tag Selector */}
         <SearchFilterBar
           searchCriteria={searchCriteria}
           setSearchCriteria={setSearchCriteria}
           statusFilter={statusFilter}
           onResetStatusFilter={() => setStatusFilter('all')}
-          items={items}
+          items={tagFilteredItems}
+          tagCounts={tagCounts}
           matchedMachinesCount={matchedMachinesCount}
           matchedItemsCount={matchedItemsCount}
           actions={
@@ -310,7 +332,7 @@ export function App() {
         {/* Tab 2: Delivery Plan (งานรอส่ง จัดตามเป้าส่งวันต่อวัน) */}
         {activeTab === 'delivery-plan' && (
           <DeliveryPlanView
-            items={items}
+            items={tagFilteredItems}
             machines={machines}
             searchCriteria={searchCriteria}
             onSelectMachineByName={handleSelectMachineByName}
@@ -324,7 +346,7 @@ export function App() {
         {/* Tab 3: Delivery Timeline & Schedule */}
         {activeTab === 'timeline' && (
           <DeliveryTimeline
-            items={items}
+            items={tagFilteredItems}
             machines={machines}
             searchCriteria={searchCriteria}
             onSelectMachine={(m) => setSelectedMachine(m)}
@@ -334,7 +356,7 @@ export function App() {
         {/* Tab 4: Master Items Table */}
         {activeTab === 'items' && (
           <AllItemsTable
-            items={items}
+            items={tagFilteredItems}
             machines={machines}
             searchCriteria={searchCriteria}
             onSelectMachineByName={handleSelectMachineByName}
@@ -345,7 +367,7 @@ export function App() {
         {activeTab === 'analytics' && (
           <AnalyticsView
             machines={machines}
-            items={items}
+            items={tagFilteredItems}
             onSelectMachine={(m) => setSelectedMachine(m)}
           />
         )}
@@ -372,7 +394,7 @@ export function App() {
       <ProductionOrderComparatorModal
         isOpen={isComparatorOpen}
         onClose={() => setIsComparatorOpen(false)}
-        items={items}
+        items={tagFilteredItems}
       />
 
       {/* Footer */}

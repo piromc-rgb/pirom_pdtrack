@@ -1,5 +1,6 @@
 export interface DeliveryItem {
   id: string;
+  workTag?: 'Service' | 'Project'; // TAG: "Service" (Check list ส่งมอบ) หรือ "Project" (งานโครงการ จาก Record รับ - จ่าย Production)
   docRef: string;
   projectCode: string;
   projectName: string;
@@ -119,6 +120,7 @@ export interface MachineSummary {
   productionOrders: string[];
   requestDepts: string[];
   actionTopics: string[];
+  workTags?: ('Service' | 'Project')[];
   earliestTarget: string | null;
   latestTarget: string | null;
   status: 'completed' | 'overdue' | 'due-soon' | 'in-progress';
@@ -126,6 +128,7 @@ export interface MachineSummary {
 }
 
 export interface SearchCriteria {
+  workTag?: 'all' | 'Service' | 'Project';
   docRef: string;
   projectCode: string;
   projectName: string;

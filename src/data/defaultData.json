@@ -23,7 +23,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-2",
@@ -55,7 +56,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-3",
@@ -87,7 +89,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-4",
@@ -119,7 +122,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-5",
@@ -151,7 +155,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-6",
@@ -177,7 +182,8 @@
     "remark": "ขอซื้อ ลง กทม -11/4/26 p-56798",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-7",
@@ -204,7 +210,8 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Printed"
+    "overviewStatus": "Printed",
+    "workTag": "Service"
   },
   {
     "id": "item-8",
@@ -230,7 +237,8 @@
     "remark": "11/4/26 p-56800",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-9",
@@ -263,7 +271,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-10",
@@ -289,7 +298,8 @@
     "remark": "จัดส่งแล้ว23/7/26 ออฟฟิศ กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-11",
@@ -321,7 +331,8 @@
     "overviewProject": "SO2600001",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-12",
@@ -347,7 +358,8 @@
     "remark": "จัดส่งแล้ว23/7/26 ออฟฟิศ กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-13",
@@ -377,7 +389,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-14",
@@ -407,7 +420,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-15",
@@ -437,7 +451,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-16",
@@ -467,7 +482,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-17",
@@ -497,7 +513,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-18",
@@ -523,7 +540,8 @@
     "remark": "p-52923",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-19",
@@ -555,7 +573,8 @@
     "currentOp": "Op 20: ปรับแต่ง (DEA062)",
     "currentOpDesc": "ปรับแต่ง",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-20",
@@ -581,7 +600,8 @@
     "remark": "จัดส่งแล้ว 23/7/26 ออฟิศ กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-21",
@@ -607,7 +627,8 @@
     "remark": "ให้ส่งไปพร้อม TSPK >> 31/7",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-22",
@@ -633,7 +654,8 @@
     "remark": "ส่งจากคลัง ข ก. 2/6/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-23",
@@ -659,7 +681,8 @@
     "remark": "p-58125",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-24",
@@ -685,7 +708,8 @@
     "remark": "p-58126",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-25",
@@ -711,7 +735,8 @@
     "remark": "p-58127",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-26",
@@ -743,7 +768,8 @@
     "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
     "currentOpDesc": "ASSY ประกอบไฟฟ้า",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-27",
@@ -777,7 +803,8 @@
     "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
     "currentOpDesc": "ASSY ประกอบไฟฟ้า",
     "currentOpStatus": "Ready to Start",
-    "overviewStatus": "Released"
+    "overviewStatus": "Released",
+    "workTag": "Service"
   },
   {
     "id": "item-28",
@@ -803,7 +830,8 @@
     "remark": "ส่งจากคลัง ข ก. 2/6/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-29",
@@ -829,7 +857,8 @@
     "remark": "p-58131",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-30",
@@ -861,7 +890,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-31",
@@ -893,7 +923,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-32",
@@ -925,7 +956,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-33",
@@ -957,7 +989,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-34",
@@ -989,7 +1022,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-35",
@@ -1021,7 +1055,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-36",
@@ -1053,7 +1088,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-37",
@@ -1085,7 +1121,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-38",
@@ -1117,7 +1154,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-39",
@@ -1149,7 +1187,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-40",
@@ -1181,7 +1220,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-41",
@@ -1213,7 +1253,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-42",
@@ -1245,7 +1286,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-43",
@@ -1277,7 +1319,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-44",
@@ -1309,7 +1352,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-45",
@@ -1341,7 +1385,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-46",
@@ -1373,7 +1418,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-47",
@@ -1405,7 +1451,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-48",
@@ -1437,7 +1484,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-49",
@@ -1471,7 +1519,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-50",
@@ -1497,7 +1546,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-51",
@@ -1529,7 +1579,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-52",
@@ -1557,7 +1608,8 @@
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
     "overviewStatus": "Printed",
-    "overviewCustomer": "Service Order"
+    "overviewCustomer": "Service Order",
+    "workTag": "Service"
   },
   {
     "id": "item-53",
@@ -1585,7 +1637,8 @@
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
     "overviewStatus": "Active",
-    "overviewCustomer": "Service Order"
+    "overviewCustomer": "Service Order",
+    "workTag": "Service"
   },
   {
     "id": "item-54",
@@ -1617,7 +1670,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-55",
@@ -1643,7 +1697,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-56",
@@ -1669,7 +1724,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-57",
@@ -1695,7 +1751,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-58",
@@ -1721,7 +1778,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-59",
@@ -1747,7 +1805,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-60",
@@ -1773,7 +1832,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-61",
@@ -1799,7 +1859,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-62",
@@ -1825,7 +1886,8 @@
     "remark": "คลัง ส่งแล้ว14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-63",
@@ -1851,7 +1913,8 @@
     "remark": "จัดส่งแล้ว 2/6/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-64",
@@ -1883,7 +1946,8 @@
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-65",
@@ -1915,7 +1979,8 @@
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-66",
@@ -1941,7 +2006,8 @@
     "remark": "p-58544",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-67",
@@ -1967,7 +2033,8 @@
     "remark": "p-58545",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-68",
@@ -1993,7 +2060,8 @@
     "remark": "จัดส่งแล้ว 2/6/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-69",
@@ -2019,7 +2087,8 @@
     "remark": "p-58546",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-70",
@@ -2045,7 +2114,8 @@
     "remark": "p-58547",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-71",
@@ -2071,7 +2141,8 @@
     "remark": "p-58548",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-72",
@@ -2103,7 +2174,8 @@
     "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
     "currentOpDesc": "ASSY ประกอบไฟฟ้า",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-73",
@@ -2129,7 +2201,8 @@
     "remark": "p-58550",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-74",
@@ -2156,7 +2229,8 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Printed"
+    "overviewStatus": "Printed",
+    "workTag": "Service"
   },
   {
     "id": "item-75",
@@ -2192,7 +2266,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-76",
@@ -2228,7 +2303,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC VF7 (DEA023)",
     "currentOpDesc": "CNC VF7",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-77",
@@ -2264,7 +2340,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: WIRE CUT (SUB027)",
     "currentOpDesc": "WIRE CUT",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-78",
@@ -2300,7 +2377,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-79",
@@ -2336,7 +2414,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-80",
@@ -2372,7 +2451,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 50: เจียรไน (SUB004)",
     "currentOpDesc": "เจียรไน",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-81",
@@ -2406,7 +2486,8 @@
     "activeOpDesc": "CNC ST30",
     "currentOp": "Op 10: CNC ST30 (DEA022)",
     "currentOpDesc": "CNC ST30",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-82",
@@ -2442,7 +2523,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-83",
@@ -2470,7 +2552,8 @@
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
     "overviewStatus": "Active",
-    "overviewCustomer": "Service Order"
+    "overviewCustomer": "Service Order",
+    "workTag": "Service"
   },
   {
     "id": "item-84",
@@ -2498,7 +2581,8 @@
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
     "overviewStatus": "Printed",
-    "overviewCustomer": "Service Order"
+    "overviewCustomer": "Service Order",
+    "workTag": "Service"
   },
   {
     "id": "item-85",
@@ -2534,7 +2618,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-86",
@@ -2566,7 +2651,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-87",
@@ -2598,7 +2684,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-88",
@@ -2627,7 +2714,8 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "workTag": "Service"
   },
   {
     "id": "item-89",
@@ -2658,7 +2746,8 @@
     "overviewCustomer": "Service Order",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-90",
@@ -2690,7 +2779,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-91",
@@ -2722,7 +2812,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-92",
@@ -2754,7 +2845,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-93",
@@ -2785,7 +2877,8 @@
     "overviewCustomer": "Service Order",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-94",
@@ -2817,7 +2910,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-95",
@@ -2849,7 +2943,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-96",
@@ -2881,7 +2976,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-97",
@@ -2913,7 +3009,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-98",
@@ -2945,7 +3042,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-99",
@@ -2977,7 +3075,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-100",
@@ -3009,7 +3108,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-101",
@@ -3041,7 +3141,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-102",
@@ -3073,7 +3174,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-103",
@@ -3105,7 +3207,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-104",
@@ -3137,7 +3240,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-105",
@@ -3169,7 +3273,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-106",
@@ -3201,7 +3306,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-107",
@@ -3233,7 +3339,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-108",
@@ -3265,7 +3372,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-109",
@@ -3297,7 +3405,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-110",
@@ -3329,7 +3438,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-111",
@@ -3361,7 +3471,8 @@
     "overviewProject": "BDM250015",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-112",
@@ -3393,7 +3504,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-113",
@@ -3429,7 +3541,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-114",
@@ -3458,7 +3571,8 @@
     "closed": "*",
     "overviewStatus": "Active",
     "overviewCustomer": "BDM GBH DC 01/04/2568-31/03/2569",
-    "overviewProject": "BDM250015"
+    "overviewProject": "BDM250015",
+    "workTag": "Service"
   },
   {
     "id": "item-115",
@@ -3490,7 +3604,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-116",
@@ -3524,7 +3639,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-117",
@@ -3558,7 +3674,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-118",
@@ -3590,7 +3707,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-119",
@@ -3622,7 +3740,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-120",
@@ -3654,7 +3773,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-121",
@@ -3686,7 +3806,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-122",
@@ -3718,7 +3839,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-123",
@@ -3754,7 +3876,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: หุ้มยาง (SUB005)",
     "currentOpDesc": "หุ้มยาง",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-124",
@@ -3786,7 +3909,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-125",
@@ -3820,7 +3944,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-126",
@@ -3856,7 +3981,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC HDT1870 (DEA025)",
     "currentOpDesc": "CNC HDT1870",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-127",
@@ -3885,7 +4011,8 @@
     "closed": "",
     "overviewStatus": "Closed",
     "overviewCustomer": "MA Dohome ชัยภูมิ 19/11/67-18/11/68",
-    "overviewProject": "MA2400053"
+    "overviewProject": "MA2400053",
+    "workTag": "Service"
   },
   {
     "id": "item-128",
@@ -3921,7 +4048,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC HDT1870 (DEA025)",
     "currentOpDesc": "CNC HDT1870",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-129",
@@ -3953,7 +4081,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-130",
@@ -3985,7 +4114,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-131",
@@ -4017,7 +4147,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-132",
@@ -4049,7 +4180,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-133",
@@ -4081,7 +4213,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-134",
@@ -4113,7 +4246,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-135",
@@ -4145,7 +4279,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-136",
@@ -4177,7 +4312,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-137",
@@ -4209,7 +4345,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-138",
@@ -4241,7 +4378,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-139",
@@ -4273,7 +4411,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-140",
@@ -4309,7 +4448,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC ST30 (DEA022)",
     "currentOpDesc": "CNC ST30",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-141",
@@ -4341,7 +4481,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-142",
@@ -4373,7 +4514,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-143",
@@ -4405,7 +4547,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-144",
@@ -4437,7 +4580,8 @@
     "overviewProject": "MA2400053",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-145",
@@ -4469,7 +4613,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-146",
@@ -4501,7 +4646,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-147",
@@ -4533,7 +4679,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-148",
@@ -4565,7 +4712,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-149",
@@ -4597,7 +4745,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-150",
@@ -4629,7 +4778,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-151",
@@ -4661,7 +4811,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-152",
@@ -4693,7 +4844,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-153",
@@ -4725,7 +4877,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-154",
@@ -4757,7 +4910,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-155",
@@ -4789,7 +4943,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-156",
@@ -4821,7 +4976,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-157",
@@ -4855,7 +5011,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-158",
@@ -4887,7 +5044,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-159",
@@ -4919,7 +5077,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-160",
@@ -4951,7 +5110,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-161",
@@ -4985,7 +5145,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-162",
@@ -5021,7 +5182,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-163",
@@ -5053,7 +5215,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-164",
@@ -5085,7 +5248,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-165",
@@ -5117,7 +5281,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-166",
@@ -5149,7 +5314,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-167",
@@ -5181,7 +5347,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-168",
@@ -5213,7 +5380,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-169",
@@ -5247,7 +5415,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-170",
@@ -5279,7 +5448,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-171",
@@ -5311,7 +5481,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-172",
@@ -5343,7 +5514,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-173",
@@ -5375,7 +5547,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-174",
@@ -5411,7 +5584,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC ST30 (DEA022)",
     "currentOpDesc": "CNC ST30",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-175",
@@ -5443,7 +5617,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-176",
@@ -5475,7 +5650,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-177",
@@ -5511,7 +5687,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: ชุบชิงค์ (SUB001)",
     "currentOpDesc": "ชุบชิงค์",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-178",
@@ -5547,7 +5724,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 40: ชุบชิงค์ (SUB001)",
     "currentOpDesc": "ชุบชิงค์",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-179",
@@ -5581,7 +5759,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-180",
@@ -5617,7 +5796,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 70: ชุบชิงค์ (SUB001)",
     "currentOpDesc": "ชุบชิงค์",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-181",
@@ -5653,7 +5833,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 40: TAP (DEA052)",
     "currentOpDesc": "TAP",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-182",
@@ -5685,7 +5866,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-183",
@@ -5717,7 +5899,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-184",
@@ -5749,7 +5932,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-185",
@@ -5781,7 +5965,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-186",
@@ -5815,7 +6000,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-187",
@@ -5851,7 +6037,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-188",
@@ -5887,7 +6074,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: ปรับแต่ง (DEA062)",
     "currentOpDesc": "ปรับแต่ง",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-189",
@@ -5919,7 +6107,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-190",
@@ -5953,7 +6142,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-191",
@@ -5979,7 +6169,8 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-192",
@@ -6005,7 +6196,8 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-193",
@@ -6031,7 +6223,8 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-194",
@@ -6057,7 +6250,8 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-195",
@@ -6091,7 +6285,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-196",
@@ -6123,7 +6318,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-197",
@@ -6155,7 +6351,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-198",
@@ -6187,7 +6384,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-199",
@@ -6219,7 +6417,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-200",
@@ -6251,7 +6450,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-201",
@@ -6283,7 +6483,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-202",
@@ -6315,7 +6516,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-203",
@@ -6349,7 +6551,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-204",
@@ -6385,7 +6588,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC HDT1870 (DEA025)",
     "currentOpDesc": "CNC HDT1870",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-205",
@@ -6414,7 +6618,8 @@
     "closed": "",
     "overviewStatus": "Printed",
     "overviewCustomer": "MA Dohome สาขาบุรีรัมย์ เริ่ม 11/11/2568-10/11/2569",
-    "overviewProject": "MA2500047"
+    "overviewProject": "MA2500047",
+    "workTag": "Service"
   },
   {
     "id": "item-206",
@@ -6450,7 +6655,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC HDT1870 (DEA025)",
     "currentOpDesc": "CNC HDT1870",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-207",
@@ -6484,7 +6690,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-208",
@@ -6516,7 +6723,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-209",
@@ -6548,7 +6756,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-210",
@@ -6580,7 +6789,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-211",
@@ -6612,7 +6822,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-212",
@@ -6644,7 +6855,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-213",
@@ -6676,7 +6888,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-214",
@@ -6708,7 +6921,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-215",
@@ -6740,7 +6954,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-216",
@@ -6772,7 +6987,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-217",
@@ -6804,7 +7020,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-218",
@@ -6840,7 +7057,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC ST30 (DEA022)",
     "currentOpDesc": "CNC ST30",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-219",
@@ -6872,7 +7090,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-220",
@@ -6904,7 +7123,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-221",
@@ -6936,7 +7156,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-222",
@@ -6968,7 +7189,8 @@
     "overviewProject": "MA2500047",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-223",
@@ -7000,7 +7222,8 @@
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-224",
@@ -7034,7 +7257,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-225",
@@ -7066,7 +7290,8 @@
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-226",
@@ -7098,7 +7323,8 @@
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-227",
@@ -7124,7 +7350,8 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-228",
@@ -7158,7 +7385,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-229",
@@ -7190,7 +7418,8 @@
     "overviewProject": "SO2600001",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-230",
@@ -7219,7 +7448,8 @@
     "closed": "",
     "overviewStatus": "Printed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
-    "overviewProject": "SO2600001"
+    "overviewProject": "SO2600001",
+    "workTag": "Service"
   },
   {
     "id": "item-231",
@@ -7248,7 +7478,8 @@
     "closed": "",
     "overviewStatus": "Printed",
     "overviewCustomer": "ASRS Line5 add-on Conveyor& SR- เอสดีกัทธรี มรกต",
-    "overviewProject": "SO2600001"
+    "overviewProject": "SO2600001",
+    "workTag": "Service"
   },
   {
     "id": "item-232",
@@ -7282,7 +7513,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-233",
@@ -7316,7 +7548,8 @@
     "activeOpDesc": "ชุบชิงค์",
     "currentOp": "Op 30: ชุบชิงค์ (SUB038)",
     "currentOpDesc": "ชุบชิงค์",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-234",
@@ -7348,7 +7581,8 @@
     "overviewProject": "SO2500003",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-235",
@@ -7375,7 +7609,8 @@
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
     "closed": "*",
-    "overviewStatus": "Printed"
+    "overviewStatus": "Printed",
+    "workTag": "Service"
   },
   {
     "id": "item-236",
@@ -7405,7 +7640,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-237",
@@ -7435,7 +7671,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-238",
@@ -7461,7 +7698,8 @@
     "remark": "23/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-239",
@@ -7493,7 +7731,8 @@
     "overviewProject": "SO2600001",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-240",
@@ -7519,7 +7758,8 @@
     "remark": "23/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-241",
@@ -7549,7 +7789,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-242",
@@ -7579,7 +7820,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-243",
@@ -7609,7 +7851,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-244",
@@ -7639,7 +7882,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-245",
@@ -7669,7 +7913,8 @@
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
     "currentOpStatus": "Completed",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-246",
@@ -7695,7 +7940,8 @@
     "remark": "25/2/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-247",
@@ -7727,7 +7973,8 @@
     "currentOp": "Op 20: ปรับแต่ง (DEA062)",
     "currentOpDesc": "ปรับแต่ง",
     "currentOpStatus": "Active",
-    "overviewStatus": "Active"
+    "overviewStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-248",
@@ -7753,7 +8000,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-249",
@@ -7779,7 +8027,8 @@
     "remark": "14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-250",
@@ -7805,7 +8054,8 @@
     "remark": "14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-251",
@@ -7831,7 +8081,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-252",
@@ -7857,7 +8108,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-253",
@@ -7883,7 +8135,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-254",
@@ -7909,7 +8162,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-255",
@@ -7935,7 +8189,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-256",
@@ -7961,7 +8216,8 @@
     "remark": "14/7/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-257",
@@ -7987,7 +8243,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-258",
@@ -8013,7 +8270,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-259",
@@ -8039,7 +8297,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-260",
@@ -8065,7 +8324,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-261",
@@ -8091,7 +8351,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-262",
@@ -8117,7 +8378,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-263",
@@ -8143,7 +8405,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-264",
@@ -8169,7 +8432,8 @@
     "remark": "",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-265",
@@ -8203,7 +8467,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-266",
@@ -8235,7 +8500,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-267",
@@ -8267,7 +8533,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-268",
@@ -8299,7 +8566,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-269",
@@ -8331,7 +8599,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-270",
@@ -8367,7 +8636,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-271",
@@ -8399,7 +8669,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-272",
@@ -8431,7 +8702,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-273",
@@ -8463,7 +8735,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-274",
@@ -8497,7 +8770,8 @@
     "activeOpDesc": "งานกลึง-ภายนอก",
     "currentOp": "Op 20: งานกลึง-ภายนอก (SUB026)",
     "currentOpDesc": "งานกลึง-ภายนอก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-275",
@@ -8526,7 +8800,8 @@
     "closed": "",
     "overviewStatus": "Printed",
     "overviewCustomer": "BDM AAI 1/01/2569 - 31/12/2569",
-    "overviewProject": "BDM260010"
+    "overviewProject": "BDM260010",
+    "workTag": "Service"
   },
   {
     "id": "item-276",
@@ -8561,7 +8836,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC ST30 (DEA022)",
     "currentOpDesc": "CNC ST30",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-277",
@@ -8597,7 +8873,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-278",
@@ -8633,7 +8910,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: ชุบชิงค์ (SUB001)",
     "currentOpDesc": "ชุบชิงค์",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-279",
@@ -8667,7 +8945,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-280",
@@ -8703,7 +8982,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 60: ปรับแต่ง (DEA062)",
     "currentOpDesc": "ปรับแต่ง",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-281",
@@ -8729,7 +9009,8 @@
     "remark": "",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-282",
@@ -8761,7 +9042,8 @@
     "overviewProject": "WM2600002",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-283",
@@ -8787,7 +9069,8 @@
     "remark": "คลังจ่ายแล้ว 21/8/26",
     "status": "รอดำเนินการ",
     "rawStatus": "",
-    "closed": ""
+    "closed": "",
+    "workTag": "Service"
   },
   {
     "id": "item-284",
@@ -8821,7 +9104,8 @@
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOpStatus": "Ready to Start",
-    "overviewStatus": "Released"
+    "overviewStatus": "Released",
+    "workTag": "Service"
   },
   {
     "id": "item-285",
@@ -8847,7 +9131,8 @@
     "remark": "คลััง ส่ง 7/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-286",
@@ -8873,7 +9158,8 @@
     "remark": "สั่งซื้อลง กทม",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-287",
@@ -8899,7 +9185,8 @@
     "remark": "11/มิย26 เปลี่ยน 7020203004 แทน",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-288",
@@ -8925,7 +9212,8 @@
     "remark": "คลััง ส่ง 7/8/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-289",
@@ -8959,7 +9247,8 @@
     "activeOpDesc": "ASSY ประกอบไฟฟ้า",
     "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
     "currentOpDesc": "ASSY ประกอบไฟฟ้า",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-290",
@@ -8991,7 +9280,8 @@
     "overviewProject": "BDM260010",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-291",
@@ -9017,7 +9307,8 @@
     "remark": "21/4/26",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-292",
@@ -9043,7 +9334,8 @@
     "remark": "P-56802",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-293",
@@ -9069,7 +9361,8 @@
     "remark": "P-56803",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-294",
@@ -9095,7 +9388,8 @@
     "remark": "P-56804",
     "status": "ส่งแล้ว",
     "rawStatus": "ส่งแล้ว",
-    "closed": "*"
+    "closed": "*",
+    "workTag": "Service"
   },
   {
     "id": "item-295",
@@ -9129,7 +9423,8 @@
     "currentOp": "Op 10: ASSY ประกอบไฟฟ้า (DED001)",
     "currentOpDesc": "ASSY ประกอบไฟฟ้า",
     "currentOpStatus": "Ready to Start",
-    "overviewStatus": "Released"
+    "overviewStatus": "Released",
+    "workTag": "Service"
   },
   {
     "id": "item-296",
@@ -9165,7 +9460,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-297",
@@ -9201,7 +9497,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 50: เจียรไน (SUB004)",
     "currentOpDesc": "เจียรไน",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-298",
@@ -9235,7 +9532,8 @@
     "activeOpDesc": "CNC ST30",
     "currentOp": "Op 10: CNC ST30 (DEA022)",
     "currentOpDesc": "CNC ST30",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-299",
@@ -9271,7 +9569,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-300",
@@ -9307,7 +9606,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC VF7 (DEA023)",
     "currentOpDesc": "CNC VF7",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-301",
@@ -9343,7 +9643,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: WIRE CUT (SUB027)",
     "currentOpDesc": "WIRE CUT",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-302",
@@ -9379,7 +9680,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-303",
@@ -9415,7 +9717,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-304",
@@ -9451,7 +9754,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-305",
@@ -9483,7 +9787,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-306",
@@ -9519,7 +9824,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: CNC VF4 (DEA024)",
     "currentOpDesc": "CNC VF4",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-307",
@@ -9551,7 +9857,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-308",
@@ -9583,7 +9890,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-309",
@@ -9619,7 +9927,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 20: ปรับแต่ง (DEA062)",
     "currentOpDesc": "ปรับแต่ง",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-310",
@@ -9655,7 +9964,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เครื่องอัดไฮดรอลิก RAS306 30T (DEA042)",
     "currentOpDesc": "เครื่องอัดไฮดรอลิก RAS306 30T",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-311",
@@ -9687,7 +9997,8 @@
     "overviewProject": "SR2600017",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-312",
@@ -9721,7 +10032,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-313",
@@ -9757,7 +10069,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: ทำสี (DEB021)",
     "currentOpDesc": "ทำสี",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-314",
@@ -9789,7 +10102,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-315",
@@ -9825,7 +10139,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 30: ทำสี (DEB021)",
     "currentOpDesc": "ทำสี",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-316",
@@ -9859,7 +10174,8 @@
     "activeOpDesc": "ชุบชิงค์",
     "currentOp": "Op 30: ชุบชิงค์ (SUB029)",
     "currentOpDesc": "ชุบชิงค์",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-317",
@@ -9891,7 +10207,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-318",
@@ -9923,7 +10240,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-319",
@@ -9955,7 +10273,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-320",
@@ -9987,7 +10306,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-321",
@@ -10019,7 +10339,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-322",
@@ -10051,7 +10372,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-323",
@@ -10083,7 +10405,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-324",
@@ -10115,7 +10438,8 @@
     "overviewProject": "BDM250028",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-325",
@@ -10149,7 +10473,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-326",
@@ -10181,7 +10506,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-327",
@@ -10215,7 +10541,8 @@
     "activeOpDesc": "ASSY ประกอบแมคคานิก",
     "currentOp": "Op 10: ASSY ประกอบแมคคานิก (DEC001)",
     "currentOpDesc": "ASSY ประกอบแมคคานิก",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-328",
@@ -10247,7 +10574,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-329",
@@ -10279,7 +10607,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-330",
@@ -10311,7 +10640,8 @@
     "overviewProject": "BDM250040",
     "currentOp": "เสร็จทุกขั้นตอน",
     "currentOpDesc": "Completed",
-    "currentOpStatus": "Completed"
+    "currentOpStatus": "Completed",
+    "workTag": "Service"
   },
   {
     "id": "item-331",
@@ -10345,7 +10675,8 @@
     "activeOpDesc": "CNC CK6",
     "currentOp": "Op 10: CNC CK6 (DEA027)",
     "currentOpDesc": "CNC CK6",
-    "currentOpStatus": "Active"
+    "currentOpStatus": "Active",
+    "workTag": "Service"
   },
   {
     "id": "item-332",
@@ -10381,7 +10712,8 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เลื่อย (DEA011)",
     "currentOpDesc": "เลื่อย",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   },
   {
     "id": "item-333",
@@ -10417,6 +10749,7 @@
     "hasReadyOp": true,
     "currentOp": "Op 10: เลื่อย (DEA011)",
     "currentOpDesc": "เลื่อย",
-    "currentOpStatus": "Ready to Start"
+    "currentOpStatus": "Ready to Start",
+    "workTag": "Service"
   }
 ]

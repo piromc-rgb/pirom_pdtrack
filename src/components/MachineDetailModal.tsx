@@ -151,6 +151,18 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
                   เครื่องจักร: {machine.name}
                 </h2>
+                {(machine.workTags || ['Service']).map(tag => (
+                  <span
+                    key={tag}
+                    className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                      tag === 'Project'
+                        ? 'bg-violet-500/20 text-violet-300 border-violet-500/40'
+                        : 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                    }`}
+                  >
+                    TAG: {tag}
+                  </span>
+                ))}
                 {isCompleted ? (
                   <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                     <CheckCircle2 className="w-3.5 h-3.5" /> ส่งมอบครบ 100%
@@ -364,7 +376,18 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                           {idx + 1}
                         </td>
                         <td className="py-3 px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap">
-                          {item.itemCode || '-'}
+                          <div className="flex items-center gap-1.5 flex-wrap font-sans">
+                            <span
+                              className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
+                                item.workTag === 'Project'
+                                  ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                  : 'bg-sky-100 text-sky-800 border-sky-300'
+                              }`}
+                            >
+                              {item.workTag || 'Service'}
+                            </span>
+                            <span className="font-mono">{item.itemCode || '-'}</span>
+                          </div>
                         </td>
                         <td className="py-3 px-3.5 font-medium text-slate-900">
                           <div>{item.itemName}</div>

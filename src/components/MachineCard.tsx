@@ -66,9 +66,23 @@ export const MachineCard: React.FC<MachineCardProps> = ({ machine, onSelect }) =
               <Cpu className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900 group-hover:text-sky-600 transition flex items-center gap-1.5">
-                {machine.name}
-              </h3>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h3 className="font-bold text-base text-slate-900 group-hover:text-sky-600 transition flex items-center gap-1.5">
+                  {machine.name}
+                </h3>
+                {(machine.workTags || ['Service']).map(tag => (
+                  <span
+                    key={tag}
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                      tag === 'Project'
+                        ? 'bg-violet-100 text-violet-800 border-violet-300'
+                        : 'bg-sky-100 text-sky-800 border-sky-300'
+                    }`}
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
               <p className="text-xs text-slate-500 line-clamp-1">
                 {machine.projects.length > 0 ? machine.projects[0] : 'โครงการทั่วไป'}
                 {machine.projects.length > 1 && ` (+${machine.projects.length - 1} โครงการ)`}

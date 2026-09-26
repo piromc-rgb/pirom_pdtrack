@@ -322,9 +322,21 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
                       className="hover:bg-sky-50/50 cursor-pointer transition"
                     >
                       <td className="py-3.5 px-4 font-bold text-slate-900">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <Cpu className={`w-4 h-4 ${hasOverdue ? 'text-rose-500' : isCompleted ? 'text-emerald-500' : 'text-sky-500'}`} />
                           <span>{machine.name}</span>
+                          {(machine.workTags || ['Service']).map(tag => (
+                            <span
+                              key={tag}
+                              className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                tag === 'Project'
+                                  ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                  : 'bg-sky-100 text-sky-800 border-sky-300'
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
                         </div>
                       </td>
                       <td className="py-3.5 px-4 text-slate-600 max-w-xs truncate" title={machine.projects.join(', ')}>

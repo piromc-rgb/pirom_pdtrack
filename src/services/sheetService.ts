@@ -1,5 +1,6 @@
 import Papa from 'papaparse';
 import defaultItemsJson from '../data/defaultData.json';
+import defaultProjectItemsJson from '../data/defaultProjectItems.json';
 import defaultProductionMap from '../data/productionMap.json';
 import defaultQcData from '../data/qcData.json';
 import defaultOverviewData from '../data/overviewStatusData.json';
@@ -47,7 +48,7 @@ const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
 const STORAGE_OVERVIEW_URL_KEY = 'pdtrack_overview_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v6';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v7';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -659,6 +660,7 @@ export function parseDeliveryCsvWithProduction(
 
     items.push({
       id: `item-${i}`,
+      workTag: 'Service',
       docRef,
       projectCode,
       projectName,
@@ -728,9 +730,268 @@ export function parseDeliveryCsvWithProduction(
 }
 
 /**
+ * Parses Project items ("สั่งผลิตเครื่องจักรตาม Machine List") from File 2 (Record รับ - จ่าย Production)
+ * and tags them with workTag: 'Project'
+ */
+export function parseProjectItemsFromProductionCsv(
+  csvText: string,
+  existingServiceItems: DeliveryItem[],
+  qcMap?: Record<string, QcMeta>
+): DeliveryItem[] {
+  const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
+  const rows = parsed.data;
+  if (!rows || rows.length < 3) return [];
+
+  const existingServiceKeys = new Set<string>();
+  existingServiceItems.forEach(item => {
+    existingServiceKeys.add(`${norm(item.docRef)}|${norm(item.machineName)}|${norm(item.itemCode)}`);
+  });
+
+  const projectItems: DeliveryItem[] = [];
+  let projIdx = 0;
+
+  for (let i = 2; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || r.length < 10) continue;
+
+    const getVal = (idx: number) => (idx >= 0 && idx < r.length && r[idx] ? r[idx].trim() : '');
+
+    const actionTopic = getVal(1);
+    if (actionTopic !== 'สั่งผลิตเครื่องจักรตาม Machine List') continue;
+
+    const rawDwgStatus = getVal(25);
+    if (rawDwgStatus.includes('ยกเลิกผลิต') || rawDwgStatus.includes('ไม่สั่งผลิต')) continue;
+
+    const docRef = getVal(0);
+    const ncrNo = getVal(2);
+    const projectCode = getVal(3);
+    const projectName = getVal(4);
+    const docType = getVal(5) || 'งานโครงการ';
+    const rawMachine = getVal(6);
+    const itemCode = getVal(7);
+    const itemName = getVal(8);
+    const qtyStr = getVal(9);
+    let prodOrder = getVal(10);
+    const pdActLine = getVal(11);
+    const notifyDate = getVal(12);
+    const week = getVal(13);
+    const targetRequested = getVal(14);
+    const requestDept = getVal(15);
+    const requesterName = getVal(16);
+    const target1 = getVal(17);
+    const target2 = getVal(18);
+    const target3 = getVal(19);
+    const target4 = getVal(20);
+    const target5 = getVal(21);
+    let rawTargetLatest = getVal(22);
+    const poPr = getVal(23);
+    const remark = getVal(24);
+    const closed = getVal(26);
+
+    const machineName = rawMachine || '(ไม่ระบุเครื่องจักร)';
+    const dedupKey = `${norm(docRef)}|${norm(machineName)}|${norm(itemCode)}`;
+    if (existingServiceKeys.has(dedupKey)) continue;
+
+    // Clean fake formula default date in Sheet 2 (30/12/2025 or 31/12/2025 when target1..5 are all empty)
+    const hasAnyTarget1To5 = Boolean(target1 || target2 || target3 || target4 || target5);
+    if (
+      !hasAnyTarget1To5 &&
+      (rawTargetLatest === '30/12/2025' || rawTargetLatest === '31/12/2025' || rawTargetLatest === '30/12/1899')
+    ) {
+      rawTargetLatest = '';
+    }
+
+    const targetLatest = rawTargetLatest || target5 || target4 || target3 || target2 || target1 || targetRequested;
+
+    let qty = 1;
+    if (qtyStr) {
+      const parsedQty = parseFloat(qtyStr.replace(/,/g, ''));
+      if (!isNaN(parsedQty)) qty = parsedQty;
+    }
+
+    if (!prodOrder && itemCode) {
+      const projItemKey = `${projectCode.trim()}|${itemCode.trim()}`;
+      prodOrder =
+        (itemPdMap.byProjItem as Record<string, string>)[projItemKey] ||
+        (itemPdMap.byItem as Record<string, string>)[itemCode.trim()] ||
+        '';
+    }
+
+    const itemPds = extractPdNumbers(prodOrder);
+    const matchedQcPds = qcMap ? itemPds.filter(p => qcMap[p]) : [];
+    const isQcPassed = matchedQcPds.length > 0;
+    const firstQcMeta = isQcPassed && qcMap ? qcMap[matchedQcPds[0]] : undefined;
+
+    const overviewMeta = getOverviewStatusForItem(itemCode, projectCode, itemPds);
+    if (!prodOrder && overviewMeta?.prodOrder) {
+      prodOrder = overviewMeta.prodOrder;
+    }
+
+    const normRemark = remark.toLowerCase();
+    const normClosed = closed.toLowerCase();
+    const isDelivered =
+      normRemark.includes('ส่งแล้ว') ||
+      normRemark.includes('จัดส่งแล้ว') ||
+      normRemark.includes('*') ||
+      normRemark.includes('close') ||
+      normClosed.includes('*') ||
+      normClosed.includes('close');
+
+    projIdx++;
+    projectItems.push({
+      id: `proj-item-${projIdx}`,
+      workTag: 'Project',
+      docRef,
+      projectCode,
+      projectName,
+      customer: extractCustomer(projectName),
+      docType,
+      machineName,
+      hasMachine: Boolean(rawMachine),
+      itemCode,
+      itemName,
+      qty,
+      prodOrder,
+      pdActLine,
+      notifyDate,
+      target1,
+      target2,
+      target3,
+      target4,
+      target5,
+      targetLatest,
+      poPr,
+      remark,
+      status: isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ',
+      rawStatus: rawDwgStatus,
+      closed,
+      actionTopic,
+      ncrNo,
+      requestDept,
+      requesterName,
+      targetRequested,
+      week,
+      isQcPassed,
+      qcDate: firstQcMeta?.qcDate || '',
+      qcInspector: firstQcMeta?.inspector || '',
+      qcPassedQty: firstQcMeta?.qtyPass || '',
+      qcTopic: firstQcMeta?.topic || '',
+      qcRemarks: firstQcMeta?.remarks || '',
+      qcPdList: matchedQcPds,
+      overviewStatus: overviewMeta?.status || '',
+      overviewCustomer: overviewMeta?.customer || '',
+      overviewProject: overviewMeta?.project || '',
+      overviewItemCode: overviewMeta?.itemCode || '',
+      readyOp: overviewMeta?.readyOp || '',
+      readyOpDesc: overviewMeta?.readyOpDesc || '',
+      readyOpWc: overviewMeta?.readyOpWc || '',
+      readyOpNo: overviewMeta?.readyOpNo || undefined,
+      hasReadyOp: Boolean(overviewMeta?.readyOp),
+      activeOp: overviewMeta?.activeOp || '',
+      activeOpDesc: overviewMeta?.activeOpDesc || '',
+      activeOpWc: overviewMeta?.activeOpWc || '',
+      activeOpNo: overviewMeta?.activeOpNo || undefined,
+      currentOp: overviewMeta?.currentOp || '',
+      currentOpDesc: overviewMeta?.currentOpDesc || '',
+      currentOpStatus: overviewMeta?.currentOpStatus || '',
+      lastCompletedOp: overviewMeta?.lastCompletedOp || '',
+      lastCompletedOpDesc: overviewMeta?.lastCompletedOpDesc || '',
+      lastCompletedOpWc: overviewMeta?.lastCompletedOpWc || '',
+      lastCompletedOpNo: overviewMeta?.lastCompletedOpNo || undefined,
+      isAllCompleted: overviewMeta?.isAllCompleted || false,
+    });
+  }
+
+  return projectItems;
+}
+
+/**
+ * Helper to enrich a bundled item (Service or Project) with Production, QC, and Overview maps
+ */
+function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'): DeliveryItem {
+  const docNorm = norm(item.docRef);
+  const itemNorm = norm(item.itemCode);
+  const key = `${docNorm}|${itemNorm}`;
+  const prodMeta =
+    (defaultProductionMap.byDocItem as Record<string, ProductionMeta>)[key] ||
+    (defaultProductionMap.byDoc as Record<string, ProductionMeta>)[docNorm];
+
+  let prodOrder = item.prodOrder;
+  if (!prodOrder && item.itemCode) {
+    const projItemKey = `${item.projectCode?.trim()}|${item.itemCode?.trim()}`;
+    prodOrder =
+      (itemPdMap.byProjItem as Record<string, string>)[projItemKey] ||
+      (itemPdMap.byItem as Record<string, string>)[item.itemCode?.trim()] ||
+      '';
+  }
+
+  const itemPds = extractPdNumbers(prodOrder);
+  const matchedQcPds = itemPds.filter(p => (defaultQcData as Record<string, QcMeta>)[p]);
+  const isQcPassed = Boolean(item.isQcPassed || matchedQcPds.length > 0);
+  const firstQcMeta = matchedQcPds.length > 0 ? (defaultQcData as Record<string, QcMeta>)[matchedQcPds[0]] : undefined;
+  const overviewMeta = getOverviewStatusForItem(item.itemCode, item.projectCode, itemPds);
+  if (!prodOrder && overviewMeta?.prodOrder) {
+    prodOrder = overviewMeta.prodOrder;
+  }
+  const normRemark = (item.remark || '').toLowerCase();
+  const normClosed = (item.closed || '').toLowerCase();
+  const normRawStatus = (item.rawStatus || '').toLowerCase();
+  const isDelivered =
+    item.status === 'ส่งแล้ว' ||
+    normRawStatus.includes('ส่ง') ||
+    normRawStatus.includes('deliv') ||
+    normRemark.includes('*') ||
+    normRemark.includes('close') ||
+    normClosed.includes('*') ||
+    normClosed.includes('close');
+
+  return {
+    ...item,
+    workTag: item.workTag || defaultTag,
+    status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
+    prodOrder,
+    customer: item.customer || extractCustomer(item.projectName),
+    actionTopic: item.actionTopic || prodMeta?.actionTopic || '',
+    ncrNo: item.ncrNo || prodMeta?.ncrNo || '',
+    requestDept: item.requestDept || prodMeta?.requestDept || '',
+    requesterName: item.requesterName || prodMeta?.requesterName || '',
+    targetRequested: item.targetRequested || prodMeta?.targetRequested || '',
+    week: item.week || prodMeta?.week || '',
+    isQcPassed,
+    qcDate: item.qcDate || firstQcMeta?.qcDate || '',
+    qcInspector: item.qcInspector || firstQcMeta?.inspector || '',
+    qcPassedQty: item.qcPassedQty || firstQcMeta?.qtyPass || '',
+    qcTopic: item.qcTopic || firstQcMeta?.topic || '',
+    qcRemarks: item.qcRemarks || firstQcMeta?.remarks || '',
+    qcPdList: matchedQcPds.length > 0 ? matchedQcPds : item.qcPdList,
+    overviewStatus: overviewMeta?.status || item.overviewStatus || '',
+    overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',
+    overviewProject: overviewMeta?.project || item.overviewProject || '',
+    overviewItemCode: overviewMeta?.itemCode || item.overviewItemCode || '',
+    readyOp: overviewMeta?.readyOp || item.readyOp || '',
+    readyOpDesc: overviewMeta?.readyOpDesc || item.readyOpDesc || '',
+    readyOpWc: overviewMeta?.readyOpWc || item.readyOpWc || '',
+    readyOpNo: overviewMeta?.readyOpNo ?? item.readyOpNo,
+    hasReadyOp: Boolean(overviewMeta?.readyOp || item.readyOp),
+    activeOp: overviewMeta?.activeOp || item.activeOp || '',
+    activeOpDesc: overviewMeta?.activeOpDesc || item.activeOpDesc || '',
+    activeOpWc: overviewMeta?.activeOpWc || item.activeOpWc || '',
+    activeOpNo: overviewMeta?.activeOpNo ?? item.activeOpNo,
+    currentOp: overviewMeta?.currentOp || item.currentOp || '',
+    currentOpDesc: overviewMeta?.currentOpDesc || item.currentOpDesc || '',
+    currentOpStatus: overviewMeta?.currentOpStatus || item.currentOpStatus || '',
+    lastCompletedOp: overviewMeta?.lastCompletedOp || item.lastCompletedOp || '',
+    lastCompletedOpDesc: overviewMeta?.lastCompletedOpDesc || item.lastCompletedOpDesc || '',
+    lastCompletedOpWc: overviewMeta?.lastCompletedOpWc || item.lastCompletedOpWc || '',
+    lastCompletedOpNo: overviewMeta?.lastCompletedOpNo ?? item.lastCompletedOpNo,
+    isAllCompleted: overviewMeta?.isAllCompleted ?? item.isAllCompleted ?? false,
+  };
+}
+
+/**
  * Fetch data connecting up to 4 Google Sheets:
- * 1. Delivery Sheet 1 (Check list ส่งมอบ)
- * 2. Production Sheet 2 (Record รับ - จ่าย Production)
+ * 1. Delivery Sheet 1 (Check list ส่งมอบ -> TAG: Service)
+ * 2. Production Sheet 2 (Record รับ - จ่าย Production -> Enriches Service & pulls งานโครงการ TAG: Project)
  * 3. QC Sheet 3 (QC Checklist ผ่านการตรวจสอบ)
  * 4. Overview Sheet 4 (Status Overview ฝ่ายผลิต)
  */
@@ -772,12 +1033,13 @@ export async function fetchDeliveryData(
 
     const csvText1 = await res1.value.text();
 
-    // Production Sheet 2 map
+    // Production Sheet 2 map & raw text
     let prodMap = defaultProductionMap as { byDocItem: Record<string, ProductionMeta>; byDoc: Record<string, ProductionMeta> };
+    let liveCsvText2 = '';
     if (res2.status === 'fulfilled' && res2.value.ok) {
       try {
-        const csvText2 = await res2.value.text();
-        const liveProdMap = parseProductionCsv(csvText2);
+        liveCsvText2 = await res2.value.text();
+        const liveProdMap = parseProductionCsv(liveCsvText2);
         if (Object.keys(liveProdMap.byDocItem).length > 0) {
           prodMap = liveProdMap;
         }
@@ -822,7 +1084,18 @@ export async function fetchDeliveryData(
       }
     }
 
-    const items = parseDeliveryCsvWithProduction(csvText1, prodMap, qcMap);
+    // 1. Parse Service items from Sheet 1 (Check list ส่งมอบ)
+    const serviceItems = parseDeliveryCsvWithProduction(csvText1, prodMap, qcMap);
+
+    // 2. Parse Project items ("สั่งผลิตเครื่องจักรตาม Machine List") from Sheet 2 (Record รับ - จ่าย Production)
+    let projectItems: DeliveryItem[] = [];
+    if (liveCsvText2) {
+      projectItems = parseProjectItemsFromProductionCsv(liveCsvText2, serviceItems, qcMap);
+    } else {
+      projectItems = (defaultProjectItemsJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Project'));
+    }
+
+    const items = [...serviceItems, ...projectItems];
 
     // Save to cache
     try {
@@ -841,64 +1114,7 @@ export async function fetchDeliveryData(
     if (cached) {
       try {
         let cachedItems = JSON.parse(cached) as DeliveryItem[];
-        // Enrich cached items with itemPdMap and re-evaluate QC
-        cachedItems = cachedItems.map(item => {
-          let prodOrder = item.prodOrder;
-          if (!prodOrder && item.itemCode) {
-            const projItemKey = `${item.projectCode?.trim()}|${item.itemCode?.trim()}`;
-            prodOrder = (itemPdMap.byProjItem as Record<string, string>)[projItemKey] || 
-                        (itemPdMap.byItem as Record<string, string>)[item.itemCode?.trim()] || '';
-          }
-          const itemPds = extractPdNumbers(prodOrder);
-          const matchedQcPds = itemPds.filter(p => (defaultQcData as Record<string, QcMeta>)[p]);
-          const isQcPassed = item.isQcPassed || matchedQcPds.length > 0;
-          const firstQcMeta = matchedQcPds.length > 0 ? (defaultQcData as Record<string, QcMeta>)[matchedQcPds[0]] : undefined;
-
-          const overviewMeta = getOverviewStatusForItem(item.itemCode, item.projectCode, itemPds);
-          if (!prodOrder && overviewMeta?.prodOrder) {
-            prodOrder = overviewMeta.prodOrder;
-          }
-          const normRemark = (item.remark || '').toLowerCase();
-          const normClosed = (item.closed || '').toLowerCase();
-          const normRawStatus = (item.rawStatus || '').toLowerCase();
-          const isDelivered = 
-            item.status === 'ส่งแล้ว' ||
-            normRawStatus.includes('ส่ง') || 
-            normRawStatus.includes('deliv') ||
-            normRemark.includes('*') ||
-            normRemark.includes('close') ||
-            normClosed.includes('*') ||
-            normClosed.includes('close');
-
-          return {
-            ...item,
-            status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
-            prodOrder,
-            isQcPassed,
-            qcDate: item.qcDate || firstQcMeta?.qcDate || '',
-            qcInspector: item.qcInspector || firstQcMeta?.inspector || '',
-            qcPassedQty: item.qcPassedQty || firstQcMeta?.qtyPass || '',
-            qcTopic: item.qcTopic || firstQcMeta?.topic || '',
-            qcRemarks: item.qcRemarks || firstQcMeta?.remarks || '',
-            qcPdList: matchedQcPds.length > 0 ? matchedQcPds : item.qcPdList,
-            overviewStatus: overviewMeta?.status || '',
-            overviewCustomer: overviewMeta?.customer || '',
-            overviewProject: overviewMeta?.project || '',
-            overviewItemCode: overviewMeta?.itemCode || '',
-            readyOp: overviewMeta?.readyOp || '',
-            readyOpDesc: overviewMeta?.readyOpDesc || '',
-            readyOpWc: overviewMeta?.readyOpWc || '',
-            readyOpNo: overviewMeta?.readyOpNo || undefined,
-            hasReadyOp: Boolean(overviewMeta?.readyOp),
-            activeOp: overviewMeta?.activeOp || '',
-            activeOpDesc: overviewMeta?.activeOpDesc || '',
-            activeOpWc: overviewMeta?.activeOpWc || '',
-            activeOpNo: overviewMeta?.activeOpNo || undefined,
-            currentOp: overviewMeta?.currentOp || '',
-            currentOpDesc: overviewMeta?.currentOpDesc || '',
-            currentOpStatus: overviewMeta?.currentOpStatus || '',
-          };
-        });
+        cachedItems = cachedItems.map(item => enrichBundledItem(item, item.workTag || 'Service'));
 
         return {
           items: cachedItems,
@@ -910,82 +1126,15 @@ export async function fetchDeliveryData(
       }
     }
 
-    // Default bundled data joined with defaultProductionMap and defaultQcData
-    const bundledItems = (defaultItemsJson as DeliveryItem[]).map(item => {
-      const docNorm = norm(item.docRef);
-      const itemNorm = norm(item.itemCode);
-      const key = `${docNorm}|${itemNorm}`;
-      const prodMeta = (defaultProductionMap.byDocItem as Record<string, ProductionMeta>)[key] ||
-                       (defaultProductionMap.byDoc as Record<string, ProductionMeta>)[docNorm];
-
-      let prodOrder = item.prodOrder;
-      if (!prodOrder && item.itemCode) {
-        const projItemKey = `${item.projectCode?.trim()}|${item.itemCode?.trim()}`;
-        prodOrder = (itemPdMap.byProjItem as Record<string, string>)[projItemKey] || 
-                    (itemPdMap.byItem as Record<string, string>)[item.itemCode?.trim()] || '';
-      }
-
-      const itemPds = extractPdNumbers(prodOrder);
-      const matchedQcPds = itemPds.filter(p => (defaultQcData as Record<string, QcMeta>)[p]);
-      const isQcPassed = matchedQcPds.length > 0;
-      const firstQcMeta = isQcPassed ? (defaultQcData as Record<string, QcMeta>)[matchedQcPds[0]] : undefined;
-      const overviewMeta = getOverviewStatusForItem(item.itemCode, item.projectCode, itemPds);
-      if (!prodOrder && overviewMeta?.prodOrder) {
-        prodOrder = overviewMeta.prodOrder;
-      }
-      const normRemark = (item.remark || '').toLowerCase();
-      const normClosed = (item.closed || '').toLowerCase();
-      const normRawStatus = (item.rawStatus || '').toLowerCase();
-      const isDelivered = 
-        item.status === 'ส่งแล้ว' ||
-        normRawStatus.includes('ส่ง') || 
-        normRawStatus.includes('deliv') ||
-        normRemark.includes('*') ||
-        normRemark.includes('close') ||
-        normClosed.includes('*') ||
-        normClosed.includes('close');
-
-      return {
-        ...item,
-        status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
-        prodOrder,
-        customer: item.customer || extractCustomer(item.projectName),
-        actionTopic: prodMeta?.actionTopic || '',
-        ncrNo: prodMeta?.ncrNo || '',
-        requestDept: prodMeta?.requestDept || '',
-        requesterName: prodMeta?.requesterName || '',
-        targetRequested: prodMeta?.targetRequested || '',
-        week: prodMeta?.week || '',
-        isQcPassed,
-        qcDate: firstQcMeta?.qcDate || '',
-        qcInspector: firstQcMeta?.inspector || '',
-        qcPassedQty: firstQcMeta?.qtyPass || '',
-        qcTopic: firstQcMeta?.topic || '',
-        qcRemarks: firstQcMeta?.remarks || '',
-        qcPdList: matchedQcPds,
-        overviewStatus: overviewMeta?.status || '',
-        overviewCustomer: overviewMeta?.customer || '',
-        overviewProject: overviewMeta?.project || '',
-        overviewItemCode: overviewMeta?.itemCode || '',
-        readyOp: overviewMeta?.readyOp || '',
-        readyOpDesc: overviewMeta?.readyOpDesc || '',
-        readyOpWc: overviewMeta?.readyOpWc || '',
-        readyOpNo: overviewMeta?.readyOpNo || undefined,
-        hasReadyOp: Boolean(overviewMeta?.readyOp),
-        activeOp: overviewMeta?.activeOp || '',
-        activeOpDesc: overviewMeta?.activeOpDesc || '',
-        activeOpWc: overviewMeta?.activeOpWc || '',
-        activeOpNo: overviewMeta?.activeOpNo || undefined,
-        currentOp: overviewMeta?.currentOp || '',
-        currentOpDesc: overviewMeta?.currentOpDesc || '',
-        currentOpStatus: overviewMeta?.currentOpStatus || '',
-      };
-    });
+    // Default bundled data: combine Service (defaultData.json) + Project (defaultProjectItems.json)
+    const bundledServiceItems = (defaultItemsJson as DeliveryItem[]).map(item => enrichBundledItem(item, 'Service'));
+    const bundledProjectItems = (defaultProjectItemsJson as DeliveryItem[]).map(item => enrichBundledItem(item, 'Project'));
+    const bundledItems = [...bundledServiceItems, ...bundledProjectItems];
 
     return {
       items: bundledItems,
       fromLive: false,
-      error: `ใช้ข้อมูลสำรองในระบบ (เชื่อมโยงทั้ง 3 สเปรดชีตเรียบร้อย)`,
+      error: `ใช้ข้อมูลสำรองในระบบ (เชื่อมโยงทั้งงาน Service และ Project เรียบร้อย)`,
     };
   }
 }
@@ -1037,6 +1186,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
     const prodOrdersSet = new Set<string>();
     const deptsSet = new Set<string>();
     const topicsSet = new Set<string>();
+    const workTagsSet = new Set<'Service' | 'Project'>();
 
     let earliestDate: Date | null = null;
     let latestDate: Date | null = null;
@@ -1048,6 +1198,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
       if (item.prodOrder) prodOrdersSet.add(item.prodOrder);
       if (item.requestDept) deptsSet.add(item.requestDept);
       if (item.actionTopic) topicsSet.add(item.actionTopic);
+      workTagsSet.add(item.workTag || 'Service');
 
       const isDelivered = item.status === 'ส่งแล้ว';
       const isDoneOrQc = isDelivered || isOverviewCompletedOrClosed(item.overviewStatus) || Boolean(item.isQcPassed);
@@ -1114,6 +1265,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
       productionOrders: Array.from(prodOrdersSet),
       requestDepts: Array.from(deptsSet),
       actionTopics: Array.from(topicsSet),
+      workTags: Array.from(workTagsSet),
       earliestTarget: earliestDate ? earliestDate.toISOString() : null,
       latestTarget: latestDate ? latestDate.toISOString() : null,
       status,
@@ -1132,3 +1284,4 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
 
   return summaries;
 }
+

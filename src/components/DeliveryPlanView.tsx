@@ -344,6 +344,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   const handleExportCsv = useCallback(() => {
     const headers = [
       'แผนวันที่ส่งมอบ',
+      'TAG',
       'สถานะกำหนดส่ง',
       'ชื่อเครื่องจักร',
       'เลขที่ Item',
@@ -377,6 +378,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
         rows.push([
           `"${group.dateKey}"`,
+          `"${item.workTag || 'Service'}"`,
           `"${urgencyText}"`,
           `"${item.machineName}"`,
           `"${item.itemCode}"`,
@@ -931,12 +933,23 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                 {idx + 1}
                               </td>
 
-                              {/* Customer & Project */}
+                              {/* Customer & Project + TAG */}
                               <td className="py-3 px-3 min-w-[140px]">
-                                <div className="font-bold text-slate-900 leading-snug" title={customerName}>
-                                  {customerName}
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span
+                                    className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
+                                      item.workTag === 'Project'
+                                        ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                        : 'bg-sky-100 text-sky-800 border-sky-300'
+                                    }`}
+                                  >
+                                    {item.workTag || 'Service'}
+                                  </span>
+                                  <span className="font-bold text-slate-900 leading-snug" title={customerName}>
+                                    {customerName}
+                                  </span>
                                 </div>
-                                <div className="text-[10px] text-slate-500 font-mono">
+                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                   {item.projectCode}
                                 </div>
                               </td>
