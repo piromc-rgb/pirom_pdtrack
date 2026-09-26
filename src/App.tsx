@@ -16,6 +16,7 @@ import {
   getLastSyncTime,
   isOverviewCompletedOrClosed
 } from './services/sheetService';
+import { getDaysDiff } from './utils/dateUtils';
 import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
 import { 
   AlertCircle, 
@@ -28,7 +29,9 @@ import {
   GitCompare,
   RefreshCw,
   Download,
-  Printer
+  Printer,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 
 export function App() {
@@ -49,13 +52,16 @@ export function App() {
   const [selectedMachine, setSelectedMachine] = useState<MachineSummary | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isComparatorOpen, setIsComparatorOpen] = useState<boolean>(false);
-  const [deliveryActions, setDeliveryActions] = useState<{ exportCsv: () => void; openPrint: () => void } | null>(null);
+  const [deliveryActions, setDeliveryActions] = useState<{ exportCsv: () => void; openPrint: () => void; expandAll: () => void; collapseAll: () => void } | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'in-progress' | 'overdue' | 'due-soon' | 'completed'>('all');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'warning' | 'info'; text: string } | null>(null);
 
   // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status + Overview & Ready Operation + Work Tag (Service / Project)
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
     workTag: 'all',
+    quickSearch: '',
+    dateWindow: 'all',
+    statusSource: 'overview',
     docRef: '',
     projectCode: '',
     projectName: '',
@@ -108,6 +114,31 @@ export function App() {
   // Compute matching counts for the SearchFilterBar
   const { matchedMachinesCount, matchedItemsCount } = useMemo(() => {
     const matchedItems = tagFilteredItems.filter(item => {
+      if (searchCriteria.quickSearch) {
+        const term = searchCriteria.quickSearch.toLowerCase().trim();
+        const matchName = item.itemName.toLowerCase().includes(term);
+        const matchCode = item.itemCode.toLowerCase().includes(term);
+        const matchMachine = item.machineName.toLowerCase().includes(term);
+        const matchPO = item.prodOrder.toLowerCase().includes(term);
+        const matchProj = item.projectName.toLowerCase().includes(term) || item.projectCode.toLowerCase().includes(term);
+        const matchDept = item.requestDept?.toLowerCase().includes(term);
+        const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
+        const matchReadyOp = item.readyOp?.toLowerCase().includes(term) || item.readyOpDesc?.toLowerCase().includes(term);
+        const matchActiveOp = item.activeOp?.toLowerCase().includes(term) || item.activeOpDesc?.toLowerCase().includes(term);
+        const isOvDone = isOverviewCompletedOrClosed(item.overviewStatus);
+        const matchOverview = item.overviewStatus?.toLowerCase().includes(term) || (isOvDone && ('เสร็จแล้ว'.includes(term) || term.includes('เสร็จ')));
+        if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC && !matchReadyOp && !matchActiveOp && !matchOverview) {
+          return false;
+        }
+      }
+      if (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') {
+        const daysDiff = getDaysDiff(item.targetLatest);
+        if (searchCriteria.dateWindow === 'overdue' && !item.isOverdue) return false;
+        if (searchCriteria.dateWindow === 'today' && (daysDiff === null || daysDiff !== 0)) return false;
+        if (searchCriteria.dateWindow === '7days' && (daysDiff === null || daysDiff < 0 || daysDiff > 7)) return false;
+        if (searchCriteria.dateWindow === 'month' && (daysDiff === null || daysDiff < 0 || daysDiff > 30)) return false;
+        if (searchCriteria.dateWindow === 'qc-ready' && !item.isQcPassed) return false;
+      }
       if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase().trim())) return false;
       if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
@@ -296,6 +327,22 @@ export function App() {
               </button>
               {activeTab === 'delivery-plan' && (
                 <>
+                  <div className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-0.5 text-xs">
+                    <button
+                      onClick={() => deliveryActions?.expandAll()}
+                      className="px-2.5 py-1 text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition cursor-pointer font-medium"
+                      title="ขยายตารางรายการทุกวัน"
+                    >
+                      ขยายทุกวัน
+                    </button>
+                    <button
+                      onClick={() => deliveryActions?.collapseAll()}
+                      className="px-2.5 py-1 text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition cursor-pointer font-medium"
+                      title="ย่อตารางรายการทุกวัน"
+                    >
+                      ย่อทุกวัน
+                    </button>
+                  </div>
                   <button
                     onClick={() => deliveryActions?.exportCsv()}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-800 hover:bg-slate-100 border border-slate-300 shadow-xs transition active:scale-95 cursor-pointer"

@@ -12,6 +12,10 @@ import {
   Check,
   Briefcase,
   AlertCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Layers,
+  TrendingUp,
   ChevronDown,
   ChevronUp,
   SlidersHorizontal,
@@ -20,6 +24,7 @@ import {
   Clock
 } from 'lucide-react';
 import { SearchCriteria, DeliveryItem } from '../types';
+import { isOverviewCompletedOrClosed } from '../services/sheetService';
 
 interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
@@ -46,7 +51,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   onResetStatusFilter,
   onResetAll,
 }) => {
-  // Extract distinct lists for datalists / suggestions
+  // Extract distinct lists for datalists / suggestions + pending counts
   const { 
     docRefs, 
     projectCodes, 
@@ -55,7 +60,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     machineNames, 
     requestDepts, 
     actionTopics,
-    readyOpsWithCount
+    readyOpsWithCount,
+    overviewCounts,
+    pendingStats,
   } = useMemo(() => {
     const refs = new Set<string>();
     const codes = new Set<string>();
@@ -66,6 +73,21 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     const topics = new Set<string>();
     const readyOpsMap = new Map<string, number>();
 
+    const ovCounts: Record<string, number> = {
+      all: 0,
+      Active: 0,
+      Planned: 0,
+      'Ready to Start': 0,
+      Completed: 0,
+      none: 0,
+      hasReadyOp: 0,
+    };
+
+    let pendingAll = 0;
+    let pendingOverdue = 0;
+    let pendingDueSoon = 0;
+    let pendingQcReady = 0;
+
     items.forEach(i => {
       if (i.docRef) refs.add(i.docRef.trim());
       if (i.projectCode) codes.add(i.projectCode.trim());
@@ -74,14 +96,37 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       if (i.machineName && i.machineName !== '(ไม่ระบุเครื่องจักร)') machines.add(i.machineName.trim());
       if (i.requestDept) depts.add(i.requestDept.trim());
       if (i.actionTopic) topics.add(i.actionTopic.trim());
-      if (i.readyOpDesc) {
-        const desc = i.readyOpDesc.trim();
-        readyOpsMap.set(desc, (readyOpsMap.get(desc) || 0) + 1);
+
+      if (i.status !== 'ส่งแล้ว') {
+        pendingAll++;
+        ovCounts.all++;
+        if (i.isOverdue) pendingOverdue++;
+        if (i.isDueSoon) pendingDueSoon++;
+        if (i.isQcPassed) pendingQcReady++;
+
+        const st = i.overviewStatus || '';
+        if (isOverviewCompletedOrClosed(st)) {
+          ovCounts.Completed++;
+        } else if (st && ovCounts[st] !== undefined) {
+          ovCounts[st]++;
+        } else if (!st) {
+          ovCounts.none++;
+        }
+        if (i.hasReadyOp || i.readyOp) {
+          ovCounts.hasReadyOp++;
+        }
+        if (i.readyOpDesc) {
+          const desc = i.readyOpDesc.trim();
+          readyOpsMap.set(desc, (readyOpsMap.get(desc) || 0) + 1);
+        }
       }
     });
 
     const readyOpsSorted = Array.from(readyOpsMap.entries())
       .sort((a, b) => b[1] - a[1]);
+
+    const pdPercent = ovCounts.all > 0 ? (ovCounts.Completed / ovCounts.all) * 100 : 0;
+    const pdPercentText = pdPercent % 1 === 0 ? `${pdPercent}%` : `${pdPercent.toFixed(1)}%`;
 
     return {
       docRefs: Array.from(refs).sort(),
@@ -92,12 +137,22 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       requestDepts: Array.from(depts).sort(),
       actionTopics: Array.from(topics).sort(),
       readyOpsWithCount: readyOpsSorted,
+      overviewCounts: ovCounts,
+      pendingStats: {
+        all: pendingAll,
+        overdue: pendingOverdue,
+        dueSoon: pendingDueSoon,
+        qcReady: pendingQcReady,
+        pdPercentText,
+      },
     };
   }, [items]);
 
   const hasAnyFilter = Boolean(
     (statusFilter && statusFilter !== 'all') ||
     (searchCriteria.workTag && searchCriteria.workTag !== 'all') ||
+    searchCriteria.quickSearch ||
+    (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') ||
     searchCriteria.docRef ||
     searchCriteria.projectCode ||
     searchCriteria.projectName ||
@@ -112,8 +167,11 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   );
 
   const handleReset = () => {
-    setSearchCriteria({
+    setSearchCriteria(prev => ({
       workTag: 'all',
+      quickSearch: '',
+      dateWindow: 'all',
+      statusSource: prev.statusSource || 'overview',
       docRef: '',
       projectCode: '',
       projectName: '',
@@ -125,7 +183,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       overviewStatus: 'all',
       readyOpName: 'all',
       operationStatus: 'all',
-    });
+    }));
     if (onResetStatusFilter) {
       onResetStatusFilter();
     }
@@ -151,6 +209,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     let count = 0;
     if (statusFilter && statusFilter !== 'all') count++;
     if (searchCriteria.workTag && searchCriteria.workTag !== 'all') count++;
+    if (searchCriteria.quickSearch) count++;
+    if (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') count++;
     if (searchCriteria.docRef) count++;
     if (searchCriteria.projectCode) count++;
     if (searchCriteria.projectName) count++;
@@ -279,6 +339,26 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           {/* Active criteria chips when collapsed */}
           {hasAnyFilter && (
             <div className="flex items-center gap-1.5 flex-wrap text-xs">
+              {searchCriteria.quickSearch && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 border border-slate-300 text-[11px] font-semibold">
+                  <Search className="w-3 h-3 text-slate-500" />
+                  <span>ค้นหา: {searchCriteria.quickSearch}</span>
+                </span>
+              )}
+              {searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all' && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 text-[11px] font-semibold">
+                  <span>
+                    ช่วงเวลา:{' '}
+                    {searchCriteria.dateWindow === 'overdue'
+                      ? 'เกินกำหนด'
+                      : searchCriteria.dateWindow === '7days'
+                      ? 'ภายใน 7 วัน'
+                      : searchCriteria.dateWindow === 'qc-ready'
+                      ? 'ผ่าน QC แล้วพร้อมส่ง'
+                      : searchCriteria.dateWindow}
+                  </span>
+                </span>
+              )}
               {searchCriteria.docRef && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 text-[11px] font-medium">
                   <span>Doc: {searchCriteria.docRef}</span>
@@ -386,7 +466,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-bold text-slate-900">
-                ค้นหาแยกตามฟิลด์ข้อมูล (Field-Specific Search)
+                ตัวกรองค้นหาและควบคุมการแสดงผล (Unified Search & Filter)
               </h3>
               <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
                 เชื่อมโยงฝ่ายผลิต (Production Linked)
@@ -399,7 +479,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               )}
             </div>
             <p className="text-[11px] text-slate-500">
-              ระบุเงื่อนไขค้นหาตาม 5 ฟิลด์หลัก หรือกรองตามหน่วยงานที่แจ้งและสาเหตุการสั่งผลิต
+              ค้นหาด่วน, กรองตาม 5 ฟิลด์หลัก, ช่วงเวลาแผนส่งมอบ, สถานะ Overview, ขั้นตอนรอขึ้นทำงาน และแหล่งตรวจสอบสถานะ
             </p>
           </div>
         </div>
@@ -440,7 +520,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             title="ยุบเป็นไอคอน 1 ตัว (Collapse to Icon)"
           >
             <EyeOff className="w-3.5 h-3.5 text-slate-500" />
-            <span>ยุบเป็นไอคอน</span>
+            <span>ยุบตัวกรอง</span>
             <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
           </button>
         </div>
@@ -448,8 +528,83 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
       {/* Filter Body */}
       <div className="divide-y divide-slate-100">
-          {/* 5 Primary Search Inputs */}
-          <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+        {/* Row 1: Quick Search + Date Window Filter Buttons */}
+        <div className="px-4 sm:px-5 py-3 bg-slate-50/40 flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+          {/* Quick Search Input */}
+          <div className="relative flex-1 min-w-[240px] max-w-md">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              value={searchCriteria.quickSearch || ''}
+              onChange={(e) => updateField('quickSearch', e.target.value)}
+              placeholder="ค้นหาชื่อชิ้นงาน, เครื่องจักร, PD No., โครงการ..."
+              className="w-full pl-9 pr-8 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-none focus:border-sky-500 shadow-2xs"
+            />
+            {searchCriteria.quickSearch && (
+              <button
+                onClick={() => updateField('quickSearch', '')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Date Window Filter Buttons */}
+          <div className="flex items-center gap-1.5 flex-wrap text-xs">
+            <span className="text-slate-500 text-[11px] font-semibold mr-1">ช่วงเวลาแผนส่งมอบ:</span>
+
+            <button
+              onClick={() => updateField('dateWindow', 'all')}
+              className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer ${
+                !searchCriteria.dateWindow || searchCriteria.dateWindow === 'all'
+                  ? 'bg-slate-800 text-white shadow-2xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              ทั้งหมด ({pendingStats.all})
+            </button>
+
+            <button
+              onClick={() => updateField('dateWindow', searchCriteria.dateWindow === 'overdue' ? 'all' : 'overdue')}
+              className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
+                searchCriteria.dateWindow === 'overdue'
+                  ? 'bg-rose-600 text-white shadow-2xs'
+                  : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
+              }`}
+            >
+              <AlertTriangle className="w-3 h-3" />
+              เกินกำหนด ({pendingStats.overdue})
+            </button>
+
+            <button
+              onClick={() => updateField('dateWindow', searchCriteria.dateWindow === '7days' ? 'all' : '7days')}
+              className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
+                searchCriteria.dateWindow === '7days'
+                  ? 'bg-amber-600 text-white shadow-2xs'
+                  : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
+              }`}
+            >
+              <Clock className="w-3 h-3" />
+              ภายใน 7 วัน ({pendingStats.dueSoon})
+            </button>
+
+            <button
+              onClick={() => updateField('dateWindow', searchCriteria.dateWindow === 'qc-ready' ? 'all' : 'qc-ready')}
+              className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
+                searchCriteria.dateWindow === 'qc-ready'
+                  ? 'bg-emerald-600 text-white shadow-2xs'
+                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+              }`}
+            >
+              <CheckCircle2 className="w-3 h-3" />
+              ผ่าน QC แล้วพร้อมส่ง ({pendingStats.qcReady})
+            </button>
+          </div>
+        </div>
+
+        {/* Row 2: 5 Primary Search Inputs */}
+        <div className="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
         
         {/* 1. Document number Reference */}
         <div className="space-y-1.5">
@@ -623,145 +778,226 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
       </div>
 
-      {/* Linked Production & QC Data Quick Filters */}
-      <div className="px-5 py-2.5 bg-slate-50/70 border-t border-slate-100 flex flex-wrap items-center gap-4 text-xs">
-        <span className="text-slate-500 font-medium flex items-center gap-1">
-          <Briefcase className="w-3.5 h-3.5 text-slate-400" />
-          <span>กรองเพิ่มเติม:</span>
-        </span>
-
-        {/* Department Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400 text-[11px]">แผนกที่แจ้ง:</span>
-          <select
-            value={searchCriteria.requestDept || ''}
-            onChange={(e) => updateField('requestDept', e.target.value)}
-            className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 outline-none max-w-[150px]"
-          >
-            <option value="">ทุกแผนก ({requestDepts.length})</option>
-            {requestDepts.map((d, i) => (
-              <option key={i} value={d}>{d}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Action Topic Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400 text-[11px]">สาเหตุสั่งผลิต:</span>
-          <select
-            value={searchCriteria.actionTopic || ''}
-            onChange={(e) => updateField('actionTopic', e.target.value)}
-            className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 outline-none max-w-[180px] truncate"
-          >
-            <option value="">ทุกสาเหตุ ({actionTopics.length})</option>
-            {actionTopics.map((t, i) => (
-              <option key={i} value={t}>{t}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* QC Status Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400 text-[11px]">สถานะ QC:</span>
-          <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs shadow-2xs">
+      {/* Row 3: Overview Status Quick Buttons & Ready Operation Filter */}
+      <div className="px-5 py-2.5 bg-slate-50/70 border-t border-slate-100 flex flex-wrap items-center gap-3 text-xs">
+        {/* Overview Status Quick Buttons */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-slate-600 font-semibold flex items-center gap-1 text-[11px]">
+            <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+            <span>ตัวกรองสถานะ Overview:</span>
+          </span>
+          <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200 flex-wrap">
             <button
-              onClick={() => updateField('qcStatus', 'all')}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium transition ${
-                !searchCriteria.qcStatus || searchCriteria.qcStatus === 'all'
-                  ? 'bg-slate-800 text-white shadow-2xs'
+              onClick={() => updateField('overviewStatus', 'all')}
+              className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                !searchCriteria.overviewStatus || searchCriteria.overviewStatus === 'all'
+                  ? 'bg-white text-slate-900 shadow-2xs font-bold'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               ทั้งหมด
             </button>
             <button
-              onClick={() => updateField('qcStatus', 'passed')}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1 transition ${
-                searchCriteria.qcStatus === 'passed'
-                  ? 'bg-emerald-600 text-white shadow-2xs'
-                  : 'text-emerald-700 hover:bg-emerald-50'
+              onClick={() => updateField('overviewStatus', searchCriteria.overviewStatus === 'Active' ? 'all' : 'Active')}
+              className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                searchCriteria.overviewStatus === 'Active'
+                  ? 'bg-blue-600 text-white shadow-2xs font-bold'
+                  : 'text-blue-700 hover:bg-blue-50'
               }`}
             >
-              <Check className="w-3 h-3" />
-              ผ่าน QC แล้ว
+              ⚡ Active ({overviewCounts.Active})
             </button>
             <button
-              onClick={() => updateField('qcStatus', 'pending')}
-              className={`px-2 py-0.5 rounded text-[11px] font-medium transition ${
-                searchCriteria.qcStatus === 'pending'
-                  ? 'bg-slate-600 text-white shadow-2xs'
-                  : 'text-slate-500 hover:bg-slate-100'
+              onClick={() => updateField('overviewStatus', searchCriteria.overviewStatus === 'Planned' ? 'all' : 'Planned')}
+              className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                searchCriteria.overviewStatus === 'Planned'
+                  ? 'bg-purple-600 text-white shadow-2xs font-bold'
+                  : 'text-purple-700 hover:bg-purple-50'
               }`}
             >
-              ยังไม่เข้า QC
+              📅 Planned ({overviewCounts.Planned})
+            </button>
+            <button
+              onClick={() => updateField('overviewStatus', searchCriteria.overviewStatus === 'Ready to Start' ? 'all' : 'Ready to Start')}
+              className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                searchCriteria.overviewStatus === 'Ready to Start'
+                  ? 'bg-amber-600 text-white shadow-2xs font-bold'
+                  : 'text-amber-700 hover:bg-amber-50'
+              }`}
+            >
+              🕒 Ready to Start ({overviewCounts['Ready to Start']})
+            </button>
+            <button
+              onClick={() => updateField('overviewStatus', searchCriteria.overviewStatus === 'Completed' ? 'all' : 'Completed')}
+              className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                searchCriteria.overviewStatus === 'Completed'
+                  ? 'bg-emerald-600 text-white shadow-2xs font-bold'
+                  : 'text-emerald-700 hover:bg-emerald-50'
+              }`}
+              title={`PD ที่เสร็จแล้ว ${overviewCounts.Completed} จาก ${overviewCounts.all} รายการ (${pendingStats.pdPercentText})`}
+            >
+              ✓ เสร็จแล้ว ({overviewCounts.Completed}/{overviewCounts.all} - {pendingStats.pdPercentText})
             </button>
           </div>
         </div>
 
-        {/* Overview Status Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-slate-400 text-[11px]">สถานะ Overview:</span>
-          <select
-            value={searchCriteria.overviewStatus || 'all'}
-            onChange={(e) => updateField('overviewStatus', e.target.value)}
-            className={`px-2 py-1 rounded text-xs font-semibold outline-none border transition ${
-              searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all'
-                ? 'bg-blue-50 text-blue-900 border-blue-300 ring-1 ring-blue-300'
-                : 'bg-white text-slate-700 border-slate-200'
-            }`}
-          >
-            <option value="all">ทุกสถานะ Overview</option>
-            <option value="Active">⚡ Active (กำลังผลิต)</option>
-            <option value="Planned">📅 Planned (ตามแผน)</option>
-            <option value="Ready to Start">🕒 Ready to Start (รอเริ่ม)</option>
-            <option value="Completed">✓ เสร็จแล้ว (Completed / Closed)</option>
-            <option value="none">ไม่มีสถานะ / ไม่พบ</option>
-          </select>
-        </div>
-
-        {/* Ready Op Filter */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-amber-800 text-[11px] font-bold flex items-center gap-1">
-            <Clock className="w-3 h-3 text-amber-600" />
+        {/* Ready Operation Filter */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-amber-900 font-bold flex items-center gap-1 text-[11px]">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
             <span>Op รอขึ้นทำงาน:</span>
           </span>
-          <select
-            value={searchCriteria.readyOpName || 'all'}
-            onChange={(e) => updateField('readyOpName', e.target.value)}
-            className={`px-2 py-1 rounded text-xs font-semibold outline-none border transition max-w-[190px] truncate ${
-              searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all'
-                ? 'bg-amber-100/90 text-amber-950 border-amber-400 ring-1 ring-amber-400'
-                : 'bg-white text-slate-700 border-slate-200'
+
+          <button
+            onClick={() => updateField('readyOpName', searchCriteria.readyOpName === 'any_ready' ? 'all' : 'any_ready')}
+            className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer border ${
+              searchCriteria.readyOpName === 'any_ready'
+                ? 'bg-amber-500 text-white border-amber-600 shadow-2xs'
+                : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border-amber-200'
             }`}
           >
-            <option value="all">ทุกขั้นตอน</option>
-            <option value="any_ready">⚡ เฉพาะมี Op รอขึ้นทำงาน ({readyOpsWithCount.reduce((a, b) => a + b[1], 0)})</option>
-            <optgroup label="เลือกตามชื่อขั้นตอน">
+            <Clock className="w-3 h-3" />
+            <span>เฉพาะมี Op รอขึ้น ({overviewCounts.hasReadyOp})</span>
+          </button>
+
+          {readyOpsWithCount.length > 0 && (
+            <select
+              value={searchCriteria.readyOpName && searchCriteria.readyOpName !== 'any_ready' ? searchCriteria.readyOpName : 'all'}
+              onChange={(e) => updateField('readyOpName', e.target.value)}
+              className={`px-2 py-1 rounded-lg border text-xs font-semibold outline-none max-w-[210px] truncate ${
+                searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all' && searchCriteria.readyOpName !== 'any_ready'
+                  ? 'bg-amber-100 text-amber-950 border-amber-400 ring-1 ring-amber-400'
+                  : 'bg-white text-slate-700 border-slate-200'
+              }`}
+            >
+              <option value="all">เลือกขั้นตอนรอขึ้น ({readyOpsWithCount.length} ขั้นตอน)...</option>
               {readyOpsWithCount.map(([opName, count], i) => (
                 <option key={i} value={opName}>
-                  {opName} ({count})
+                  {opName} ({count} รายการ)
                 </option>
               ))}
-            </optgroup>
-          </select>
+            </select>
+          )}
+        </div>
+      </div>
+
+      {/* Row 4: Department, Topic, QC Status & Table Status Source Switcher */}
+      <div className="px-5 py-2.5 bg-slate-50/70 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4 text-xs">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-slate-500 font-medium flex items-center gap-1">
+            <Briefcase className="w-3.5 h-3.5 text-slate-400" />
+            <span>กรองเพิ่มเติม:</span>
+          </span>
+
+          {/* Department Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-[11px]">แผนกที่แจ้ง:</span>
+            <select
+              value={searchCriteria.requestDept || ''}
+              onChange={(e) => updateField('requestDept', e.target.value)}
+              className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 outline-none max-w-[150px]"
+            >
+              <option value="">ทุกแผนก ({requestDepts.length})</option>
+              {requestDepts.map((d, i) => (
+                <option key={i} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Action Topic Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-[11px]">สาเหตุสั่งผลิต:</span>
+            <select
+              value={searchCriteria.actionTopic || ''}
+              onChange={(e) => updateField('actionTopic', e.target.value)}
+              className="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-medium text-slate-700 outline-none max-w-[180px] truncate"
+            >
+              <option value="">ทุกสาเหตุ ({actionTopics.length})</option>
+              {actionTopics.map((t, i) => (
+                <option key={i} value={t}>{t}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* QC Status Filter */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 text-[11px]">สถานะ QC:</span>
+            <div className="inline-flex rounded-lg border border-slate-200 bg-white p-0.5 text-xs shadow-2xs">
+              <button
+                onClick={() => updateField('qcStatus', 'all')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  !searchCriteria.qcStatus || searchCriteria.qcStatus === 'all'
+                    ? 'bg-slate-800 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                ทั้งหมด
+              </button>
+              <button
+                onClick={() => updateField('qcStatus', 'passed')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1 transition cursor-pointer ${
+                  searchCriteria.qcStatus === 'passed'
+                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    : 'text-emerald-700 hover:bg-emerald-50'
+                }`}
+              >
+                <Check className="w-3 h-3" />
+                ผ่าน QC แล้ว
+              </button>
+              <button
+                onClick={() => updateField('qcStatus', 'pending')}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
+                  searchCriteria.qcStatus === 'pending'
+                    ? 'bg-slate-600 text-white shadow-2xs'
+                    : 'text-slate-500 hover:bg-slate-100'
+                }`}
+              >
+                ยังไม่เข้า QC
+              </button>
+            </div>
+          </div>
         </div>
 
-        {(searchCriteria.requestDept || searchCriteria.actionTopic || (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') || (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') || (searchCriteria.readyOpName && searchCriteria.readyOpName !== 'all')) && (
-          <button
-            onClick={() => {
-              updateField('requestDept', '');
-              updateField('actionTopic', '');
-              updateField('qcStatus', 'all');
-              updateField('overviewStatus', 'all');
-              updateField('readyOpName', 'all');
-            }}
-            className="inline-flex items-center gap-1 text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-auto cursor-pointer"
-          >
-            <RotateCcw className="w-3 h-3" />
-            <span>Reset กรองตัวเลือกเสริม</span>
-          </button>
-        )}
+        {/* Status Source View Switcher */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-slate-600 font-bold flex items-center gap-1.5 text-[11px]">
+            <Layers className="w-3.5 h-3.5 text-blue-600" />
+            <span>แหล่งตรวจสอบสถานะในตาราง:</span>
+          </span>
+          <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
+            <button
+              onClick={() => updateField('statusSource', 'overview')}
+              className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                !searchCriteria.statusSource || searchCriteria.statusSource === 'overview'
+                  ? 'bg-white text-blue-800 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 font-medium'
+              }`}
+            >
+              📊 Overview status
+            </button>
+            <button
+              onClick={() => updateField('statusSource', 'qc')}
+              className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                searchCriteria.statusSource === 'qc'
+                  ? 'bg-white text-emerald-800 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 font-medium'
+              }`}
+            >
+              🛡️ QC Record
+            </button>
+            <button
+              onClick={() => updateField('statusSource', 'dual')}
+              className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
+                searchCriteria.statusSource === 'dual'
+                  ? 'bg-white text-purple-800 shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900 font-medium'
+              }`}
+            >
+              ⚡ แสดงทั้ง 2 แหล่ง (Dual)
+            </button>
+          </div>
         </div>
+      </div>
       </div>
     </div>
   );

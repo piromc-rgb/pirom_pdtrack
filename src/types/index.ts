@@ -129,6 +129,9 @@ export interface MachineSummary {
 
 export interface SearchCriteria {
   workTag?: 'all' | 'Service' | 'Project';
+  quickSearch?: string;
+  dateWindow?: 'all' | 'overdue' | 'today' | '7days' | 'month' | 'qc-ready';
+  statusSource?: 'overview' | 'qc' | 'dual';
   docRef: string;
   projectCode: string;
   projectName: string;

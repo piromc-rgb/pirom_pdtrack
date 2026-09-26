@@ -62,68 +62,22 @@ interface DeliveryPlanViewProps {
   onRefresh?: () => void;
   onOpenComparator?: () => void;
   isLoading?: boolean;
-  onRegisterActions?: (actions: { exportCsv: () => void; openPrint: () => void } | null) => void;
+  onRegisterActions?: (actions: { exportCsv: () => void; openPrint: () => void; expandAll: () => void; collapseAll: () => void } | null) => void;
 }
 
 export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   items,
-  machines,
   searchCriteria,
   onSelectMachineByName,
-  onRefresh,
-  onOpenComparator,
-  isLoading,
   onRegisterActions,
 }) => {
-  const [internalSearch, setInternalSearch] = useState('');
-  const [selectedMachine, setSelectedMachine] = useState('all');
-  const [dateWindowFilter, setDateWindowFilter] = useState<'all' | 'overdue' | 'today' | '7days' | 'month' | 'qc-ready'>('all');
-  const [overviewFilter, setOverviewFilter] = useState<string>('all');
-  const [readyOpFilter, setReadyOpFilter] = useState<string>('all');
-  const [statusSource, setStatusSource] = useState<'qc' | 'overview' | 'dual'>('overview');
   const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [selectedPrintDate, setSelectedPrintDate] = useState<string | null>(null);
 
-  // Distinct ready operations and overview status counts for pending items
-  const { readyOpsWithCount, overviewCounts } = useMemo(() => {
-    const readyMap = new Map<string, number>();
-    const ovCounts: Record<string, number> = {
-      all: 0,
-      Active: 0,
-      Planned: 0,
-      'Ready to Start': 0,
-      Completed: 0,
-      none: 0,
-      hasReadyOp: 0,
-    };
-
-    items.forEach(i => {
-      if (i.status === 'ส่งแล้ว') return;
-      ovCounts.all++;
-      const st = i.overviewStatus || '';
-      if (isOverviewCompletedOrClosed(st)) {
-        ovCounts.Completed++;
-      } else if (st && ovCounts[st] !== undefined) {
-        ovCounts[st]++;
-      } else if (!st) {
-        ovCounts.none++;
-      }
-      if (i.hasReadyOp || i.readyOp) {
-        ovCounts.hasReadyOp++;
-      }
-      if (i.readyOpDesc) {
-        const desc = i.readyOpDesc.trim();
-        readyMap.set(desc, (readyMap.get(desc) || 0) + 1);
-      }
-    });
-
-    const sortedReady = Array.from(readyMap.entries()).sort((a, b) => b[1] - a[1]);
-    return {
-      readyOpsWithCount: sortedReady,
-      overviewCounts: ovCounts,
-    };
-  }, [items]);
+  const statusSource = searchCriteria.statusSource || 'overview';
+  const dateWindowFilter = searchCriteria.dateWindow || 'all';
+  const internalSearch = searchCriteria.quickSearch || '';
 
   // 1. FILTER STRICTLY TO PENDING ITEMS ONLY ("แสดงเฉพาะงานที่ยังไม่ส่ง")
   const pendingItems = useMemo(() => {
@@ -142,8 +96,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       if (searchCriteria.qcStatus === 'passed' && !item.isQcPassed) return false;
       if (searchCriteria.qcStatus === 'pending' && item.isQcPassed) return false;
 
-      // Overview Status Filter (Toolbar or SearchCriteria)
-      const effectiveOverview = overviewFilter !== 'all' ? overviewFilter : (searchCriteria.overviewStatus || 'all');
+      // Overview Status Filter
+      const effectiveOverview = searchCriteria.overviewStatus || 'all';
       if (effectiveOverview !== 'all') {
         if (effectiveOverview === 'none') {
           if (item.overviewStatus) return false;
@@ -154,8 +108,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         }
       }
 
-      // Ready Operation Filter (Toolbar or SearchCriteria)
-      const effectiveReadyOp = readyOpFilter !== 'all' ? readyOpFilter : (searchCriteria.readyOpName || 'all');
+      // Ready Operation Filter
+      const effectiveReadyOp = searchCriteria.readyOpName || 'all';
       if (effectiveReadyOp !== 'all') {
         if (effectiveReadyOp === 'any_ready') {
           if (!item.hasReadyOp && !item.readyOp) return false;
@@ -165,10 +119,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         }
       }
 
-      // Machine Dropdown filter
-      if (selectedMachine !== 'all' && item.machineName !== selectedMachine) return false;
-
-      // Internal text search
+      // Quick text search
       if (internalSearch) {
         const term = internalSearch.toLowerCase().trim();
         const matchName = item.itemName.toLowerCase().includes(term);
@@ -197,50 +148,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
       return true;
     });
-  }, [items, searchCriteria, selectedMachine, internalSearch, dateWindowFilter, overviewFilter, readyOpFilter]);
-
-  // Overall statistics for pending items
-  const stats = useMemo(() => {
-    let totalQty = 0;
-    let overdueCount = 0;
-    let dueSoonCount = 0;
-    let qcPassedCount = 0;
-    let qcPassedQty = 0;
-    let pdCompletedCount = 0;
-    const machineSet = new Set<string>();
-
-    pendingItems.forEach(i => {
-      totalQty += i.qty;
-      if (i.isOverdue) overdueCount++;
-      if (i.isDueSoon) dueSoonCount++;
-      if (i.isQcPassed) {
-        qcPassedCount++;
-        qcPassedQty += i.qty;
-      }
-      if (isOverviewCompletedOrClosed(i.overviewStatus)) {
-        pdCompletedCount++;
-      }
-      if (i.machineName && i.machineName !== '(ไม่ระบุเครื่องจักร)') {
-        machineSet.add(i.machineName);
-      }
-    });
-
-    const pdPercent = pendingItems.length > 0 ? (pdCompletedCount / pendingItems.length) * 100 : 0;
-    const pdPercentText = pdPercent % 1 === 0 ? `${pdPercent}%` : `${pdPercent.toFixed(1)}%`;
-
-    return {
-      totalItems: pendingItems.length,
-      totalQty,
-      overdueCount,
-      dueSoonCount,
-      qcPassedCount,
-      qcPassedQty,
-      pdCompletedCount,
-      pdPercent,
-      pdPercentText,
-      machinesCount: machineSet.size,
-    };
-  }, [pendingItems]);
+  }, [items, searchCriteria, internalSearch, dateWindowFilter]);
 
   // 2. GROUP STRICTLY BY PLANNED DELIVERY DATE ("ยึดตามเป้าการส่งวันไหน คือแผนการส่งวันนั้น")
   const dateGroups = useMemo(() => {
@@ -328,17 +236,17 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     return expandedDates[dateKey] !== false; // Default open
   };
 
-  const expandAll = () => {
+  const expandAll = useCallback(() => {
     const next: Record<string, boolean> = {};
     dateGroups.forEach(g => { next[g.dateKey] = true; });
     setExpandedDates(next);
-  };
+  }, [dateGroups]);
 
-  const collapseAll = () => {
+  const collapseAll = useCallback(() => {
     const next: Record<string, boolean> = {};
     dateGroups.forEach(g => { next[g.dateKey] = false; });
     setExpandedDates(next);
-  };
+  }, [dateGroups]);
 
   // Export Delivery Plan to CSV
   const handleExportCsv = useCallback(() => {
@@ -409,7 +317,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     document.body.removeChild(link);
   }, [dateGroups]);
 
-  // Register export and print actions with parent (e.g. for SearchFilterBar)
+  // Register export, print, and expand/collapse actions with parent (for SearchFilterBar)
   useEffect(() => {
     if (onRegisterActions) {
       onRegisterActions({
@@ -417,332 +325,19 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         openPrint: () => {
           setSelectedPrintDate('all');
           setIsPrintModalOpen(true);
-        }
+        },
+        expandAll,
+        collapseAll,
       });
       return () => {
         onRegisterActions(null);
       };
     }
-  }, [onRegisterActions, handleExportCsv]);
+  }, [onRegisterActions, handleExportCsv, expandAll, collapseAll]);
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* 2. Filter & Control Toolbar */}
-      <div className="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 shadow-xs space-y-3">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-          {/* Quick Search & Machine Controls */}
-          <div className="flex items-center gap-2 flex-wrap flex-1">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={internalSearch}
-                onChange={(e) => setInternalSearch(e.target.value)}
-                placeholder="ค้นหาชื่อชิ้นงาน, เครื่องจักร, PD No., โครงการ..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-sky-500 focus:bg-white"
-              />
-            </div>
-
-            {/* Machine dropdown */}
-            <div className="flex items-center gap-1 text-xs">
-              <Cpu className="w-3.5 h-3.5 text-slate-400" />
-              <select
-                value={selectedMachine}
-                onChange={(e) => setSelectedMachine(e.target.value)}
-                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 outline-none max-w-[170px] truncate"
-              >
-                <option value="all">ทุกเครื่องจักร ({machines.length})</option>
-                {machines.map((m) => (
-                  <option key={m.name} value={m.name}>
-                    {m.name} ({m.pendingItems} รอส่ง)
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Expand / Collapse All */}
-            <div className="flex items-center gap-1">
-              <button
-                onClick={expandAll}
-                className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
-              >
-                ขยายทุกวัน
-              </button>
-              <button
-                onClick={collapseAll}
-                className="px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer"
-              >
-                ย่อทุกวัน
-              </button>
-            </div>
-          </div>
-
-          {/* Quick Action Buttons (ย้ายมาอยู่ข้างตัวกรอง เพื่อประหยัดพื้นที่) */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap shrink-0">
-            {onOpenComparator && (
-              <button
-                onClick={onOpenComparator}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition active:scale-95 cursor-pointer"
-                title="เปิดหน้าต่างเปรียบเทียบสถานะ Production Order"
-              >
-                <GitCompare className="w-3.5 h-3.5 text-blue-200" />
-                <span>ตัวเทียบ Production Order</span>
-              </button>
-            )}
-            {onRefresh && (
-              <button
-                onClick={onRefresh}
-                disabled={isLoading}
-                title="กดเพื่อดึงข้อมูลล่าสุดจาก Google Sheets และอัปเดตเลขที่ PD"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-sky-400' : 'text-sky-400'}`} />
-                <span>{isLoading ? 'กำลังอัปเดต...' : 'อัปเดตข้อมูล'}</span>
-              </button>
-            )}
-            <button
-              onClick={handleExportCsv}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-800 hover:bg-slate-100 border border-slate-300 shadow-xs transition active:scale-95 cursor-pointer"
-              title="ส่งออกแผนส่งมอบประจำวันเป็นไฟล์ CSV"
-            >
-              <Download className="w-3.5 h-3.5 text-sky-600" />
-              <span>ส่งออกแผนส่งมอบ (CSV)</span>
-            </button>
-            <button
-              onClick={() => {
-                setSelectedPrintDate('all');
-                setIsPrintModalOpen(true);
-              }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-sky-600 hover:bg-sky-500 text-white shadow-xs transition active:scale-95 cursor-pointer border border-sky-400/30"
-              title="พิมพ์หรือบันทึกแผนส่งมอบเป็นเอกสาร PDF"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>พิมพ์แผน / บันทึกเป็น PDF</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Date Window Filter Buttons */}
-        <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-slate-100 text-xs">
-          <span className="text-slate-400 text-[11px] font-medium mr-1">ช่วงเวลาแผนส่งมอบ:</span>
-          
-          <button
-            onClick={() => setDateWindowFilter('all')}
-            className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer ${
-              dateWindowFilter === 'all'
-                ? 'bg-slate-800 text-white shadow-2xs'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            ทั้งหมด ({pendingItems.length})
-          </button>
-
-          <button
-            onClick={() => setDateWindowFilter('overdue')}
-            className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
-              dateWindowFilter === 'overdue'
-                ? 'bg-rose-600 text-white shadow-2xs'
-                : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
-            }`}
-          >
-            <AlertTriangle className="w-3 h-3" />
-            เกินกำหนด ({stats.overdueCount})
-          </button>
-
-          <button
-            onClick={() => setDateWindowFilter('7days')}
-            className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
-              dateWindowFilter === '7days'
-                ? 'bg-amber-600 text-white shadow-2xs'
-                : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'
-            }`}
-          >
-            <Clock className="w-3 h-3" />
-            ภายใน 7 วัน ({stats.dueSoonCount})
-          </button>
-
-          <button
-            onClick={() => setDateWindowFilter('qc-ready')}
-            className={`px-3 py-1 rounded-lg font-medium flex items-center gap-1 transition cursor-pointer ${
-              dateWindowFilter === 'qc-ready'
-                ? 'bg-emerald-600 text-white shadow-2xs'
-                : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
-            }`}
-          >
-            <CheckCircle2 className="w-3 h-3" />
-            ผ่าน QC แล้วพร้อมส่ง ({stats.qcPassedCount})
-          </button>
-        </div>
-
-        {/* Overview Status & Ready Operation Filters */}
-        <div className="flex items-center gap-3 flex-wrap pt-2.5 border-t border-slate-100 text-xs">
-          {/* Overview Status Quick Buttons */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-slate-600 font-semibold flex items-center gap-1 text-[11px]">
-              <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
-              <span>ตัวกรองสถานะ Overview:</span>
-            </span>
-            <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
-              <button
-                onClick={() => setOverviewFilter('all')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
-                  overviewFilter === 'all'
-                    ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                ทั้งหมด
-              </button>
-              <button
-                onClick={() => setOverviewFilter(prev => prev === 'Active' ? 'all' : 'Active')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
-                  overviewFilter === 'Active'
-                    ? 'bg-blue-600 text-white shadow-2xs font-bold'
-                    : 'text-blue-700 hover:bg-blue-50'
-                }`}
-              >
-                ⚡ Active ({overviewCounts.Active})
-              </button>
-              <button
-                onClick={() => setOverviewFilter(prev => prev === 'Planned' ? 'all' : 'Planned')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
-                  overviewFilter === 'Planned'
-                    ? 'bg-purple-600 text-white shadow-2xs font-bold'
-                    : 'text-purple-700 hover:bg-purple-50'
-                }`}
-              >
-                📅 Planned ({overviewCounts.Planned})
-              </button>
-              <button
-                onClick={() => setOverviewFilter(prev => prev === 'Ready to Start' ? 'all' : 'Ready to Start')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
-                  overviewFilter === 'Ready to Start'
-                    ? 'bg-amber-600 text-white shadow-2xs font-bold'
-                    : 'text-amber-700 hover:bg-amber-50'
-                }`}
-              >
-                🕒 Ready to Start ({overviewCounts['Ready to Start']})
-              </button>
-              <button
-                onClick={() => setOverviewFilter(prev => prev === 'Completed' ? 'all' : 'Completed')}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition cursor-pointer ${
-                  overviewFilter === 'Completed'
-                    ? 'bg-emerald-600 text-white shadow-2xs font-bold'
-                    : 'text-emerald-700 hover:bg-emerald-50'
-                }`}
-                title={`PD ที่เสร็จแล้ว ${overviewCounts.Completed} จาก ${overviewCounts.all} รายการ (${stats.pdPercentText})`}
-              >
-                ✓ เสร็จแล้ว ({overviewCounts.Completed}/{overviewCounts.all} - {stats.pdPercentText})
-              </button>
-            </div>
-          </div>
-
-          {/* Ready Operation Filter */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-amber-900 font-bold flex items-center gap-1 text-[11px]">
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
-              <span>Op รอขึ้นทำงาน:</span>
-            </span>
-
-            <button
-              onClick={() => setReadyOpFilter(prev => prev === 'any_ready' ? 'all' : 'any_ready')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition cursor-pointer border ${
-                readyOpFilter === 'any_ready'
-                  ? 'bg-amber-500 text-white border-amber-600 shadow-2xs'
-                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border-amber-200'
-              }`}
-            >
-              <Clock className="w-3 h-3 text-amber-600" />
-              <span>เฉพาะมี Op รอขึ้น ({overviewCounts.hasReadyOp})</span>
-            </button>
-
-            {readyOpsWithCount.length > 0 && (
-              <select
-                value={readyOpFilter !== 'any_ready' ? readyOpFilter : 'all'}
-                onChange={(e) => setReadyOpFilter(e.target.value)}
-                className={`px-2 py-1 rounded-lg border text-xs font-semibold outline-none max-w-[200px] truncate ${
-                  readyOpFilter !== 'all' && readyOpFilter !== 'any_ready'
-                    ? 'bg-amber-100 text-amber-950 border-amber-400 ring-1 ring-amber-400'
-                    : 'bg-white text-slate-700 border-slate-200'
-                }`}
-              >
-                <option value="all">เลือกขั้นตอนรอขึ้น ({readyOpsWithCount.length} ขั้นตอน)...</option>
-                {readyOpsWithCount.map(([opName, count], i) => (
-                  <option key={i} value={opName}>
-                    {opName} ({count} รายการ)
-                  </option>
-                ))}
-              </select>
-            )}
-
-            {(overviewFilter !== 'all' || readyOpFilter !== 'all') && (
-              <button
-                onClick={() => {
-                  setOverviewFilter('all');
-                  setReadyOpFilter('all');
-                }}
-                className="text-[11px] text-rose-600 hover:text-rose-800 underline font-medium ml-1 cursor-pointer"
-              >
-                ล้างตัวกรองสถานะ/Op
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Status Source View Switcher */}
-        <div className="flex items-center justify-between gap-3 pt-2.5 border-t border-slate-100 flex-wrap text-xs">
-          <div className="flex items-center gap-2">
-            <span className="text-slate-600 font-bold flex items-center gap-1.5">
-              <Layers className="w-3.5 h-3.5 text-blue-600" />
-              <span>แหล่งตรวจสอบสถานะในตาราง:</span>
-            </span>
-            <div className="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
-              <button
-                onClick={() => setStatusSource('overview')}
-                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
-                  statusSource === 'overview'
-                    ? 'bg-white text-blue-800 shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900 font-medium'
-                }`}
-              >
-                📊 Overview status (Completed / Active...)
-              </button>
-              <button
-                onClick={() => setStatusSource('qc')}
-                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
-                  statusSource === 'qc'
-                    ? 'bg-white text-emerald-800 shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900 font-medium'
-                }`}
-              >
-                🛡️ QC Record (ผ่าน QC / ยังไม่เข้า)
-              </button>
-              <button
-                onClick={() => setStatusSource('dual')}
-                className={`px-2.5 py-1 rounded-md text-xs transition cursor-pointer ${
-                  statusSource === 'dual'
-                    ? 'bg-white text-purple-800 shadow-2xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900 font-medium'
-                }`}
-              >
-                ⚡ แสดงทั้ง 2 แหล่ง (Dual)
-              </button>
-            </div>
-          </div>
-
-          {onOpenComparator && (
-            <button
-              onClick={onOpenComparator}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-800 hover:bg-blue-100 border border-blue-200 font-semibold transition cursor-pointer"
-            >
-              <GitCompare className="w-3.5 h-3.5 text-blue-600" />
-              <span>เปิดตัวเทียบสถานะ PD แบบละเอียด</span>
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* 4. Daily Schedule Groups List */}
+      {/* Daily Schedule Groups List */}
       {dateGroups.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-3">
           <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
