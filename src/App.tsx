@@ -6,6 +6,7 @@ import { MachineGrid } from './components/MachineGrid';
 import { MachineDetailModal } from './components/MachineDetailModal';
 import { DeliveryTimeline } from './components/DeliveryTimeline';
 import { DeliveryPlanView } from './components/DeliveryPlanView';
+import { DeliveryCalendarView } from './components/DeliveryCalendarView';
 import { AllItemsTable } from './components/AllItemsTable';
 import { AnalyticsView } from './components/AnalyticsView';
 import { SettingsModal } from './components/SettingsModal';
@@ -220,6 +221,18 @@ export function App() {
     loadData();
   }, [loadData]);
 
+  // Listen for custom toast events (e.g., from PDF finder)
+  useEffect(() => {
+    const handleCustomToast = (e: Event) => {
+      const detail = (e as CustomEvent<{ type: 'success' | 'warning'; text: string }>).detail;
+      if (detail?.text) {
+        showToast(detail.type || 'warning', detail.text);
+      }
+    };
+    window.addEventListener('pdtrack:toast', handleCustomToast);
+    return () => window.removeEventListener('pdtrack:toast', handleCustomToast);
+  }, [showToast]);
+
   // Handler to select machine by name
   const handleSelectMachineByName = useCallback((machineName: string) => {
     const found = machines.find(m => m.name === machineName);
@@ -307,7 +320,7 @@ export function App() {
           matchedMachinesCount={matchedMachinesCount}
           matchedItemsCount={matchedItemsCount}
           actions={
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap shrink-0">
+            <div className="flex items-center gap-1.5 flex-nowrap shrink-0">
               <button
                 onClick={() => setIsComparatorOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition active:scale-95 cursor-pointer"
@@ -315,15 +328,6 @@ export function App() {
               >
                 <GitCompare className="w-3.5 h-3.5 text-blue-200" />
                 <span>ตัวเทียบ Production Order</span>
-              </button>
-              <button
-                onClick={() => loadData()}
-                disabled={isLoading}
-                title="กดเพื่อดึงข้อมูลล่าสุดจาก Google Sheets และอัปเดตเลขที่ PD"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
-              >
-                <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-sky-400' : 'text-sky-400'}`} />
-                <span>{isLoading ? 'กำลังอัปเดต...' : 'อัปเดตข้อมูล'}</span>
               </button>
               {activeTab === 'delivery-plan' && (
                 <>
@@ -410,7 +414,17 @@ export function App() {
           />
         )}
 
-        {/* Tab 5: Analytics */}
+        {/* Tab 5: Delivery Calendar View (Week / Month) */}
+        {activeTab === 'calendar' && (
+          <DeliveryCalendarView
+            items={tagFilteredItems}
+            machines={machines}
+            searchCriteria={searchCriteria}
+            onSelectMachineByName={handleSelectMachineByName}
+          />
+        )}
+
+        {/* Tab 6: Analytics */}
         {activeTab === 'analytics' && (
           <AnalyticsView
             machines={machines}
@@ -449,6 +463,7 @@ export function App() {
         <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700">AMW PDTrack</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 0.1</span>
             <span>- ระบบติดตามเป้าหมายการส่งมอบ</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 flex-wrap">

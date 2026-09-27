@@ -25,6 +25,7 @@ import {
 import { DeliveryItem, OverviewMeta } from '../types';
 import { overviewStatusMap, qcStatusMap, extractPdNumbers, isOverviewCompletedOrClosed } from '../services/sheetService';
 import { formatCompactDate } from '../utils/dateUtils';
+import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 export type ComparisonSource = 'overview' | 'qc' | 'dual';
 export type ComparatorTab = 'system-items' | 'direct-input';
@@ -663,7 +664,19 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                           </td>
 
                           {/* Item Code */}
-                          <td className="py-2.5 px-2.5 font-mono text-slate-900 font-semibold border-r border-slate-200 whitespace-nowrap text-[11px]">
+                          <td
+                            onDoubleClick={() => item.itemCode && item.itemCode !== '-' && searchAndOpenItemPdf(item.itemCode)}
+                            title={
+                              item.itemCode && item.itemCode !== '-'
+                                ? `ดับเบิลคลิกเพื่อค้นหาและเปิดไฟล์ PDF (${formatItemCodeWithHyphens(item.itemCode)})`
+                                : undefined
+                            }
+                            className={`py-2.5 px-2.5 font-mono text-slate-900 font-semibold border-r border-slate-200 whitespace-nowrap text-[11px] ${
+                              item.itemCode && item.itemCode !== '-'
+                                ? 'cursor-pointer hover:text-sky-700 hover:bg-sky-50/70 hover:underline transition-colors'
+                                : ''
+                            }`}
+                          >
                             {item.itemCode || '-'}
                           </td>
 
@@ -1099,7 +1112,11 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                         <td className="py-2.5 px-3 border-r border-slate-200 text-[11px]">
                           <div className="font-semibold text-slate-900">{r.overviewDescription || '-'}</div>
                           {r.overviewItemCode && r.overviewItemCode !== '-' && (
-                            <div className="font-mono text-slate-500 text-[10px] mt-0.5">
+                            <div
+                              onDoubleClick={() => searchAndOpenItemPdf(r.overviewItemCode)}
+                              title={`ดับเบิลคลิกเพื่อค้นหาและเปิดไฟล์ PDF (${formatItemCodeWithHyphens(r.overviewItemCode)})`}
+                              className="font-mono text-slate-500 text-[10px] mt-0.5 cursor-pointer hover:text-sky-700 hover:underline inline-block"
+                            >
                               Item: {r.overviewItemCode}
                             </div>
                           )}

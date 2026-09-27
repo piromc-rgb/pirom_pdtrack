@@ -24,6 +24,12 @@ import {
   saveOverviewUrl,
   getSavedOverviewUrl
 } from '../services/sheetService';
+import {
+  DEFAULT_DWG_FOLDER_URL,
+  getSavedDwgFolderUrl,
+  saveDwgFolderUrl,
+  TOTAL_INDEXED_DWG_PDFS
+} from '../utils/pdfFinder';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -48,6 +54,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [prodUrl, setProdUrl] = useState(getSavedProdUrl());
   const [qcUrl, setQcUrl] = useState(getSavedQcUrl());
   const [overviewUrl, setOverviewUrl] = useState(getSavedOverviewUrl());
+  const [dwgFolderUrl, setDwgFolderUrl] = useState(getSavedDwgFolderUrl());
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -62,6 +69,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       const trimmed2 = prodUrl.trim();
       const trimmed3 = qcUrl.trim();
       const trimmed4 = overviewUrl.trim();
+      const trimmedDwg = dwgFolderUrl.trim();
       if (!trimmed1) {
         throw new Error('กรุณาระบุ URL ของ Google Sheet 1 (Check list ส่งมอบ)');
       }
@@ -73,6 +81,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         saveQcUrl(trimmed3);
       }
       saveOverviewUrl(trimmed4);
+      saveDwgFolderUrl(trimmedDwg || DEFAULT_DWG_FOLDER_URL);
       await onRefreshData(trimmed1, trimmed2, trimmed3, trimmed4);
       setSaveSuccess(true);
       setTimeout(() => {
@@ -91,10 +100,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setProdUrl(DEFAULT_PRODUCTION_URL);
     setQcUrl(DEFAULT_QC_URL);
     setOverviewUrl(DEFAULT_OVERVIEW_URL);
+    setDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
     saveSheetUrl(DEFAULT_SHEET_URL);
     saveProdUrl(DEFAULT_PRODUCTION_URL);
     saveQcUrl(DEFAULT_QC_URL);
     saveOverviewUrl(DEFAULT_OVERVIEW_URL);
+    saveDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
   };
 
   return (
@@ -108,8 +119,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <Database className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-white">การเชื่อมต่อ Google Sheets (Multi-Source Sync)</h3>
-              <p className="text-xs text-slate-400">ผสาน Check list ส่งมอบ + Record ฝ่ายผลิต + ข้อมูล QC + Status Overview</p>
+              <h3 className="font-bold text-base text-white">การเชื่อมต่อ Google Sheets & Location DWG</h3>
+              <p className="text-xs text-slate-400">ผสาน Check list ส่งมอบ + Record ฝ่ายผลิต + ข้อมูล QC + Status Overview + โฟลเดอร์ DWG (PDF)</p>
             </div>
           </div>
           <button 
@@ -129,7 +140,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <span className="text-slate-500">สถานะการเชื่อมต่อ:</span>
               <span className={`font-semibold flex items-center gap-1 ${isLive ? 'text-emerald-600' : 'text-amber-600'}`}>
                 <Link2 className="w-3.5 h-3.5" />
-                {isLive ? 'เชื่อมโยง 4 สเปรดชีตสดแบบอัตโนมัติ' : 'ใช้งานออฟไลน์/แคชสำรองที่เชื่อมโยงแล้ว'}
+                {isLive ? 'เชื่อมโยง 4 สเปรดชีตสด + Location DWG อัตโนมัติ' : 'ใช้งานออฟไลน์/แคชสำรองที่เชื่อมโยงแล้ว'}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -139,8 +150,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-500">จำนวนรายการในระบบ:</span>
-              <span className="font-semibold text-slate-800">{totalItems} รายการ</span>
+              <span className="text-slate-500">จำนวนรายการในระบบ / ไฟล์ DWG PDF:</span>
+              <span className="font-semibold text-slate-800">
+                {totalItems} รายการ • {TOTAL_INDEXED_DWG_PDFS.toLocaleString()} ไฟล์ PDF (รวมทุก Subfolder)
+              </span>
             </div>
           </div>
 
@@ -262,16 +275,46 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </span>
           </div>
 
+          {/* URL 5 Input: Location DWG (Google Drive Folder) */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span>Location DWG: โฟลเดอร์เก็บแบบงาน PDF ใน Google Drive (รวมทุก Subfolder)</span>
+              </label>
+              <a
+                href={dwgFolderUrl.trim() || DEFAULT_DWG_FOLDER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-rose-600 hover:underline flex items-center gap-0.5"
+              >
+                <span>เปิดดูโฟลเดอร์</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+
+            <textarea
+              rows={2}
+              value={dwgFolderUrl}
+              onChange={(e) => setDwgFolderUrl(e.target.value)}
+              className="w-full p-2.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-rose-500 focus:bg-white"
+              placeholder="https://drive.google.com/drive/folders/1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm"
+            />
+            <span className="text-[11px] text-slate-400 block">
+              * เมื่อ Double Click ที่เลข Item ในตาราง ระบบจะค้นหาไฟล์ PDF ที่มีรหัสแบบมีขีดคั่น (เช่น J131012-Z-38-1-D-00) จากโฟลเดอร์นี้และทุก Subfolder ({TOTAL_INDEXED_DWG_PDFS.toLocaleString()} ไฟล์)
+            </span>
+          </div>
+
           <div className="flex items-center justify-between pt-1">
             <span className="text-[11px] text-slate-500">
-              * ระบบจะผสานข้อมูลส่งมอบ + ฝ่ายผลิต + สถานะ QC + Status Overview จากทั้ง 4 ไฟล์ให้อัตโนมัติ
+              * ระบบจะผสานข้อมูลส่งมอบ + ฝ่ายผลิต + สถานะ QC + Status Overview + Location DWG ให้อัตโนมัติ
             </span>
             <button
               onClick={handleResetDefault}
               className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1 font-medium whitespace-nowrap ml-2 cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>รีเซ็ตค่าเริ่มต้นทั้ง 4 ลิงก์</span>
+              <span>รีเซ็ตค่าเริ่มต้นทั้ง 5 ลิงก์</span>
             </button>
           </div>
 
@@ -286,7 +329,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {saveSuccess && (
             <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-center gap-2">
               <Check className="w-4 h-4 flex-shrink-0" />
-              <span>เชื่อมต่อและผสานข้อมูลทั้ง 4 สเปรดชีตเรียบร้อยแล้ว!</span>
+              <span>เชื่อมต่อและบันทึกข้อมูลทั้ง 4 สเปรดชีตและ Location DWG เรียบร้อยแล้ว!</span>
             </div>
           )}
         </div>

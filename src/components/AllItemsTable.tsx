@@ -17,6 +17,7 @@ import {
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface AllItemsTableProps {
   items: DeliveryItem[];
@@ -347,7 +348,19 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 font-mono text-slate-700 whitespace-nowrap">
+                    <td
+                      onDoubleClick={() => item.itemCode && item.itemCode !== '-' && searchAndOpenItemPdf(item.itemCode)}
+                      title={
+                        item.itemCode && item.itemCode !== '-'
+                          ? `ดับเบิลคลิกเพื่อค้นหาและเปิดไฟล์ PDF (${formatItemCodeWithHyphens(item.itemCode)})`
+                          : undefined
+                      }
+                      className={`py-3 px-3 font-mono text-slate-700 whitespace-nowrap ${
+                        item.itemCode && item.itemCode !== '-'
+                          ? 'cursor-pointer hover:text-sky-700 hover:bg-sky-50/70 hover:underline transition-colors'
+                          : ''
+                      }`}
+                    >
                       {item.itemCode || '-'}
                     </td>
 

@@ -21,6 +21,7 @@ import {
 import { MachineSummary, DeliveryItem } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface MachineDetailModalProps {
   machine: MachineSummary | null;
@@ -375,7 +376,19 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                         <td className="py-3 px-3.5 text-slate-400 font-mono text-[11px]">
                           {idx + 1}
                         </td>
-                        <td className="py-3 px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap">
+                        <td
+                          onDoubleClick={() => item.itemCode && item.itemCode !== '-' && searchAndOpenItemPdf(item.itemCode)}
+                          title={
+                            item.itemCode && item.itemCode !== '-'
+                              ? `ดับเบิลคลิกเพื่อค้นหาและเปิดไฟล์ PDF (${formatItemCodeWithHyphens(item.itemCode)})`
+                              : undefined
+                          }
+                          className={`py-3 px-3.5 font-mono font-medium text-slate-800 whitespace-nowrap ${
+                            item.itemCode && item.itemCode !== '-'
+                              ? 'cursor-pointer hover:text-sky-700 hover:bg-sky-50/70 hover:underline transition-colors'
+                              : ''
+                          }`}
+                        >
                           <div className="flex items-center gap-1.5 flex-wrap font-sans">
                             <span
                               className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${

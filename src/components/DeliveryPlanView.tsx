@@ -34,6 +34,7 @@ import {
   extractCustomer 
 } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
 export interface DeliveryDateGroup {
@@ -563,8 +564,20 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                 </div>
                               </td>
 
-                              {/* Item Code */}
-                              <td className="py-3 px-3 font-mono font-medium text-slate-800 whitespace-nowrap">
+                              {/* Item Code (Double-click to search & open PDF in Google Drive) */}
+                              <td
+                                onDoubleClick={() => item.itemCode && item.itemCode !== '-' && searchAndOpenItemPdf(item.itemCode)}
+                                title={
+                                  item.itemCode && item.itemCode !== '-'
+                                    ? `ดับเบิลคลิกเพื่อค้นหาและเปิดไฟล์ PDF (${formatItemCodeWithHyphens(item.itemCode)})`
+                                    : undefined
+                                }
+                                className={`py-3 px-3 font-mono font-medium text-slate-800 whitespace-nowrap ${
+                                  item.itemCode && item.itemCode !== '-'
+                                    ? 'cursor-pointer hover:text-sky-700 hover:bg-sky-50/70 hover:underline transition-colors'
+                                    : ''
+                                }`}
+                              >
                                 {item.itemCode || '-'}
                               </td>
 

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, parseDate, isDateOverdue } from '../utils/dateUtils';
+import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface DeliveryTimelineProps {
   items: DeliveryItem[];
@@ -276,7 +277,23 @@ export const DeliveryTimeline: React.FC<DeliveryTimelineProps> = ({
                                   {item.itemName}
                                 </div>
                                 <div className="text-slate-500 font-mono text-[11px]">
-                                  รหัส: {item.itemCode || '-'} | จำนวน: <strong className="text-slate-700">{item.qty}</strong> ชิ้น
+                                  รหัส:{' '}
+                                  <span
+                                    onDoubleClick={() => item.itemCode && item.itemCode !== '-' && searchAndOpenItemPdf(item.itemCode)}
+                                    title={
+                                      item.itemCode && item.itemCode !== '-'
+                                        ? `ดับเบิลคลิกเพื่อค้นหาและเปิดไฟล์ PDF (${formatItemCodeWithHyphens(item.itemCode)})`
+                                        : undefined
+                                    }
+                                    className={
+                                      item.itemCode && item.itemCode !== '-'
+                                        ? 'cursor-pointer hover:text-sky-700 hover:underline font-medium'
+                                        : ''
+                                    }
+                                  >
+                                    {item.itemCode || '-'}
+                                  </span>{' '}
+                                  | จำนวน: <strong className="text-slate-700">{item.qty}</strong> ชิ้น
                                 </div>
                                 {item.remark && (
                                   <div className="text-[11px] text-slate-500 line-clamp-1 italic">

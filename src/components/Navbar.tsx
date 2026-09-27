@@ -55,6 +55,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold tracking-tight text-slate-900">AMW PD<span className="text-sky-600">Track</span></span>
+                <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200 shadow-2xs">
+                  Ver 0.1
+                </span>
               </div>
               <p className="text-xs text-slate-500 hidden md:block">
                 ระบบติดตามเป้าหมายการส่งมอบอะไหล่ & ชิ้นส่วน
@@ -185,6 +188,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Layers className="w-4 h-4" />
               <span>รายการชิ้นส่วนทั้งหมด ({totalItems})</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('calendar')}
+              className={`flex items-center gap-2 py-2.5 px-3 border-b-2 font-medium text-sm transition whitespace-nowrap cursor-pointer ${
+                activeTab === 'calendar'
+                  ? 'border-sky-600 text-sky-600 font-bold'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <Calendar className="w-4 h-4 text-indigo-500" />
+              <span>ปฏิทินส่งมอบงาน (Calendar)</span>
             </button>
           </nav>
         </div>
