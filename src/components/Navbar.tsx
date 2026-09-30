@@ -11,7 +11,8 @@ import {
   BarChart3,
   ExternalLink,
   Truck,
-  GitCompare
+  GitCompare,
+  TrendingUp
 } from 'lucide-react';
 import { ActiveTab } from '../types';
 
@@ -56,7 +57,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold tracking-tight text-slate-900">AMW PD<span className="text-sky-600">Track</span></span>
                 <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200 shadow-2xs">
-                  Ver 1.0
+                  Ver 1.1
                 </span>
               </div>
               <p className="text-xs text-slate-500 hidden md:block">
@@ -200,6 +201,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Calendar className="w-4 h-4 text-indigo-500" />
               <span>ปฏิทินส่งมอบงาน (Calendar)</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('monthly-kpi')}
+              className={`flex items-center gap-2 py-2.5 px-3 border-b-2 font-medium text-sm transition whitespace-nowrap cursor-pointer ${
+                activeTab === 'monthly-kpi'
+                  ? 'border-emerald-600 text-emerald-600 font-bold'
+                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+              }`}
+            >
+              <TrendingUp className="w-4 h-4 text-emerald-600" />
+              <span>สรุป KPI %การส่งมอบ</span>
             </button>
           </nav>
         </div>

@@ -9,6 +9,7 @@ import { DeliveryPlanView } from './components/DeliveryPlanView';
 import { DeliveryCalendarView } from './components/DeliveryCalendarView';
 import { AllItemsTable } from './components/AllItemsTable';
 import { AnalyticsView } from './components/AnalyticsView';
+import { MonthlyKpiView } from './components/MonthlyKpiView';
 import { SettingsModal } from './components/SettingsModal';
 import { ProductionOrderComparatorModal } from './components/ProductionOrderComparatorModal';
 import { 
@@ -44,7 +45,7 @@ export function App() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get('tab');
-      if (tab === 'delivery-plan' || tab === 'items' || tab === 'analytics' || tab === 'timeline') {
+      if (tab === 'delivery-plan' || tab === 'items' || tab === 'analytics' || tab === 'timeline' || tab === 'calendar' || tab === 'monthly-kpi') {
         return tab as ActiveTab;
       }
     }
@@ -424,7 +425,16 @@ export function App() {
           />
         )}
 
-        {/* Tab 6: Analytics */}
+        {/* Tab 6: Monthly Delivery KPI (สรุป KPI %การส่งมอบ ประจำเดือน) */}
+        {activeTab === 'monthly-kpi' && (
+          <MonthlyKpiView
+            items={items}
+            machines={machines}
+            onSelectMachineByName={handleSelectMachineByName}
+          />
+        )}
+
+        {/* Tab 7: Analytics */}
         {activeTab === 'analytics' && (
           <AnalyticsView
             machines={machines}
@@ -463,7 +473,7 @@ export function App() {
         <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-slate-700">AMW PDTrack</span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.0</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.1</span>
             <span>- ระบบติดตามเป้าหมายการส่งมอบ</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 flex-wrap">

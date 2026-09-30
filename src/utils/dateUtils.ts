@@ -156,3 +156,65 @@ export function extractCustomer(name: string | null | undefined): string {
   return res || name;
 }
 
+/**
+ * Returns month key in 'YYYY-MM' format from a date string (e.g. '14/7/2026' -> '2026-07')
+ */
+export function getMonthKey(dateStr: string | null | undefined): string | null {
+  if (!dateStr) return null;
+  const d = parseDate(dateStr);
+  if (!d) return null;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+}
+
+/**
+ * Formats a month key ('YYYY-MM') to full Thai month and Buddhist Era year (e.g. '2026-07' -> 'กรกฎาคม 2569')
+ */
+export function formatThaiMonth(monthKey: string | null | undefined): string {
+  if (!monthKey || monthKey === 'no-date') return 'ไม่ระบุเดือน';
+  const parts = monthKey.split('-');
+  if (parts.length < 2) return monthKey;
+  const y = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10) - 1;
+  const thaiMonthsFull = [
+    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+  ];
+  const mName = thaiMonthsFull[m] || parts[1];
+  const yearBE = (y >= 2400 ? y : y + 543);
+  return `${mName} ${yearBE}`;
+}
+
+/**
+ * Formats a month key ('YYYY-MM') to short Thai month and BE year (e.g. '2026-07' -> 'ก.ค. 2569')
+ */
+export function formatThaiMonthShort(monthKey: string | null | undefined): string {
+  if (!monthKey || monthKey === 'no-date') return 'ไม่ระบุ';
+  const parts = monthKey.split('-');
+  if (parts.length < 2) return monthKey;
+  const y = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10) - 1;
+  const thaiMonthsShort = [
+    'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+    'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+  ];
+  const mName = thaiMonthsShort[m] || parts[1];
+  const yearBE = (y >= 2400 ? y : y + 543);
+  return `${mName} ${yearBE}`;
+}
+
+/**
+ * Calculates days between two date strings: positive if date2 > date1
+ */
+export function getDaysBetweenDates(date1Str: string | null | undefined, date2Str: string | null | undefined): number | null {
+  if (!date1Str || !date2Str) return null;
+  const d1 = parseDate(date1Str);
+  const d2 = parseDate(date2Str);
+  if (!d1 || !d2) return null;
+
+  const t1 = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate()).getTime();
+  const t2 = new Date(d2.getFullYear(), d2.getMonth(), d2.getDate()).getTime();
+  const diffMs = t2 - t1;
+  return Math.round(diffMs / (1000 * 60 * 60 * 24));
+}

@@ -153,4 +153,4 @@ export interface FilterState {
   viewMode: 'cards' | 'table';
 }
 
-export type ActiveTab = 'machines' | 'delivery-plan' | 'timeline' | 'items' | 'calendar' | 'analytics';
+export type ActiveTab = 'machines' | 'delivery-plan' | 'timeline' | 'items' | 'calendar' | 'monthly-kpi' | 'analytics';
