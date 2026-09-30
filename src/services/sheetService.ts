@@ -754,6 +754,15 @@ export function parseProjectItemsFromProductionCsv(
   const projectItems: DeliveryItem[] = [];
   let projIdx = 0;
 
+  // Detect Closed column from header row (row index 1) of Sheet 2
+  const sheet2Headers = (rows[1] || []).map((h: string) => (h || '').trim().replace(/\n/g, ' '));
+  const findSheet2Col = (keywords: string[]) =>
+    sheet2Headers.findIndex((h: string) => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
+  const sheet2ClosedIdx = findSheet2Col(['Closed', 'closed', 'close', 'ปิดงาน', 'ปิด']);
+  const sheet2RemarkIdx = findSheet2Col(['หมายเหตุ', 'Remark', 'Note']);
+  console.log('[PDTrack] Sheet2 Headers (row1):', sheet2Headers);
+  console.log('[PDTrack] Sheet2 closedIdx:', sheet2ClosedIdx, '| remarkIdx:', sheet2RemarkIdx);
+
   for (let i = 2; i < rows.length; i++) {
     const r = rows[i];
     if (!r || r.length < 10) continue;
@@ -789,8 +798,8 @@ export function parseProjectItemsFromProductionCsv(
     const target5 = getVal(21);
     let rawTargetLatest = getVal(22);
     const poPr = getVal(23);
-    const remark = getVal(24);
-    const closed = getVal(26);
+    const remark = sheet2RemarkIdx !== -1 ? getVal(sheet2RemarkIdx) : getVal(24);
+    const closed = sheet2ClosedIdx !== -1 ? getVal(sheet2ClosedIdx) : getVal(26);
 
     const machineName = rawMachine || '(ไม่ระบุเครื่องจักร)';
     const dedupKey = `${norm(docRef)}|${norm(machineName)}|${norm(itemCode)}`;
@@ -1096,8 +1105,29 @@ export async function fetchDeliveryData(
     if (liveCsvText2) {
       projectItems = parseProjectItemsFromProductionCsv(liveCsvText2, serviceItems, qcMap);
     } else {
-      projectItems = (defaultProjectItemsJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Project'));
+      // Sheet 2 ไม่สามารถโหลดได้ (เช่น 401) — ใช้ project items จาก v8 cache ก่อน
+      // เพื่อไม่ให้สถานะ Closed ถูก reset เป็นค่าเก่าจาก bundled default
+      const cachedRaw = localStorage.getItem(STORAGE_CACHE_KEY);
+      if (cachedRaw) {
+        try {
+          const cachedAll = JSON.parse(cachedRaw) as DeliveryItem[];
+          const cachedProj = cachedAll
+            .filter(it => it.workTag === 'Project')
+            .map(it => enrichBundledItem(it, 'Project'));
+          if (cachedProj.length > 0) {
+            projectItems = cachedProj;
+            console.warn('[PDTrack] Sheet2 fetch failed — using cached project items from localStorage v8');
+          } else {
+            projectItems = (defaultProjectItemsJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Project'));
+          }
+        } catch {
+          projectItems = (defaultProjectItemsJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Project'));
+        }
+      } else {
+        projectItems = (defaultProjectItemsJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Project'));
+      }
     }
+
 
     const items = [...serviceItems, ...projectItems];
 
