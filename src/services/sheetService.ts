@@ -48,7 +48,7 @@ const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
 const STORAGE_OVERVIEW_URL_KEY = 'pdtrack_overview_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v7';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v8';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -576,7 +576,11 @@ export function parseDeliveryCsvWithProduction(
   const poPrIdx = findCol(['PO/PR', 'PO', 'PR']);
   const remarkIdx = findCol(['หมายเหตุ', 'Remark', 'Note']);
   const statusIdx = findCol(['สถานะ', 'Status']);
-  const closedIdx = findCol(['Closed', 'ปิดงาน']);
+  const closedIdx = findCol(['Closed', 'closed', 'ปิดงาน', 'ปิด', 'close']);
+
+  // 🔍 Debug: แสดง header จริงจาก Sheet และ index ที่ detect ได้ — เปิด DevTools Console เพื่อดู
+  console.log('[PDTrack] Sheet1 Headers:', headers);
+  console.log('[PDTrack] closedIdx:', closedIdx, '| statusIdx:', statusIdx, '| remarkIdx:', remarkIdx);
 
   const items: DeliveryItem[] = [];
 
@@ -612,7 +616,7 @@ export function parseDeliveryCsvWithProduction(
     const poPr = getVal(poPrIdx !== -1 ? poPrIdx : 17);
     const remark = getVal(remarkIdx !== -1 ? remarkIdx : 18);
     const rawStatus = getVal(statusIdx !== -1 ? statusIdx : 19);
-    const closed = getVal(closedIdx !== -1 ? closedIdx : 20);
+    const closed = closedIdx !== -1 ? getVal(closedIdx) : '';
 
     const machineName = rawMachine || '(ไม่ระบุเครื่องจักร)';
     const targetLatest = rawTargetLatest || target5 || target4 || target3 || target2 || target1;
