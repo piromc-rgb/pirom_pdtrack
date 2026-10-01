@@ -33,7 +33,7 @@ import {
   getDaysDiff,
   extractCustomer 
 } from '../utils/dateUtils';
-import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens, refreshDwgIndex } from '../utils/pdfFinder';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
@@ -324,7 +324,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
           `"${item.prodOrder}"`,
           `"${isOverviewCompletedOrClosed(item.overviewStatus) ? 'เสร็จแล้ว' : (item.overviewStatus || '-')}"`,
           `"${item.readyOp || item.activeOp || '-'}"`,
-          item.isQcPassed ? '"ผ่าน QC แล้ว"' : '"ยังไม่เข้า QC"',
+          `"${item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction)}"`,
           `"${item.qcDate || ''}"`,
           `"${item.qcInspector || ''}"`,
           `"${item.projectName.replace(/"/g, '""')}"`,
@@ -648,33 +648,65 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               {/* Dynamic Status Display Cell */}
                               {statusSource === 'qc' && (
                                 <td className="py-3 px-3">
-                                  {item.isQcPassed ? (
-                                    <div className="space-y-0.5">
-                                      <span 
-                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
-                                        title={`ผ่านการตรวจ QC: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'} (${item.qcTopic || ''})`}
-                                      >
-                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                        ผ่าน QC แล้ว
-                                      </span>
-                                      <div className="text-[10px] text-slate-500 font-mono">
-                                        {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
-                                      </div>
-                                      {item.qcInspector && (
-                                        <div className="text-[10px] text-emerald-700">
-                                          ผู้ตรวจ: {item.qcInspector}
+                                  {(() => {
+                                    const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+                                    if (whStatus === 'คลัง PRD') {
+                                      return (
+                                        <div className="space-y-0.5">
+                                          <span 
+                                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
+                                            title={`คลัง PRD: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'} (${item.qcTopic || ''})`}
+                                          >
+                                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                            คลัง PRD
+                                          </span>
+                                          <div className="text-[10px] text-slate-500 font-mono">
+                                            {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                          </div>
+                                          {item.qcInspector && (
+                                            <div className="text-[10px] text-emerald-700">
+                                              ผู้ตรวจ: {item.qcInspector}
+                                            </div>
+                                          )}
                                         </div>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200">
-                                        <Clock className="w-3 h-3 text-slate-400" />
-                                        ยังไม่เข้า QC
-                                      </span>
-                                      <div className="text-[10px] text-slate-400 font-mono mt-0.5">-</div>
-                                    </div>
-                                  )}
+                                      );
+                                    }
+                                    if (whStatus === 'คลัง SEMI') {
+                                      return (
+                                        <div className="space-y-0.5">
+                                          <span 
+                                            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-300 shadow-2xs"
+                                            title={`คลัง SEMI: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'} (${item.qcTopic || ''})`}
+                                          >
+                                            <Boxes className="w-3 h-3 text-blue-600" />
+                                            คลัง SEMI
+                                          </span>
+                                          <div className="text-[10px] text-slate-500 font-mono">
+                                            {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                          </div>
+                                          {item.qcInspector && (
+                                            <div className="text-[10px] text-blue-700">
+                                              ผู้ตรวจ: {item.qcInspector}
+                                            </div>
+                                          )}
+                                        </div>
+                                      );
+                                    }
+                                    return (
+                                      <div className="space-y-0.5">
+                                        <span 
+                                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200"
+                                          title={item.qcAction ? `การดำเนินการ QC: ${item.qcAction}` : 'ยังไม่มีบันทึกส่งเข้าคลัง'}
+                                        >
+                                          <Clock className="w-3 h-3 text-slate-400" />
+                                          ยังไม่ส่งเข้าคลัง
+                                        </span>
+                                        <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+                                          {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                        </div>
+                                      </div>
+                                    );
+                                  })()}
                                 </td>
                               )}
 
@@ -794,17 +826,41 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     ) : null}
                                   </td>
                                   <td className="py-3 px-2.5 bg-emerald-50/20 text-center">
-                                    {item.isQcPassed ? (
-                                      <span className="font-bold text-emerald-800 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-200 inline-block">
-                                        ผ่าน QC แล้ว
-                                      </span>
-                                    ) : (
-                                      <span className="text-slate-500 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 inline-block">
-                                        ยังไม่เข้า QC
-                                      </span>
-                                    )}
+                                    {(() => {
+                                      const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+                                      if (whStatus === 'คลัง PRD') {
+                                        return (
+                                          <span 
+                                            className="font-bold text-emerald-800 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 border border-emerald-300 inline-flex items-center gap-1 shadow-2xs"
+                                            title={`คลัง PRD: ตรวจเมื่อ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'}${item.qcTopic ? ` (${item.qcTopic})` : ''}`}
+                                          >
+                                            <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
+                                            คลัง PRD
+                                          </span>
+                                        );
+                                      }
+                                      if (whStatus === 'คลัง SEMI') {
+                                        return (
+                                          <span 
+                                            className="font-bold text-blue-800 text-[10px] px-1.5 py-0.5 rounded bg-blue-100 border border-blue-300 inline-flex items-center gap-1 shadow-2xs"
+                                            title={`คลัง SEMI: ตรวจเมื่อ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'}${item.qcTopic ? ` (${item.qcTopic})` : ''}`}
+                                          >
+                                            <Boxes className="w-2.5 h-2.5 text-blue-600 shrink-0" />
+                                            คลัง SEMI
+                                          </span>
+                                        );
+                                      }
+                                      return (
+                                        <span 
+                                          className="text-slate-500 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 inline-block"
+                                          title={item.qcAction ? `การดำเนินการ QC: ${item.qcAction}` : 'ยังไม่มีบันทึกส่งเข้าคลัง'}
+                                        >
+                                          ยังไม่ส่งเข้าคลัง
+                                        </span>
+                                      );
+                                    })()}
                                     <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                                      {item.isQcPassed && item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                      {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
                                     </div>
                                   </td>
                                 </>

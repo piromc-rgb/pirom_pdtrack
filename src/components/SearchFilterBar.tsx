@@ -438,8 +438,11 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 }`}
               >
                 <option value="all">ทั้งหมด</option>
-                <option value="passed">✓ ผ่าน QC แล้ว</option>
-                <option value="pending">ยังไม่เข้า QC</option>
+                <option value="prd">คลัง PRD</option>
+                <option value="semi">คลัง SEMI</option>
+                <option value="not_in_warehouse">ยังไม่ส่งเข้าคลัง</option>
+                <option value="passed">✓ ผ่าน QC (คลัง PRD / SEMI)</option>
+                <option value="pending">ยังไม่ส่งเข้าคลัง / ยังไม่ตรวจ</option>
               </select>
             </div>
 

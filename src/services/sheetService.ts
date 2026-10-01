@@ -265,9 +265,82 @@ export function extractPdNumbers(prodOrder: string): string[] {
 }
 
 /**
+ * Determines warehouse status from Column N (การดำเนินการ):
+ * - เป็น คลัง SEMI    ให้แสดง 'คลัง SEMI'
+ * - เป็น คลัง PRD    ให้แสดง 'คลัง PRD'
+ * - นอกจากนั้นให้แสดง 'ยังไม่ส่งเข้าคลัง'
+ */
+export function getQcWarehouseStatus(action: string | undefined | null): 'คลัง SEMI' | 'คลัง PRD' | 'ยังไม่ส่งเข้าคลัง' {
+  if (!action) return 'ยังไม่ส่งเข้าคลัง';
+  const clean = String(action).trim();
+  if (/คลัง\s*SEMI/i.test(clean)) return 'คลัง SEMI';
+  if (/คลัง\s*PRD/i.test(clean)) return 'คลัง PRD';
+  return 'ยังไม่ส่งเข้าคลัง';
+}
+
+/**
+ * Given a list of PD numbers, picks the QC metadata that has the latest inspection date (วันที่ตรวจ in Column C).
+ * If duplicate PDs or multiple PDs exist, returns the record with the latest date.
+ */
+export function pickLatestQcMeta(pds: string[], qcMap?: Record<string, QcMeta>): QcMeta | undefined {
+  if (!qcMap || !pds || pds.length === 0) return undefined;
+  let bestMeta: QcMeta | undefined;
+  let bestTime = -Infinity;
+
+  for (const pd of pds) {
+    const meta = qcMap[pd.toUpperCase()];
+    if (!meta) continue;
+
+    const d = parseDate(meta.qcDate);
+    const t = d ? d.getTime() : 0;
+
+    if (!bestMeta || t > bestTime) {
+      bestMeta = meta;
+      bestTime = t;
+    } else if (t === bestTime) {
+      const bestWh = getQcWarehouseStatus(bestMeta.action);
+      const currWh = getQcWarehouseStatus(meta.action);
+      if (currWh !== 'ยังไม่ส่งเข้าคลัง' && bestWh === 'ยังไม่ส่งเข้าคลัง') {
+        bestMeta = meta;
+      }
+    }
+  }
+
+  return bestMeta;
+}
+
+/**
+ * Helper to register or update a PD's QC metadata:
+ * Rule: ถ้ารายการ PD ซ้ำกัน ให้แสดงเฉพาะรายการ วันที่ตรวจ ใน column C ที่เป็นวันที่ล่าสุด
+ */
+function updateQcMapWithLatest(qcMap: Record<string, QcMeta>, pdKey: string, meta: QcMeta) {
+  const existing = qcMap[pdKey];
+  if (!existing) {
+    qcMap[pdKey] = meta;
+    return;
+  }
+
+  const dNew = parseDate(meta.qcDate);
+  const dOld = parseDate(existing.qcDate);
+  const tNew = dNew ? dNew.getTime() : 0;
+  const tOld = dOld ? dOld.getTime() : 0;
+
+  if (tNew > tOld) {
+    qcMap[pdKey] = meta;
+  } else if (tNew === tOld) {
+    const newWh = getQcWarehouseStatus(meta.action);
+    const oldWh = getQcWarehouseStatus(existing.action);
+    if (newWh !== 'ยังไม่ส่งเข้าคลัง' && oldWh === 'ยังไม่ส่งเข้าคลัง') {
+      qcMap[pdKey] = meta;
+    }
+  }
+}
+
+/**
  * Parses raw ArrayBuffer or Uint8Array of Google Sheet 3 (QC Checklist) as an XLSX workbook across ALL sheets/tabs.
  * Excludes photo/non-data sheets (e.g. names containing 'รูป').
- * Rule: If a PD No exists in any sheet in this workbook, it is considered QC Passed!
+ * Rule: Column N (การดำเนินการ), Column C (วันที่ตรวจ), Column F (PD No.).
+ * ถ้ารายการ PD ซ้ำกัน ให้เลือกเฉพาะรายการ วันที่ตรวจ ใน column C ที่เป็นวันที่ล่าสุด!
  */
 export function parseQcWorkbook(data: ArrayBuffer | Uint8Array): Record<string, QcMeta> {
   const wb = XLSX.read(data, { type: 'array' });
@@ -290,11 +363,11 @@ export function parseQcWorkbook(data: ArrayBuffer | Uint8Array): Record<string, 
       if (pIdx !== -1) {
         headerIdx = r;
         pdIdx = pIdx;
-        dateIdx = row.findIndex(c => c.includes('วันที่ตรวจ'));
+        dateIdx = row.findIndex(c => c.includes('วันที่ตรวจ') || c.includes('วันตรวจ'));
         inspIdx = row.findIndex(c => c.includes('ผู้ตรวจสอบ'));
         passIdx = row.findIndex(c => c === 'ผ่าน' || c.includes('ผ่าน'));
         failIdx = row.findIndex(c => c.includes('ไม่ผ่าน'));
-        actionIdx = row.findIndex(c => c.includes('การดำเนินการ'));
+        actionIdx = row.findIndex(c => c.includes('การดำเนินการ') || c.includes('ดำเนินการ'));
         remarkIdx = row.findIndex(c => c.includes('หมายเหตุ') || c.includes('รายละเอียด'));
         topicIdx = row.findIndex(c => c.includes('หัวข้อการตรวจสอบ'));
         projIdx = row.findIndex(c => c.includes('เลขที่โครงการ'));
@@ -311,22 +384,25 @@ export function parseQcWorkbook(data: ArrayBuffer | Uint8Array): Record<string, 
       const matches = pdVal.match(/PD\d+/gi);
       if (!matches) continue;
 
-      const getVal = (idx: number) => (idx !== -1 && idx < row.length && row[idx] != null ? String(row[idx]).trim() : '');
+      const getVal = (idx: number, fallbackIdx?: number) => {
+        const actualIdx = idx !== -1 ? idx : (fallbackIdx !== undefined ? fallbackIdx : -1);
+        return actualIdx !== -1 && actualIdx < row.length && row[actualIdx] != null ? String(row[actualIdx]).trim() : '';
+      };
 
       const meta: QcMeta = {
         pdNo: matches[0].toUpperCase(),
-        qcDate: getVal(dateIdx),
-        inspector: getVal(inspIdx),
-        qtyPass: getVal(passIdx),
-        qtyFail: getVal(failIdx),
-        action: getVal(actionIdx),
-        remarks: getVal(remarkIdx),
-        topic: getVal(topicIdx),
-        project: getVal(projIdx),
+        qcDate: getVal(dateIdx, 2),        // Column C
+        inspector: getVal(inspIdx, 4),     // Column E
+        qtyPass: getVal(passIdx, 8),       // Column I
+        qtyFail: getVal(failIdx, 9),       // Column J
+        action: getVal(actionIdx, 13),     // Column N
+        remarks: getVal(remarkIdx, 15),    // Column P
+        topic: getVal(topicIdx, 17),       // Column R
+        project: getVal(projIdx, 18),      // Column S
       };
 
       for (const m of matches) {
-        qcMap[m.toUpperCase()] = meta;
+        updateQcMapWithLatest(qcMap, m.toUpperCase(), meta);
       }
     }
   }
@@ -336,7 +412,8 @@ export function parseQcWorkbook(data: ArrayBuffer | Uint8Array): Record<string, 
 
 /**
  * Parses raw CSV of Google Sheet 3 (QC Checklist: gid=1814251242)
- * Rule: If a PD No exists in this sheet, it is considered QC Passed!
+ * Rule: Column N (การดำเนินการ), Column C (วันที่ตรวจ), Column F (PD No.).
+ * ถ้ารายการ PD ซ้ำกัน ให้เลือกเฉพาะรายการ วันที่ตรวจ ใน column C ที่เป็นวันที่ล่าสุด!
  */
 export function parseQcCsv(csvText: string): Record<string, QcMeta> {
   const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
@@ -347,11 +424,11 @@ export function parseQcCsv(csvText: string): Record<string, QcMeta> {
   const findCol = (keywords: string[]) => headers.findIndex(h => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
 
   const pdIdx = findCol(['PD No', 'PD No.', 'PD']);
-  const dateIdx = findCol(['วันที่ตรวจ']);
+  const dateIdx = findCol(['วันที่ตรวจ', 'วันตรวจ']);
   const inspectorIdx = findCol(['ผู้ตรวจสอบ']);
   const passIdx = findCol(['ผ่าน']);
   const failIdx = findCol(['ไม่ผ่าน']);
-  const actionIdx = findCol(['การดำเนินการ']);
+  const actionIdx = findCol(['การดำเนินการ', 'ดำเนินการ']);
   const remarkIdx = findCol(['หมายเหตุ', 'รายละเอียด']);
   const topicIdx = findCol(['หัวข้อการตรวจสอบ']);
   const projIdx = findCol(['เลขที่โครงการ']);
@@ -368,20 +445,25 @@ export function parseQcCsv(csvText: string): Record<string, QcMeta> {
     const matches = pdVal.match(/PD\d+/gi);
     if (!matches) continue;
 
+    const getVal = (idx: number, fallbackIdx: number) => {
+      const actualIdx = idx !== -1 ? idx : fallbackIdx;
+      return actualIdx < r.length && r[actualIdx] ? r[actualIdx].trim() : '';
+    };
+
     const meta: QcMeta = {
       pdNo: matches[0].toUpperCase(),
-      qcDate: dateIdx !== -1 && dateIdx < r.length ? r[dateIdx]?.trim() || '' : '',
-      inspector: inspectorIdx !== -1 && inspectorIdx < r.length ? r[inspectorIdx]?.trim() || '' : '',
-      qtyPass: passIdx !== -1 && passIdx < r.length ? r[passIdx]?.trim() || '' : '',
-      qtyFail: failIdx !== -1 && failIdx < r.length ? r[failIdx]?.trim() || '' : '',
-      action: actionIdx !== -1 && actionIdx < r.length ? r[actionIdx]?.trim() || '' : '',
-      remarks: remarkIdx !== -1 && remarkIdx < r.length ? r[remarkIdx]?.trim() || '' : '',
-      topic: topicIdx !== -1 && topicIdx < r.length ? r[topicIdx]?.trim() || '' : '',
-      project: projIdx !== -1 && projIdx < r.length ? r[projIdx]?.trim() || '' : '',
+      qcDate: getVal(dateIdx, 2),        // Column C
+      inspector: getVal(inspectorIdx, 4),// Column E
+      qtyPass: getVal(passIdx, 8),       // Column I
+      qtyFail: getVal(failIdx, 9),       // Column J
+      action: getVal(actionIdx, 13),     // Column N
+      remarks: getVal(remarkIdx, 15),    // Column P
+      topic: getVal(topicIdx, 17),       // Column R
+      project: getVal(projIdx, 18),      // Column S
     };
 
     matches.forEach(p => {
-      qcMap[p.toUpperCase()] = meta;
+      updateQcMapWithLatest(qcMap, p.toUpperCase(), meta);
     });
   }
 
@@ -914,11 +996,13 @@ export function parseDeliveryCsvWithProduction(
       normClosed.includes('*') ||
       normClosed.includes('close');
 
-    // Link with QC Sheet (If any PD in this item exists in QC Sheet, it passed QC)
+    // Link with QC Sheet (Read Column N for warehouse status, and pick latest inspection date from Column C)
     const itemPds = extractPdNumbers(prodOrder);
     const matchedQcPds = qcMap ? itemPds.filter(p => qcMap[p]) : [];
-    const isQcPassed = matchedQcPds.length > 0;
-    const firstQcMeta = isQcPassed && qcMap ? qcMap[matchedQcPds[0]] : undefined;
+    const latestQcMeta = pickLatestQcMeta(itemPds, qcMap);
+    const qcAction = latestQcMeta?.action || '';
+    const qcWarehouseStatus = getQcWarehouseStatus(qcAction);
+    const isQcPassed = qcWarehouseStatus === 'คลัง PRD' || qcWarehouseStatus === 'คลัง SEMI';
 
     // Link with Overview Status (Prioritized by Item Code)
     const overviewMeta = getOverviewStatusForItem(itemCode, projectCode, itemPds);
@@ -962,11 +1046,13 @@ export function parseDeliveryCsvWithProduction(
       week: prodMeta?.week || '',
       // Joined QC metadata
       isQcPassed,
-      qcDate: firstQcMeta?.qcDate || '',
-      qcInspector: firstQcMeta?.inspector || '',
-      qcPassedQty: firstQcMeta?.qtyPass || '',
-      qcTopic: firstQcMeta?.topic || '',
-      qcRemarks: firstQcMeta?.remarks || '',
+      qcDate: latestQcMeta?.qcDate || '',
+      qcInspector: latestQcMeta?.inspector || '',
+      qcPassedQty: latestQcMeta?.qtyPass || '',
+      qcTopic: latestQcMeta?.topic || '',
+      qcRemarks: latestQcMeta?.remarks || '',
+      qcAction,
+      qcWarehouseStatus,
       qcPdList: matchedQcPds,
       // Joined Overview metadata
       overviewStatus: overviewMeta?.status || '',
@@ -1102,8 +1188,10 @@ export function parseProjectItemsFromProductionCsv(
 
     const itemPds = extractPdNumbers(prodOrder);
     const matchedQcPds = qcMap ? itemPds.filter(p => qcMap[p]) : [];
-    const isQcPassed = matchedQcPds.length > 0;
-    const firstQcMeta = isQcPassed && qcMap ? qcMap[matchedQcPds[0]] : undefined;
+    const latestQcMeta = pickLatestQcMeta(itemPds, qcMap);
+    const qcAction = latestQcMeta?.action || '';
+    const qcWarehouseStatus = getQcWarehouseStatus(qcAction);
+    const isQcPassed = qcWarehouseStatus === 'คลัง PRD' || qcWarehouseStatus === 'คลัง SEMI';
 
     const overviewMeta = getOverviewStatusForItem(itemCode, projectCode, itemPds);
     if (!prodOrder && overviewMeta?.prodOrder) {
@@ -1155,11 +1243,13 @@ export function parseProjectItemsFromProductionCsv(
       targetRequested,
       week,
       isQcPassed,
-      qcDate: firstQcMeta?.qcDate || '',
-      qcInspector: firstQcMeta?.inspector || '',
-      qcPassedQty: firstQcMeta?.qtyPass || '',
-      qcTopic: firstQcMeta?.topic || '',
-      qcRemarks: firstQcMeta?.remarks || '',
+      qcDate: latestQcMeta?.qcDate || '',
+      qcInspector: latestQcMeta?.inspector || '',
+      qcPassedQty: latestQcMeta?.qtyPass || '',
+      qcTopic: latestQcMeta?.topic || '',
+      qcRemarks: latestQcMeta?.remarks || '',
+      qcAction,
+      qcWarehouseStatus,
       qcPdList: matchedQcPds,
       overviewStatus: overviewMeta?.status || '',
       overviewCustomer: overviewMeta?.customer || '',
@@ -1210,8 +1300,10 @@ function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'
 
   const itemPds = extractPdNumbers(prodOrder);
   const matchedQcPds = itemPds.filter(p => (defaultQcData as Record<string, QcMeta>)[p]);
-  const isQcPassed = Boolean(item.isQcPassed || matchedQcPds.length > 0);
-  const firstQcMeta = matchedQcPds.length > 0 ? (defaultQcData as Record<string, QcMeta>)[matchedQcPds[0]] : undefined;
+  const latestQcMeta = pickLatestQcMeta(itemPds, defaultQcData as Record<string, QcMeta>);
+  const qcAction = item.qcAction || latestQcMeta?.action || '';
+  const qcWarehouseStatus = item.qcWarehouseStatus || getQcWarehouseStatus(qcAction);
+  const isQcPassed = qcWarehouseStatus === 'คลัง PRD' || qcWarehouseStatus === 'คลัง SEMI';
   const overviewMeta = getOverviewStatusForItem(item.itemCode, item.projectCode, itemPds);
   if (!prodOrder && overviewMeta?.prodOrder) {
     prodOrder = overviewMeta.prodOrder;
@@ -1252,11 +1344,13 @@ function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'
     targetRequested: item.targetRequested || prodMeta?.targetRequested || '',
     week: item.week || prodMeta?.week || '',
     isQcPassed,
-    qcDate: item.qcDate || firstQcMeta?.qcDate || '',
-    qcInspector: item.qcInspector || firstQcMeta?.inspector || '',
-    qcPassedQty: item.qcPassedQty || firstQcMeta?.qtyPass || '',
-    qcTopic: item.qcTopic || firstQcMeta?.topic || '',
-    qcRemarks: item.qcRemarks || firstQcMeta?.remarks || '',
+    qcDate: item.qcDate || latestQcMeta?.qcDate || '',
+    qcInspector: item.qcInspector || latestQcMeta?.inspector || '',
+    qcPassedQty: item.qcPassedQty || latestQcMeta?.qtyPass || '',
+    qcTopic: item.qcTopic || latestQcMeta?.topic || '',
+    qcRemarks: item.qcRemarks || latestQcMeta?.remarks || '',
+    qcAction,
+    qcWarehouseStatus,
     qcPdList: matchedQcPds.length > 0 ? matchedQcPds : item.qcPdList,
     overviewStatus: overviewMeta?.status || item.overviewStatus || '',
     overviewCustomer: overviewMeta?.customer || item.overviewCustomer || '',

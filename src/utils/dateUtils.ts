@@ -1,8 +1,18 @@
 /**
  * Parses date string in DD/MM/YYYY format, converting Thai Buddhist year (BE >= 2400) to Gregorian (CE).
  */
-export function parseDate(dateStr: string | null | undefined): Date | null {
-  if (!dateStr || typeof dateStr !== 'string') return null;
+export function parseDate(dateStr: any): Date | null {
+  if (!dateStr) return null;
+  if (dateStr instanceof Date) return isNaN(dateStr.getTime()) ? null : dateStr;
+  if (typeof dateStr === 'number') {
+    if (dateStr > 30000 && dateStr < 60000) {
+      const utcDays = dateStr - 25569;
+      return new Date(utcDays * 86400 * 1000);
+    }
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  if (typeof dateStr !== 'string') return null;
   const clean = dateStr.trim();
   if (!clean || clean === '-' || clean === 'N/A') return null;
 

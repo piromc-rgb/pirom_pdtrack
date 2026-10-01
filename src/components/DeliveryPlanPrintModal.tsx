@@ -31,7 +31,7 @@ import {
   getDaysDiff,
   extractCustomer
 } from '../utils/dateUtils';
-import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
 
 interface DeliveryPlanPrintModalProps {
   isOpen: boolean;
@@ -309,7 +309,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
     printDateGroups.forEach(group => {
       group.items.forEach(item => {
         const cust = item.customer || extractCustomer(item.projectName);
-        const qcText = item.isQcPassed ? 'ผ่าน QC แล้ว' : 'ยังไม่เข้า QC';
+        const qcText = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
         tsvRows.push([
           String(rowSeq++),
           group.dateKey,
@@ -387,7 +387,7 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
     printDateGroups.forEach(group => {
       group.items.forEach(item => {
         const cust = item.customer || extractCustomer(item.projectName);
-        const qcText = item.isQcPassed ? 'ผ่าน QC แล้ว' : 'ยังไม่เข้า QC';
+        const qcText = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
         rows.push([
           String(rowSeq++),
           `"${group.dateKey}"`,
@@ -816,23 +816,52 @@ export const DeliveryPlanPrintModal: React.FC<DeliveryPlanPrintModalProps> = ({
 
                                     {/* 6. สถานะ QC */}
                                     <td className="py-1.5 px-2 text-center">
-                                      {item.isQcPassed ? (
-                                        <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-[9px] whitespace-nowrap">
-                                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 flex-shrink-0" />
-                                          <span>ผ่าน QC แล้ว</span>
-                                        </div>
-                                      ) : (
-                                        <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 font-medium text-[9px] whitespace-nowrap">
-                                          <Clock className="w-2.5 h-2.5 text-slate-400 flex-shrink-0" />
-                                          <span>ยังไม่เข้า QC</span>
-                                        </div>
-                                      )}
-
-                                      {item.isQcPassed && (item.qcDate || item.qcInspector) && (
-                                        <div className="text-[8px] text-slate-500 mt-0.5 whitespace-nowrap">
-                                          {item.qcDate} {item.qcInspector ? `(${item.qcInspector})` : ''}
-                                        </div>
-                                      )}
+                                      {(() => {
+                                        const wh = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+                                        if (wh === 'คลัง PRD') {
+                                          return (
+                                            <div>
+                                              <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-[9px] whitespace-nowrap">
+                                                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 flex-shrink-0" />
+                                                <span>คลัง PRD</span>
+                                              </div>
+                                              {item.qcDate && (
+                                                <div className="text-[8px] text-slate-500 mt-0.5 whitespace-nowrap">
+                                                  {item.qcDate} {item.qcInspector ? `(${item.qcInspector})` : ''}
+                                                </div>
+                                              )}
+                                            </div>
+                                          );
+                                        }
+                                        if (wh === 'คลัง SEMI') {
+                                          return (
+                                            <div>
+                                              <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-300 font-bold text-[9px] whitespace-nowrap">
+                                                <Boxes className="w-2.5 h-2.5 text-blue-600 flex-shrink-0" />
+                                                <span>คลัง SEMI</span>
+                                              </div>
+                                              {item.qcDate && (
+                                                <div className="text-[8px] text-slate-500 mt-0.5 whitespace-nowrap">
+                                                  {item.qcDate} {item.qcInspector ? `(${item.qcInspector})` : ''}
+                                                </div>
+                                              )}
+                                            </div>
+                                          );
+                                        }
+                                        return (
+                                          <div>
+                                            <div className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 font-medium text-[9px] whitespace-nowrap">
+                                              <Clock className="w-2.5 h-2.5 text-slate-400 flex-shrink-0" />
+                                              <span>ยังไม่ส่งเข้าคลัง</span>
+                                            </div>
+                                            {item.qcDate && (
+                                              <div className="text-[8px] text-slate-400 mt-0.5 whitespace-nowrap">
+                                                {item.qcDate}
+                                              </div>
+                                            )}
+                                          </div>
+                                        );
+                                      })()}
                                     </td>
                                   </tr>
                                 ))}

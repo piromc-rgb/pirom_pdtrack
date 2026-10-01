@@ -23,7 +23,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { DeliveryItem, OverviewMeta } from '../types';
-import { overviewStatusMap, qcStatusMap, extractPdNumbers, isOverviewCompletedOrClosed } from '../services/sheetService';
+import { overviewStatusMap, qcStatusMap, extractPdNumbers, isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
 import { formatCompactDate } from '../utils/dateUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
@@ -46,6 +46,8 @@ interface BatchResultRow {
   overviewItemCode: string;
   overviewDescription: string;
   qcPassed: boolean;
+  qcWarehouseStatus?: 'คลัง SEMI' | 'คลัง PRD' | 'ยังไม่ส่งเข้าคลัง';
+  qcAction?: string;
   qcDate: string;
   qcInspector: string;
   qcTopic: string;
@@ -219,6 +221,10 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
       const ov = overviewStatusMap[pd];
       const qc = qcStatusMap[pd];
 
+      const qcAction = qc?.action || sysItem?.qcAction || '';
+      const qcWarehouseStatus = sysItem?.qcWarehouseStatus || getQcWarehouseStatus(qcAction);
+      const isQcPass = qcWarehouseStatus === 'คลัง PRD' || qcWarehouseStatus === 'คลัง SEMI' || Boolean(sysItem?.isQcPassed);
+
       return {
         pdNo: pd,
         inSystem: Boolean(sysItem),
@@ -228,7 +234,9 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
         overviewCustomer: ov?.customer || (sysItem?.customer || '-'),
         overviewItemCode: ov?.itemCode || (sysItem?.itemCode || '-'),
         overviewDescription: ov?.description || (sysItem?.itemName || '-'),
-        qcPassed: Boolean(qc) || Boolean(sysItem?.isQcPassed),
+        qcPassed: isQcPass,
+        qcWarehouseStatus,
+        qcAction,
         qcDate: qc?.qcDate || (sysItem?.qcDate || '-'),
         qcInspector: qc?.inspector || (sysItem?.qcInspector || '-'),
         qcTopic: qc?.topic || (sysItem?.qcTopic || '-'),
@@ -265,7 +273,7 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
       'เลขที่ PD',
       'มีในระบบ PDTrack',
       'สถานะ Overview',
-      'สถานะ QC',
+      'สถานะ QC Record',
       'วันที่ตรวจ QC',
       'ผู้ตรวจ QC',
       'เลขที่ Item',
@@ -276,7 +284,7 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
       r.pdNo,
       r.inSystem ? 'ใช่' : 'ไม่พบในระบบหลัก',
       r.overviewStatus,
-      r.qcPassed ? 'ผ่าน QC แล้ว' : 'ยังไม่เข้า QC',
+      r.qcWarehouseStatus || (r.qcPassed ? 'ผ่าน QC แล้ว' : 'ยังไม่ส่งเข้าคลัง'),
       r.qcDate,
       r.qcInspector,
       r.overviewItemCode,
@@ -791,23 +799,33 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                           {source === 'qc' && (
                             <>
                               <td className="py-2.5 px-3 text-center border-r border-slate-200">
-                                {item.isQcPassed ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10.5px]">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                    ผ่าน QC แล้ว
-                                  </span>
-                                ) : item.prodOrder ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium bg-slate-100 text-slate-600 border border-slate-200 text-[10.5px]">
-                                    <Clock className="w-3 h-3 text-slate-400" />
-                                    ยังไม่เข้า QC
-                                  </span>
-                                ) : (
-                                  <span className="text-slate-400 italic text-[10px]">
-                                    ไม่มีเลข PD
-                                  </span>
-                                )}
+                                {(() => {
+                                  const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+                                  if (whStatus === 'คลัง PRD') {
+                                    return (
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10.5px]">
+                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                        คลัง PRD
+                                      </span>
+                                    );
+                                  }
+                                  if (whStatus === 'คลัง SEMI') {
+                                    return (
+                                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-bold bg-blue-100 text-blue-800 border border-blue-300 text-[10.5px]">
+                                        <Boxes className="w-3 h-3 text-blue-600" />
+                                        คลัง SEMI
+                                      </span>
+                                    );
+                                  }
+                                  return (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md font-medium bg-slate-100 text-slate-600 border border-slate-200 text-[10.5px]">
+                                      <Clock className="w-3 h-3 text-slate-400" />
+                                      ยังไม่ส่งเข้าคลัง
+                                    </span>
+                                  );
+                                })()}
                                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                                  {item.isQcPassed && item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                  {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
                                 </div>
                               </td>
 
@@ -855,18 +873,32 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
                               {/* QC status column */}
                               <td className="py-2.5 px-3 text-center border-r border-slate-200 bg-emerald-50/20">
-                                {item.isQcPassed ? (
-                                  <span className="font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded text-[10.5px] inline-flex items-center gap-1">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                    ผ่าน QC แล้ว
-                                  </span>
-                                ) : (
-                                  <span className="text-slate-500 text-[10.5px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200 inline-block">
-                                    ยังไม่เข้า QC
-                                  </span>
-                                )}
+                                {(() => {
+                                  const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+                                  if (whStatus === 'คลัง PRD') {
+                                    return (
+                                      <span className="font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded text-[10.5px] inline-flex items-center gap-1 shadow-2xs">
+                                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                        คลัง PRD
+                                      </span>
+                                    );
+                                  }
+                                  if (whStatus === 'คลัง SEMI') {
+                                    return (
+                                      <span className="font-bold text-blue-800 bg-blue-100 border border-blue-300 px-2 py-0.5 rounded text-[10.5px] inline-flex items-center gap-1 shadow-2xs">
+                                        <Boxes className="w-3 h-3 text-blue-600" />
+                                        คลัง SEMI
+                                      </span>
+                                    );
+                                  }
+                                  return (
+                                    <span className="text-slate-500 text-[10.5px] bg-slate-100 px-2 py-0.5 rounded border border-slate-200 inline-block">
+                                      ยังไม่ส่งเข้าคลัง
+                                    </span>
+                                  );
+                                })()}
                                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                                  {item.isQcPassed && item.qcDate ? formatCompactDate(item.qcDate) : '-'}
+                                  {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
                                 </div>
                               </td>
 
@@ -1088,11 +1120,23 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
 
                         {/* QC Status */}
                         <td className="py-2.5 px-3 text-center border-r border-slate-200 bg-emerald-50/20">
-                          {r.qcPassed ? (
+                          {r.qcWarehouseStatus === 'คลัง PRD' ? (
                             <div>
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10.5px]">
                                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                ผ่าน QC แล้ว
+                                คลัง PRD
+                              </span>
+                              {r.qcDate && (
+                                <div className="text-[9.5px] text-slate-500 mt-0.5">
+                                  {r.qcDate} {r.qcInspector ? `(${r.qcInspector})` : ''}
+                                </div>
+                              )}
+                            </div>
+                          ) : r.qcWarehouseStatus === 'คลัง SEMI' ? (
+                            <div>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold bg-blue-100 text-blue-800 border border-blue-300 text-[10.5px]">
+                                <Boxes className="w-3 h-3 text-blue-600" />
+                                คลัง SEMI
                               </span>
                               {r.qcDate && (
                                 <div className="text-[9.5px] text-slate-500 mt-0.5">
@@ -1101,10 +1145,17 @@ export const ProductionOrderComparatorModal: React.FC<ProductionOrderComparatorM
                               )}
                             </div>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-medium bg-slate-100 text-slate-500 border border-slate-200 text-[10px]">
-                              <Clock className="w-3 h-3 text-slate-400" />
-                              ยังไม่เข้า QC
-                            </span>
+                            <div>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-medium bg-slate-100 text-slate-500 border border-slate-200 text-[10px]">
+                                <Clock className="w-3 h-3 text-slate-400" />
+                                ยังไม่ส่งเข้าคลัง
+                              </span>
+                              {r.qcDate && r.qcDate !== '-' && (
+                                <div className="text-[9.5px] text-slate-400 mt-0.5">
+                                  {r.qcDate}
+                                </div>
+                              )}
+                            </div>
                           )}
                         </td>
 

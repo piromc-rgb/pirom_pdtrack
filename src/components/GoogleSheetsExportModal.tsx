@@ -27,6 +27,7 @@ import {
   getDaysDiff,
   extractCustomer
 } from '../utils/dateUtils';
+import { getQcWarehouseStatus } from '../services/sheetService';
 
 interface GoogleSheetsExportModalProps {
   isOpen: boolean;
@@ -185,7 +186,7 @@ export const GoogleSheetsExportModal: React.FC<GoogleSheetsExportModalProps> = (
     exportDateGroups.forEach(group => {
       group.items.forEach(item => {
         const cust = item.customer || extractCustomer(item.projectName);
-        const qcText = item.isQcPassed ? 'ผ่าน QC แล้ว' : 'รอตรวจ QC';
+        const qcText = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
         tsvRows.push([
           String(rowSeq++),
           group.dateKey,
@@ -245,7 +246,7 @@ export const GoogleSheetsExportModal: React.FC<GoogleSheetsExportModalProps> = (
     exportDateGroups.forEach(group => {
       group.items.forEach(item => {
         const cust = item.customer || extractCustomer(item.projectName);
-        const qcText = item.isQcPassed ? 'ผ่าน QC แล้ว' : 'รอตรวจ QC';
+        const qcText = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
         rows.push([
           String(rowSeq++),
           `"${group.dateKey}"`,
@@ -680,11 +681,16 @@ function createDeliveryPlanSheet() {
                           <td className="py-1.5 px-2 text-center font-bold border-r border-slate-200">{it.qty}</td>
                           <td className="py-1.5 px-2.5 font-mono text-blue-900 font-semibold border-r border-slate-200">{it.prodOrder}</td>
                           <td className="py-1.5 px-3 text-center">
-                            {it.isQcPassed ? (
-                              <span className="text-emerald-700 font-bold">✅ ผ่าน QC</span>
-                            ) : (
-                              <span className="text-slate-500">⏳ รอตรวจ QC</span>
-                            )}
+                            {(() => {
+                              const wh = it.qcWarehouseStatus || getQcWarehouseStatus(it.qcAction);
+                              if (wh === 'คลัง PRD') {
+                                return <span className="text-emerald-700 font-bold">✅ คลัง PRD</span>;
+                              }
+                              if (wh === 'คลัง SEMI') {
+                                return <span className="text-blue-700 font-bold">📦 คลัง SEMI</span>;
+                              }
+                              return <span className="text-slate-500">⏳ ยังไม่ส่งเข้าคลัง</span>;
+                            })()}
                           </td>
                         </tr>
                       ))}

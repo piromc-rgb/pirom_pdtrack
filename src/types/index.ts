@@ -35,13 +35,15 @@ export interface DeliveryItem {
   week?: string;              // Week
 
   // QC Inspection Enriched Fields (Google Sheet: gid=1814251242)
-  isQcPassed?: boolean;       // ผ่าน QC แล้ว (ถ้ามีเลขที่ PD No. ปรากฏในไฟล์ QC)
-  qcDate?: string;            // วันที่ตรวจ QC
+  isQcPassed?: boolean;       // ผ่าน QC แล้ว (ถ้า Column N เป็น คลัง SEMI หรือ คลัง PRD)
+  qcDate?: string;            // วันที่ตรวจ QC (Column C ที่เป็นวันที่ล่าสุด)
   qcInspector?: string;       // ผู้ตรวจสอบ QC
   qcPassedQty?: string;       // จำนวนที่ผ่านตรวจ
   qcTopic?: string;           // หัวข้อการตรวจ เช่น ตรวจหลังผลิต / ตรวจหลังทำสี
   qcRemarks?: string;         // หมายเหตุ / รายละเอียดจาก QC
   qcPdList?: string[];        // รายการ PD ที่ผ่านตรวจ
+  qcAction?: string;          // การดำเนินการ (Column N ใน QC Record) เช่น "คลัง PRD", "คลัง SEMI", "SQ ถัดไป"
+  qcWarehouseStatus?: 'คลัง SEMI' | 'คลัง PRD' | 'ยังไม่ส่งเข้าคลัง'; // สถานะส่งเข้าคลังตาม Column N (คลัง SEMI, คลัง PRD, หรือ ยังไม่ส่งเข้าคลัง)
 
   // Overview Status Enriched Fields (From Week 37 Status Overview)
   overviewStatus?: 'Completed' | 'Active' | 'Planned' | 'Ready to Start' | string;

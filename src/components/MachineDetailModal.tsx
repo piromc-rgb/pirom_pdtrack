@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { MachineSummary, DeliveryItem } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
-import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface MachineDetailModalProps {
@@ -108,7 +108,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
       `"${i.itemName.replace(/"/g, '""')}"`,
       i.qty,
       `"${i.prodOrder}"`,
-      i.isQcPassed ? '"ผ่าน QC แล้ว"' : '"ยังไม่เข้า QC"',
+      `"${i.qcWarehouseStatus || getQcWarehouseStatus(i.qcAction)}"`,
       `"${i.qcDate || ''}"`,
       `"${i.qcInspector || ''}"`,
       `"${i.target1 || ''}"`,
@@ -453,14 +453,30 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                                 <span>รอขึ้น : {item.readyOpDesc || item.readyOp}</span>
                               </span>
                             ) : null}
-                            {item.isQcPassed && (
-                              <span 
-                                className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"
-                                title={`ผ่านการตรวจ QC: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'}`}
-                              >
-                                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" /> ผ่าน QC แล้ว
-                              </span>
-                            )}
+                            {(() => {
+                              const wh = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+                              if (wh === 'คลัง PRD') {
+                                return (
+                                  <span 
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300"
+                                    title={`คลัง PRD: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'}`}
+                                  >
+                                    <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" /> คลัง PRD
+                                  </span>
+                                );
+                              }
+                              if (wh === 'คลัง SEMI') {
+                                return (
+                                  <span 
+                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9.5px] font-bold bg-blue-100 text-blue-800 border border-blue-300"
+                                    title={`คลัง SEMI: วันที่ ${item.qcDate || '-'} โดย ${item.qcInspector || '-'}`}
+                                  >
+                                    <Boxes className="w-2.5 h-2.5 text-blue-600" /> คลัง SEMI
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })()}
                           </div>
                         </td>
                         <td className="py-3 px-3.5 text-center text-slate-500 whitespace-nowrap">

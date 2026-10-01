@@ -31,6 +31,48 @@ def extract_pd_numbers(prod_order):
             pds.append(up)
     return pds
 
+def parse_d(s):
+    if not s: return None
+    parts = re.split(r'[/\-.]', str(s).strip())
+    if len(parts) == 3:
+        try:
+            d, m, y = int(parts[0]), int(parts[1]), int(parts[2])
+            if y >= 2400: y -= 543
+            from datetime import datetime
+            return datetime(y, m, d)
+        except:
+            return None
+    return None
+
+def get_qc_warehouse_status(action):
+    if not action:
+        return 'ยังไม่ส่งเข้าคลัง'
+    clean = str(action).strip()
+    if re.search(r'คลัง\s*SEMI', clean, re.I):
+        return 'คลัง SEMI'
+    if re.search(r'คลัง\s*PRD', clean, re.I):
+        return 'คลัง PRD'
+    return 'ยังไม่ส่งเข้าคลัง'
+
+def pick_latest_qc_meta(pds, qc_map):
+    if not qc_map or not pds:
+        return None
+    best_qc = None
+    best_dt = None
+    for p in pds:
+        meta = qc_map.get(p.upper())
+        if not meta: continue
+        dt = parse_d(meta.get('qcDate', ''))
+        if best_qc is None or (dt and (best_dt is None or dt > best_dt)):
+            best_qc = meta
+            best_dt = dt
+        elif dt and best_dt and dt == best_dt:
+            curr_wh = get_qc_warehouse_status(meta.get('action'))
+            best_wh = get_qc_warehouse_status(best_qc.get('action'))
+            if curr_wh != 'ยังไม่ส่งเข้าคลัง' and best_wh == 'ยังไม่ส่งเข้าคลัง':
+                best_qc = meta
+    return best_qc
+
 def main():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     data_dir = os.path.join(base_dir, 'src', 'data')
@@ -46,9 +88,30 @@ def main():
     with open(os.path.join(data_dir, 'qcData.json'), encoding='utf-8') as f:
         qc_map = json.load(f)
 
-    # Tag existing defaultData.json items as Service
+    # Tag and enrich existing defaultData.json items as Service
     for item in default_service_items:
         item['workTag'] = 'Service'
+        po = item.get('prodOrder', '')
+        if not po and item.get('itemCode'):
+            proj_item_key = f"{item.get('projectCode', '').strip()}|{item.get('itemCode', '').strip()}"
+            po = item_pd_map.get('byProjItem', {}).get(proj_item_key) or item_pd_map.get('byItem', {}).get(item.get('itemCode', '').strip()) or ''
+            item['prodOrder'] = po
+        item_pds = extract_pd_numbers(po)
+        matched_qc_pds = [p for p in item_pds if p in qc_map]
+        best_qc = pick_latest_qc_meta(item_pds, qc_map)
+        qc_action = best_qc.get('action', '') if best_qc else ''
+        wh_status = get_qc_warehouse_status(qc_action)
+        is_qc_passed = wh_status in ('คลัง SEMI', 'คลัง PRD')
+        item['isQcPassed'] = is_qc_passed
+        item['qcDate'] = best_qc.get('qcDate', '') if best_qc else ''
+        item['qcInspector'] = best_qc.get('inspector', '') if best_qc else ''
+        item['qcPassedQty'] = best_qc.get('qtyPass', '') if best_qc else ''
+        item['qcTopic'] = best_qc.get('topic', '') if best_qc else ''
+        item['qcRemarks'] = best_qc.get('remarks', '') if best_qc else ''
+        item['qcAction'] = qc_action
+        item['qcWarehouseStatus'] = wh_status
+        item['qcPdList'] = matched_qc_pds
+
     with open(os.path.join(data_dir, 'defaultData.json'), 'w', encoding='utf-8') as f:
         json.dump(default_service_items, f, ensure_ascii=False, indent=2)
 
@@ -133,8 +196,10 @@ def main():
 
         item_pds = extract_pd_numbers(prod_order)
         matched_qc_pds = [p for p in item_pds if p in qc_map]
-        is_qc_passed = len(matched_qc_pds) > 0
-        first_qc = qc_map.get(matched_qc_pds[0]) if is_qc_passed else None
+        best_qc = pick_latest_qc_meta(item_pds, qc_map)
+        qc_action = best_qc.get('action', '') if best_qc else ''
+        wh_status = get_qc_warehouse_status(qc_action)
+        is_qc_passed = wh_status in ('คลัง SEMI', 'คลัง PRD')
 
         # Lookup overview status
         ov_meta = None
@@ -203,11 +268,13 @@ def main():
             'targetRequested': target_req,
             'week': week,
             'isQcPassed': is_qc_passed,
-            'qcDate': first_qc.get('qcDate', '') if first_qc else '',
-            'qcInspector': first_qc.get('inspector', '') if first_qc else '',
-            'qcPassedQty': first_qc.get('qtyPass', '') if first_qc else '',
-            'qcTopic': first_qc.get('topic', '') if first_qc else '',
-            'qcRemarks': first_qc.get('remarks', '') if first_qc else '',
+            'qcDate': best_qc.get('qcDate', '') if best_qc else '',
+            'qcInspector': best_qc.get('inspector', '') if best_qc else '',
+            'qcPassedQty': best_qc.get('qtyPass', '') if best_qc else '',
+            'qcTopic': best_qc.get('topic', '') if best_qc else '',
+            'qcRemarks': best_qc.get('remarks', '') if best_qc else '',
+            'qcAction': qc_action,
+            'qcWarehouseStatus': wh_status,
             'qcPdList': matched_qc_pds,
         }
         if ov_meta:

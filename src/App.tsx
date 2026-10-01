@@ -17,7 +17,8 @@ import {
   fetchDeliveryData, 
   buildMachineSummaries, 
   getLastSyncTime,
-  isOverviewCompletedOrClosed
+  isOverviewCompletedOrClosed,
+  getQcWarehouseStatus
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
 import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
@@ -125,7 +126,13 @@ export function App() {
         const matchPO = item.prodOrder.toLowerCase().includes(term);
         const matchProj = item.projectName.toLowerCase().includes(term) || item.projectCode.toLowerCase().includes(term);
         const matchDept = item.requestDept?.toLowerCase().includes(term);
-        const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
+        const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+        const matchQC = (
+          (whStatus && whStatus.toLowerCase().includes(term)) ||
+          (item.qcAction && item.qcAction.toLowerCase().includes(term)) ||
+          (item.qcInspector && item.qcInspector.toLowerCase().includes(term)) ||
+          (item.isQcPassed && ('ผ่าน qc'.includes(term) || 'qc passed'.includes(term)))
+        );
         const matchReadyOp = item.readyOp?.toLowerCase().includes(term) || item.readyOpDesc?.toLowerCase().includes(term);
         const matchActiveOp = item.activeOp?.toLowerCase().includes(term) || item.activeOpDesc?.toLowerCase().includes(term);
         const isOvDone = isOverviewCompletedOrClosed(item.overviewStatus);
@@ -149,8 +156,14 @@ export function App() {
       if (searchCriteria.machineName && !item.machineName.toLowerCase().includes(searchCriteria.machineName.toLowerCase().trim())) return false;
       if (searchCriteria.requestDept && (!item.requestDept || !item.requestDept.toLowerCase().includes(searchCriteria.requestDept.toLowerCase().trim()))) return false;
       if (searchCriteria.actionTopic && (!item.actionTopic || !item.actionTopic.toLowerCase().includes(searchCriteria.actionTopic.toLowerCase().trim()))) return false;
-      if (searchCriteria.qcStatus === 'passed' && !item.isQcPassed) return false;
-      if (searchCriteria.qcStatus === 'pending' && item.isQcPassed) return false;
+      if (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') {
+        const wh = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
+        if (searchCriteria.qcStatus === 'prd' && wh !== 'คลัง PRD') return false;
+        if (searchCriteria.qcStatus === 'semi' && wh !== 'คลัง SEMI') return false;
+        if (searchCriteria.qcStatus === 'not_in_warehouse' && wh !== 'ยังไม่ส่งเข้าคลัง') return false;
+        if (searchCriteria.qcStatus === 'passed' && wh !== 'คลัง PRD' && wh !== 'คลัง SEMI') return false;
+        if (searchCriteria.qcStatus === 'pending' && (wh === 'คลัง PRD' || wh === 'คลัง SEMI')) return false;
+      }
       if (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') {
         if (searchCriteria.overviewStatus === 'none') {
           if (item.overviewStatus) return false;
