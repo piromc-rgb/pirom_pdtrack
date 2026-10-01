@@ -477,7 +477,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               value={dwgFolderUrl}
               onChange={(e) => setDwgFolderUrl(e.target.value)}
               className="w-full p-2.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-rose-500 focus:bg-white"
-              placeholder="https://drive.google.com/drive/folders/1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm"
+              placeholder="https://drive.google.com/open?id=1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm&usp=drive_copy"
             />
             <span className="text-[11px] text-slate-400 block">
               * เมื่อ Double Click ที่เลข Item ในตาราง ระบบจะค้นหาไฟล์ PDF ที่มีรหัสแบบมีขีดคั่น (เช่น J131012-Z-38-1-D-00) จากโฟลเดอร์นี้และทุก Subfolder ({TOTAL_INDEXED_DWG_PDFS.toLocaleString()} ไฟล์)

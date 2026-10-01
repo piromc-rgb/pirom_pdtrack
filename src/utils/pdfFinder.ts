@@ -1,7 +1,7 @@
 import drivePdfIndex from '../data/drivePdfIndex.json';
 
 export const DRIVE_ROOT_FOLDER_ID = '1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm';
-export const DRIVE_ROOT_FOLDER_URL = `https://drive.google.com/drive/folders/${DRIVE_ROOT_FOLDER_ID}`;
+export const DRIVE_ROOT_FOLDER_URL = `https://drive.google.com/open?id=${DRIVE_ROOT_FOLDER_ID}&usp=drive_copy`;
 export const DEFAULT_DWG_FOLDER_URL = DRIVE_ROOT_FOLDER_URL;
 
 const DWG_FOLDER_STORAGE_KEY = 'pdtrack_dwg_folder_url';
@@ -141,21 +141,32 @@ export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
     // ข้ามไปค้นหาผ่าน Google Drive Search โดยตรง
   }
 
-  // 3. หากยังไม่พบไฟล์ตรง ให้พาไปยังหน้า Google Drive Search ด้วยรหัส Item นี้โดยตรง
-  const searchUrl = `https://drive.google.com/drive/u/0/search?q=${encodeURIComponent(hyphenated)}`;
+  // 3. หากยังไม่พบไฟล์ตรงในดัชนี ให้เปิดโฟลเดอร์ dwg โดยตรง พร้อมคัดลอกรหัสแบบลงคลิปบอร์ด
+  // (ค้นหาเฉพาะในโฟลเดอร์ dwg ไม่ค้นหา Global ทั่ว Google Drive ตามที่กำหนด)
+  const dwgFolderUrl = getSavedDwgFolderUrl() || DEFAULT_DWG_FOLDER_URL;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(hyphenated);
+    } catch {
+      // ignore clipboard error
+    }
+  }
+
   if (newTab) {
-    newTab.location.href = searchUrl;
+    newTab.location.href = dwgFolderUrl;
   } else {
-    window.open(searchUrl, '_blank', 'noopener,noreferrer');
+    window.open(dwgFolderUrl, '_blank', 'noopener,noreferrer');
   }
 
   window.dispatchEvent(
     new CustomEvent('pdtrack:toast', {
       detail: {
         type: 'info',
-        text: `ค้นหา "${hyphenated}" ใน Google Drive`,
+        text: `เปิดโฟลเดอร์ dwg เรียบร้อยแล้ว (คัดลอกรหัส "${hyphenated}" ลงคลิปบอร์ดแล้ว เพื่อค้นหาเฉพาะในโฟลเดอร์นี้)`,
       },
     })
   );
 }
+
 
