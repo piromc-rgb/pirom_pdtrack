@@ -3,16 +3,28 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 
-const DRIVE_FOLDER_PATH = 'G:\\.shortcut-targets-by-id\\1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm';
+const DRIVE_ROOT_PATHS = [
+  'G:\\.shortcut-targets-by-id\\1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm',
+  'G:\\My Drive\\staus overview\\dwg',
+];
 
-function findPdfRecursively(dir: string, regex: RegExp, results: { name: string; fullPath: string }[] = []) {
+function extractRevNum(fileName: string): number {
+  const match = fileName.match(/rev\.?\s*(\d+)/i);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+function findPdfRecursively(dir: string, regex: RegExp, results: { name: string; fullPath: string }[] = [], visited = new Set<string>()) {
   try {
     if (!fs.existsSync(dir)) return results;
+    const realPath = fs.realpathSync(dir);
+    if (visited.has(realPath)) return results;
+    visited.add(realPath);
+
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        findPdfRecursively(fullPath, regex, results);
+        findPdfRecursively(fullPath, regex, results, visited);
       } else if (entry.isFile() && entry.name.toLowerCase().endsWith('.pdf')) {
         if (regex.test(entry.name)) {
           results.push({ name: entry.name, fullPath });
@@ -42,10 +54,20 @@ export default defineConfig({
               res.end(JSON.stringify({ found: false }));
               return;
             }
-            const escaped = clean.split('').map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const escaped = clean.split('').map(c => {
+              if (c === '0' || c === 'O') return '[0O]';
+              return c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            });
             const regex = new RegExp(escaped.join('[-_\\s]*'), 'i');
-            const matches = findPdfRecursively(DRIVE_FOLDER_PATH, regex);
+
+            const matches: { name: string; fullPath: string }[] = [];
+            for (const rootPath of DRIVE_ROOT_PATHS) {
+              findPdfRecursively(rootPath, regex, matches);
+            }
+
             if (matches.length > 0) {
+              // Pick highest revision first
+              matches.sort((a, b) => extractRevNum(b.name) - extractRevNum(a.name));
               const best = matches[0];
               res.end(
                 JSON.stringify({
@@ -67,7 +89,8 @@ export default defineConfig({
           try {
             const urlObj = new URL(req.url || '', 'http://localhost');
             const filePath = urlObj.searchParams.get('path') || '';
-            if (!filePath || !filePath.startsWith(DRIVE_FOLDER_PATH) || !fs.existsSync(filePath)) {
+            const isAllowed = DRIVE_ROOT_PATHS.some(root => filePath.startsWith(root));
+            if (!filePath || !isAllowed || !fs.existsSync(filePath) || !filePath.toLowerCase().endsWith('.pdf')) {
               res.statusCode = 404;
               res.end('PDF file not found');
               return;

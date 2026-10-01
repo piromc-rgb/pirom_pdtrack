@@ -62,7 +62,13 @@ export function findItemPdfInDriveIndex(rawItemCode: string): DrivePdfEntry | nu
   const hyphenated = formatItemCodeWithHyphens(clean).toUpperCase();
 
   // สร้าง Regex ที่อนุญาตให้มี "-" หรือ "_" คั่นระหว่างตัวอักษรได้ทุกตำแหน่ง
-  const escapedChars = clean.split('').map(c => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  // และให้ '0' (เลขศูนย์) กับ 'O' (ตัวอักษรโอ) สามารถทดแทนกันได้
+  const escapedChars = clean.split('').map(c => {
+    if (c === '0' || c === 'O') {
+      return '[0O]';
+    }
+    return c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  });
   const flexibleHyphenRegex = new RegExp(escapedChars.join('[-_\\s]*'), 'i');
 
   const matches = pdfList.filter(entry => {
@@ -82,7 +88,7 @@ export function findItemPdfInDriveIndex(rawItemCode: string): DrivePdfEntry | nu
 
 /**
  * ค้นหาและเปิดไฟล์ PDF ด้วย Browser เมื่อผู้ใช้ Double Click ที่เลข Item
- * หากไม่พบไฟล์ จะแจ้งเตือนว่าหาไฟล์ไม่พบ
+ * หากพบในดัชนีจะเปิดไฟล์ทันที หากไม่พบจะค้นหาใน Google Drive ให้อัตโนมัติ
  */
 export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
   const trimmed = (rawItemCode || '').trim();
@@ -90,7 +96,7 @@ export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
 
   const hyphenated = formatItemCodeWithHyphens(trimmed);
 
-  // 1. ค้นหาจากดัชนีไฟล์ทั้งหมดใน Google Drive Folder (1M-QDPilC7Nn-YW_5YxLQITUS6ZOYEyFm + Subfolders)
+  // 1. ค้นหาจากดัชนีไฟล์ทั้งหมดใน Google Drive Folder (เปิดได้ทันทีแบบ synchronous ไม่ถูก popup blocker บล็อก)
   const found = findItemPdfInDriveIndex(trimmed);
   if (found) {
     const pdfUrl = `https://drive.google.com/file/d/${found.id}/view`;
@@ -99,25 +105,32 @@ export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
       new CustomEvent('pdtrack:toast', {
         detail: {
           type: 'success',
-          text: `เปิดไฟล์ PDF: ${found.name} (รหัสค้นหา: ${hyphenated})`,
+          text: `เปิดไฟล์ PDF: ${found.name}`,
         },
       })
     );
     return;
   }
 
-  // 2. กรณีรันผ่าน Local Server ให้ตรวจสอบโฟลเดอร์ Google Drive ในเครื่องแบบสดเพิ่มเติม (เผื่อมีไฟล์เพิ่งเพิ่มใหม่)
+  // 2. ถ้าไม่พบในดัชนี ให้เปิดแท็บใหม่ทันทีขณะรับ user gesture (ป้องกันเบราว์เซอร์บล็อกป็อปอัปจากการเรียกแบบ async)
+  const newTab = window.open('about:blank', '_blank');
+
+  // ตรวจสอบกับ Local Server (เผื่อมีไฟล์ PDF เพิ่มใหม่สดๆ ในเครื่องที่ยังไม่ได้ build ดัชนี)
   try {
     const resp = await fetch(`/api/drive-pdf-search?code=${encodeURIComponent(trimmed)}`);
     if (resp.ok) {
       const data = await resp.json();
       if (data && data.found && data.url) {
-        window.open(data.url, '_blank', 'noopener,noreferrer');
+        if (newTab) {
+          newTab.location.href = data.url;
+        } else {
+          window.open(data.url, '_blank', 'noopener,noreferrer');
+        }
         window.dispatchEvent(
           new CustomEvent('pdtrack:toast', {
             detail: {
               type: 'success',
-              text: `เปิดไฟล์ PDF: ${data.name} (รหัสค้นหา: ${hyphenated})`,
+              text: `เปิดไฟล์ PDF: ${data.name}`,
             },
           })
         );
@@ -125,23 +138,24 @@ export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
       }
     }
   } catch {
-    // หากไม่ได้รันผ่าน Local Middleware ให้ข้ามไปแจ้งเตือนไม่พบไฟล์
+    // ข้ามไปค้นหาผ่าน Google Drive Search โดยตรง
   }
 
-  // 3. หากไม่พบไฟล์ ให้แจ้งเตือนผู้ใช้ว่าหาไฟล์ไม่พบ
-  const notFoundMsg = `หาไฟล์ PDF ไม่พบสำหรับเลขที่ Item: ${trimmed} (ค้นหาคำว่า "${hyphenated}" ในชื่อไฟล์แล้วไม่พบ)`;
+  // 3. หากยังไม่พบไฟล์ตรง ให้พาไปยังหน้า Google Drive Search ด้วยรหัส Item นี้โดยตรง
+  const searchUrl = `https://drive.google.com/drive/u/0/search?q=${encodeURIComponent(hyphenated)}`;
+  if (newTab) {
+    newTab.location.href = searchUrl;
+  } else {
+    window.open(searchUrl, '_blank', 'noopener,noreferrer');
+  }
+
   window.dispatchEvent(
     new CustomEvent('pdtrack:toast', {
       detail: {
-        type: 'warning',
-        text: notFoundMsg,
+        type: 'info',
+        text: `ค้นหา "${hyphenated}" ใน Google Drive`,
       },
     })
   );
-  window.alert(
-    `หาไฟล์ PDF ไม่พบ\n\n` +
-    `เลขที่ Item: ${trimmed}\n` +
-    `คำค้นหาในชื่อไฟล์: ${hyphenated}\n` +
-    `โฟลเดอร์ที่ค้นหา: Google Drive (รวมทุก Subfolder)`
-  );
 }
+
