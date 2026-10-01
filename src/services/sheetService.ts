@@ -62,6 +62,7 @@ export interface ProductionMeta {
   targetRequested: string;
   requestDept: string;
   requesterName: string;
+  remark?: string;
 }
 
 export interface QcMeta {
@@ -154,12 +155,19 @@ export function parseProductionCsv(csvText: string): {
 } {
   const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
   const rows = parsed.data;
-  if (!rows || rows.length < 3) {
+  if (!rows || rows.length < 2) {
     return { byDocItem: {}, byDoc: {} };
   }
 
-  // Row 1 is actual headers
-  const headers = rows[1].map(h => h.trim().replace(/\n/g, ' '));
+  // Row 0 is actual headers in Sheet 2 (fallback to row 1 if row 0 doesn't contain headers)
+  let headerRowIdx = 0;
+  if (rows[0] && rows[0].some(c => (c || '').includes('Document') || (c || '').includes('หัวข้อ'))) {
+    headerRowIdx = 0;
+  } else if (rows[1] && rows[1].some(c => (c || '').includes('Document') || (c || '').includes('หัวข้อ'))) {
+    headerRowIdx = 1;
+  }
+
+  const headers = (rows[headerRowIdx] || []).map(h => (h || '').trim().replace(/\n/g, ' '));
   const findCol = (keywords: string[]) => headers.findIndex(h => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
 
   const docRefIdx = findCol(['Document number', 'Reference']);
@@ -170,15 +178,16 @@ export function parseProductionCsv(csvText: string): {
   const targetReqIdx = findCol(['เป้าหมายที่ต้องการ']);
   const deptIdx = findCol(['หน่วยงานที่แจ้งดำเนินการ', 'หน่วยงาน']);
   const reqIdx = findCol(['ชื่อผู้แจ้งดำเนินการ', 'ผู้แจ้ง']);
+  const remarkIdx = findCol(['หมายเหตุ', 'Remark', 'Note']);
 
   const byDocItem: Record<string, ProductionMeta> = {};
   const byDoc: Record<string, ProductionMeta> = {};
 
-  for (let i = 2; i < rows.length; i++) {
+  for (let i = headerRowIdx + 1; i < rows.length; i++) {
     const r = rows[i];
     if (!r || r.length === 0) continue;
 
-    const getVal = (idx: number) => (idx >= 0 && idx < r.length ? r[idx].trim() : '');
+    const getVal = (idx: number) => (idx >= 0 && idx < r.length && r[idx] ? r[idx].trim() : '');
 
     const doc = getVal(docRefIdx !== -1 ? docRefIdx : 0);
     const topic = getVal(topicIdx !== -1 ? topicIdx : 1);
@@ -188,6 +197,8 @@ export function parseProductionCsv(csvText: string): {
     const targetReq = getVal(targetReqIdx !== -1 ? targetReqIdx : 14);
     const dept = getVal(deptIdx !== -1 ? deptIdx : 15);
     const requester = getVal(reqIdx !== -1 ? reqIdx : 16);
+    // Column Y is index 24 (หมายเหตุ)
+    const remark = getVal(remarkIdx !== -1 ? remarkIdx : 24);
 
     const meta: ProductionMeta = {
       actionTopic: topic,
@@ -196,6 +207,7 @@ export function parseProductionCsv(csvText: string): {
       targetRequested: targetReq,
       requestDept: dept,
       requesterName: requester,
+      remark: remark || undefined,
     };
 
     const docNorm = norm(doc);
@@ -204,8 +216,8 @@ export function parseProductionCsv(csvText: string): {
     if (docNorm && itemNorm) {
       byDocItem[`${docNorm}|${itemNorm}`] = meta;
     }
-    if (docNorm && (dept || requester || topic)) {
-      if (!byDoc[docNorm]) {
+    if (docNorm && (dept || requester || topic || remark)) {
+      if (!byDoc[docNorm] || (!byDoc[docNorm].remark && remark)) {
         byDoc[docNorm] = meta;
       }
     }
@@ -855,7 +867,7 @@ export function parseDeliveryCsvWithProduction(
     const target5 = getVal(target5Idx !== -1 ? target5Idx : 15);
     const rawTargetLatest = getVal(targetLatestIdx !== -1 ? targetLatestIdx : 16);
     const poPr = getVal(poPrIdx !== -1 ? poPrIdx : 17);
-    const remark = getVal(remarkIdx !== -1 ? remarkIdx : 18);
+    const rawRemark = getVal(remarkIdx !== -1 ? remarkIdx : 18);
     const rawStatus = getVal(statusIdx !== -1 ? statusIdx : 19);
     const closed = closedIdx !== -1 ? getVal(closedIdx) : '';
 
@@ -866,6 +878,27 @@ export function parseDeliveryCsvWithProduction(
     if (qtyStr) {
       const parsedQty = parseFloat(qtyStr.replace(/,/g, ''));
       if (!isNaN(parsedQty)) qty = parsedQty;
+    }
+
+    // Link with Production Register
+    const docNorm = norm(docRef);
+    const itemNorm = norm(itemCode);
+    const key = `${docNorm}|${itemNorm}`;
+
+    let prodMeta: ProductionMeta | undefined = productionMap.byDocItem[key];
+    if (!prodMeta && docNorm && productionMap.byDoc[docNorm]) {
+      prodMeta = productionMap.byDoc[docNorm];
+    }
+
+    // อ่านข้อมูลจาก Column Y (หมายเหตุ จาก Sheet 2) ผสานกับหมายเหตุจาก Sheet 1
+    const prodRemark = prodMeta?.remark?.trim() || '';
+    let remark = rawRemark;
+    if (prodRemark) {
+      if (!rawRemark) {
+        remark = prodRemark;
+      } else if (rawRemark !== prodRemark && !rawRemark.includes(prodRemark)) {
+        remark = `${prodRemark} (${rawRemark})`;
+      }
     }
 
     const normRemark = remark.toLowerCase();
@@ -880,16 +913,6 @@ export function parseDeliveryCsvWithProduction(
       normRemark.includes('close') ||
       normClosed.includes('*') ||
       normClosed.includes('close');
-
-    // Link with Production Register
-    const docNorm = norm(docRef);
-    const itemNorm = norm(itemCode);
-    const key = `${docNorm}|${itemNorm}`;
-
-    let prodMeta: ProductionMeta | undefined = productionMap.byDocItem[key];
-    if (!prodMeta && docNorm && productionMap.byDoc[docNorm]) {
-      prodMeta = productionMap.byDoc[docNorm];
-    }
 
     // Link with QC Sheet (If any PD in this item exists in QC Sheet, it passed QC)
     const itemPds = extractPdNumbers(prodOrder);
@@ -995,16 +1018,22 @@ export function parseProjectItemsFromProductionCsv(
   const projectItems: DeliveryItem[] = [];
   let projIdx = 0;
 
-  // Detect Closed column from header row (row index 1) of Sheet 2
-  const sheet2Headers = (rows[1] || []).map((h: string) => (h || '').trim().replace(/\n/g, ' '));
+  // Detect Closed and Remark (Column Y) columns from header row of Sheet 2
+  let headerRowIdx = 0;
+  if (rows[0] && rows[0].some(c => (c || '').includes('Document') || (c || '').includes('หัวข้อ'))) {
+    headerRowIdx = 0;
+  } else if (rows[1] && rows[1].some(c => (c || '').includes('Document') || (c || '').includes('หัวข้อ'))) {
+    headerRowIdx = 1;
+  }
+  const sheet2Headers = (rows[headerRowIdx] || []).map((h: string) => (h || '').trim().replace(/\n/g, ' '));
   const findSheet2Col = (keywords: string[]) =>
     sheet2Headers.findIndex((h: string) => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
   const sheet2ClosedIdx = findSheet2Col(['Closed', 'closed', 'close', 'ปิดงาน', 'ปิด']);
   const sheet2RemarkIdx = findSheet2Col(['หมายเหตุ', 'Remark', 'Note']);
-  console.log('[PDTrack] Sheet2 Headers (row1):', sheet2Headers);
+  console.log(`[PDTrack] Sheet2 Headers (row ${headerRowIdx}):`, sheet2Headers);
   console.log('[PDTrack] Sheet2 closedIdx:', sheet2ClosedIdx, '| remarkIdx:', sheet2RemarkIdx);
 
-  for (let i = 2; i < rows.length; i++) {
+  for (let i = headerRowIdx + 1; i < rows.length; i++) {
     const r = rows[i];
     if (!r || r.length < 10) continue;
 
@@ -1187,7 +1216,17 @@ function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'
   if (!prodOrder && overviewMeta?.prodOrder) {
     prodOrder = overviewMeta.prodOrder;
   }
-  const normRemark = (item.remark || '').toLowerCase();
+  const prodRemark = prodMeta?.remark?.trim() || '';
+  let finalRemark = item.remark || '';
+  if (prodRemark) {
+    if (!finalRemark) {
+      finalRemark = prodRemark;
+    } else if (finalRemark !== prodRemark && !finalRemark.includes(prodRemark)) {
+      finalRemark = `${prodRemark} (${finalRemark})`;
+    }
+  }
+
+  const normRemark = finalRemark.toLowerCase();
   const normClosed = (item.closed || '').toLowerCase();
   const normRawStatus = (item.rawStatus || '').toLowerCase();
   const isDelivered =
@@ -1203,6 +1242,7 @@ function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'
     ...item,
     workTag: item.workTag || defaultTag,
     status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
+    remark: finalRemark,
     prodOrder,
     customer: item.customer || extractCustomer(item.projectName),
     actionTopic: item.actionTopic || prodMeta?.actionTopic || '',
