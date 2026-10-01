@@ -17,10 +17,15 @@ print(f"Original entries in drivePdfIndex.json: {len(existing_data)}")
 # Map of existing entries: id -> name
 id_to_name = {item['id']: item['name'] for item in existing_data}
 
-# 2. Get all PDFs from DriveFS metadata_sqlite_db
+# 2. Get all PDFs from DriveFS metadata_sqlite_db (including WAL & SHM for latest synced files)
 conn = None
 try:
-    shutil.copy2(DRIVEFS_DB, TEMP_DB)
+    for ext in ["", "-wal", "-shm"]:
+        src = DRIVEFS_DB + ext
+        dst = TEMP_DB + ext
+        if os.path.exists(src):
+            shutil.copy2(src, dst)
+
     conn = sqlite3.connect(TEMP_DB)
     c = conn.cursor()
     c.execute("""
@@ -33,11 +38,13 @@ try:
 finally:
     if conn:
         conn.close()
-    if os.path.exists(TEMP_DB):
-        try:
-            os.remove(TEMP_DB)
-        except:
-            pass
+    for ext in ["", "-wal", "-shm"]:
+        dst = TEMP_DB + ext
+        if os.path.exists(dst):
+            try:
+                os.remove(dst)
+            except:
+                pass
 
 # Check which DB items match files in DWG_ROOT
 local_dwg_filenames = set()
