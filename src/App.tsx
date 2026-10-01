@@ -64,7 +64,7 @@ export function App() {
     workTag: 'all',
     quickSearch: '',
     dateWindow: 'all',
-    statusSource: 'overview',
+    statusSource: 'dual',
     docRef: '',
     projectCode: '',
     projectName: '',

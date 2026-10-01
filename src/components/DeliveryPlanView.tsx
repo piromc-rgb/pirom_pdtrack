@@ -104,7 +104,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     }
   };
 
-  const statusSource = searchCriteria.statusSource || 'overview';
+  const statusSource = searchCriteria.statusSource || 'dual';
   const dateWindowFilter = searchCriteria.dateWindow || 'all';
   const internalSearch = searchCriteria.quickSearch || '';
 

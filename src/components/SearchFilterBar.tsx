@@ -171,7 +171,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       workTag: 'all',
       quickSearch: '',
       dateWindow: 'all',
-      statusSource: prev.statusSource || 'overview',
+      statusSource: prev.statusSource || 'dual',
       docRef: '',
       projectCode: '',
       projectName: '',
@@ -258,7 +258,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             <Layers className="w-3.5 h-3.5 text-blue-600 shrink-0" />
             <span className="text-[11px] font-semibold text-slate-500 select-none">สถานะตาราง:</span>
             <select
-              value={searchCriteria.statusSource || 'overview'}
+              value={searchCriteria.statusSource || 'dual'}
               onChange={(e) => updateField('statusSource', e.target.value)}
               className="text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer"
             >
