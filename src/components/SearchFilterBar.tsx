@@ -314,7 +314,29 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {!isCollapsed && (
         <div className="px-3.5 sm:px-4 py-2.5 bg-white">
           <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 xl:grid-cols-10 gap-2 items-end">
-            {/* 1. ช่วงเวลาแผนส่งมอบ (Dropdown) */}
+            {/* 1. Document Ref (Dropdown) */}
+            <div className="space-y-1 min-w-0">
+              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
+                <FileText className="w-3 h-3 text-sky-600 shrink-0" />
+                <span className="truncate">Document Ref</span>
+              </label>
+              <select
+                value={searchCriteria.docRef || ''}
+                onChange={(e) => updateField('docRef', e.target.value)}
+                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer font-mono ${
+                  searchCriteria.docRef
+                    ? 'bg-sky-50 text-sky-900 border-sky-400 font-bold'
+                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
+                }`}
+              >
+                <option value="">ทุกเอกสาร ({docRefs.length})</option>
+                {docRefs.map((r, i) => (
+                  <option key={i} value={r}>{r}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 2. ช่วงเวลาแผนส่งมอบ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <AlertTriangle className="w-3 h-3 text-rose-500 shrink-0" />
@@ -336,7 +358,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 2. สถานะ Overview (Dropdown) */}
+            {/* 3. สถานะ Overview (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <TrendingUp className="w-3 h-3 text-blue-600 shrink-0" />
@@ -360,7 +382,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 3. สถานะ QC (Dropdown) */}
+            {/* 4. สถานะ QC (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
@@ -384,7 +406,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 4. ชื่อเครื่องจักร (Dropdown) */}
+            {/* 5. ชื่อเครื่องจักร (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Cpu className="w-3 h-3 text-purple-600 shrink-0" />
@@ -406,7 +428,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 5. ชื่อโครงการ (Dropdown) */}
+            {/* 6. ชื่อโครงการ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Building2 className="w-3 h-3 text-blue-600 shrink-0" />
@@ -428,7 +450,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 6. เลขที่โครงการ (Dropdown) */}
+            {/* 7. เลขที่โครงการ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Hash className="w-3 h-3 text-indigo-600 shrink-0" />
@@ -446,28 +468,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 <option value="">ทุกรหัส ({projectCodes.length})</option>
                 {projectCodes.map((c, i) => (
                   <option key={i} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* 7. Document Ref (Dropdown) */}
-            <div className="space-y-1 min-w-0">
-              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
-                <FileText className="w-3 h-3 text-sky-600 shrink-0" />
-                <span className="truncate">Document Ref</span>
-              </label>
-              <select
-                value={searchCriteria.docRef || ''}
-                onChange={(e) => updateField('docRef', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer font-mono ${
-                  searchCriteria.docRef
-                    ? 'bg-sky-50 text-sky-900 border-sky-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="">ทุกเอกสาร ({docRefs.length})</option>
-                {docRefs.map((r, i) => (
-                  <option key={i} value={r}>{r}</option>
                 ))}
               </select>
             </div>
