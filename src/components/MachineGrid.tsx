@@ -15,6 +15,7 @@ import {
 import { MachineSummary, SearchCriteria } from '../types';
 import { MachineCard } from './MachineCard';
 import { formatThaiDate } from '../utils/dateUtils';
+import { matchItemWithQuickSearch } from '../utils/searchUtils';
 
 interface MachineGridProps {
   machines: MachineSummary[];
@@ -45,6 +46,11 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
   // Filtered & Sorted Machines
   const filteredMachines = useMemo(() => {
     let result = machines.filter(machine => {
+      // 0. Quick / Document number search
+      if (searchCriteria.quickSearch && !machine.items.some(i => matchItemWithQuickSearch(i, searchCriteria.quickSearch))) {
+        return false;
+      }
+
       // 1. Machine Name Filter (ชื่อเครื่องจักร)
       if (searchCriteria.machineName) {
         const term = searchCriteria.machineName.toLowerCase().trim();

@@ -21,6 +21,7 @@ import {
   getQcWarehouseStatus
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
+import { matchItemWithQuickSearch } from './utils/searchUtils';
 import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
 import { 
   AlertCircle, 
@@ -118,28 +119,8 @@ export function App() {
   // Compute matching counts for the SearchFilterBar
   const { matchedMachinesCount, matchedItemsCount } = useMemo(() => {
     const matchedItems = tagFilteredItems.filter(item => {
-      if (searchCriteria.quickSearch) {
-        const term = searchCriteria.quickSearch.toLowerCase().trim();
-        const matchName = item.itemName.toLowerCase().includes(term);
-        const matchCode = item.itemCode.toLowerCase().includes(term);
-        const matchMachine = item.machineName.toLowerCase().includes(term);
-        const matchPO = item.prodOrder.toLowerCase().includes(term);
-        const matchProj = item.projectName.toLowerCase().includes(term) || item.projectCode.toLowerCase().includes(term);
-        const matchDept = item.requestDept?.toLowerCase().includes(term);
-        const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
-        const matchQC = (
-          (whStatus && whStatus.toLowerCase().includes(term)) ||
-          (item.qcAction && item.qcAction.toLowerCase().includes(term)) ||
-          (item.qcInspector && item.qcInspector.toLowerCase().includes(term)) ||
-          (item.isQcPassed && ('ผ่าน qc'.includes(term) || 'qc passed'.includes(term)))
-        );
-        const matchReadyOp = item.readyOp?.toLowerCase().includes(term) || item.readyOpDesc?.toLowerCase().includes(term);
-        const matchActiveOp = item.activeOp?.toLowerCase().includes(term) || item.activeOpDesc?.toLowerCase().includes(term);
-        const isOvDone = isOverviewCompletedOrClosed(item.overviewStatus);
-        const matchOverview = item.overviewStatus?.toLowerCase().includes(term) || (isOvDone && ('เสร็จแล้ว'.includes(term) || term.includes('เสร็จ')));
-        if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC && !matchReadyOp && !matchActiveOp && !matchOverview) {
-          return false;
-        }
+      if (searchCriteria.quickSearch && !matchItemWithQuickSearch(item, searchCriteria.quickSearch)) {
+        return false;
       }
       if (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') {
         const daysDiff = getDaysDiff(item.targetLatest);

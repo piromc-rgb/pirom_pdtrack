@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { parseDate, formatThaiDate, formatThaiDayOfWeek, extractCustomer } from '../utils/dateUtils';
+import { matchItemWithQuickSearch } from '../utils/searchUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
@@ -162,17 +163,9 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
           if (searchCriteria.operationStatus === 'none' && (item.hasReadyOp || item.activeOp || item.isAllCompleted)) return false;
         }
 
-        const combinedQuick = (localSearch || searchCriteria.quickSearch || '').trim().toLowerCase();
-        if (combinedQuick) {
-          const matchQuick =
-            item.itemName.toLowerCase().includes(combinedQuick) ||
-            item.itemCode.toLowerCase().includes(combinedQuick) ||
-            item.prodOrder.toLowerCase().includes(combinedQuick) ||
-            item.machineName.toLowerCase().includes(combinedQuick) ||
-            item.projectName.toLowerCase().includes(combinedQuick) ||
-            item.projectCode.toLowerCase().includes(combinedQuick) ||
-            (item.customer || '').toLowerCase().includes(combinedQuick);
-          if (!matchQuick) return false;
+        const combinedQuick = (localSearch || searchCriteria.quickSearch || '').trim();
+        if (combinedQuick && !matchItemWithQuickSearch(item, combinedQuick)) {
+          return false;
         }
 
         return true;

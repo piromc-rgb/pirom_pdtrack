@@ -18,6 +18,7 @@ import {
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
+import { matchItemWithQuickSearch } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface AllItemsTableProps {
@@ -42,6 +43,11 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
   // Filter items
   const filteredItems = useMemo(() => {
     return items.filter(item => {
+      // 0. Quick / Document number search
+      if (searchCriteria.quickSearch && !matchItemWithQuickSearch(item, searchCriteria.quickSearch)) {
+        return false;
+      }
+
       // 1. Document number Reference filter
       if (searchCriteria.docRef) {
         const term = searchCriteria.docRef.toLowerCase().trim();
@@ -129,19 +135,8 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
       if (selectedStatus === 'qc-passed' && !item.isQcPassed) return false;
 
       // Internal quick search
-      if (internalSearch) {
-        const term = internalSearch.toLowerCase();
-        const matchName = item.itemName.toLowerCase().includes(term);
-        const matchCode = item.itemCode.toLowerCase().includes(term);
-        const matchPO = item.prodOrder.toLowerCase().includes(term) || item.poPr.toLowerCase().includes(term);
-        const matchRemark = item.remark.toLowerCase().includes(term);
-        const matchDept = item.requestDept?.toLowerCase().includes(term);
-        const matchReq = item.requesterName?.toLowerCase().includes(term);
-        const matchTopic = item.actionTopic?.toLowerCase().includes(term);
-        const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
-        if (!matchName && !matchCode && !matchPO && !matchRemark && !matchDept && !matchReq && !matchTopic && !matchQC) {
-          return false;
-        }
+      if (internalSearch && !matchItemWithQuickSearch(item, internalSearch)) {
+        return false;
       }
 
       return true;

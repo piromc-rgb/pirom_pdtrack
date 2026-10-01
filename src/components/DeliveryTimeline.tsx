@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, parseDate, isDateOverdue } from '../utils/dateUtils';
+import { matchItemWithQuickSearch } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface DeliveryTimelineProps {
@@ -36,6 +37,9 @@ export const DeliveryTimeline: React.FC<DeliveryTimelineProps> = ({
     const groups: { [key: string]: { dateStr: string; parsedDate: Date | null; items: DeliveryItem[] } } = {};
 
     items.forEach(item => {
+      // 0. Quick / Document number search
+      if (searchCriteria.quickSearch && !matchItemWithQuickSearch(item, searchCriteria.quickSearch)) return;
+
       // 1. Document number Reference filter
       if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase().trim())) return;
       // 2. Project Code filter

@@ -34,6 +34,7 @@ import {
   extractCustomer 
 } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
+import { matchItemWithQuickSearch } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens, refreshDwgIndex } from '../utils/pdfFinder';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
@@ -148,23 +149,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
         }
       }
 
-      // Quick text search
-      if (internalSearch) {
-        const term = internalSearch.toLowerCase().trim();
-        const matchName = item.itemName.toLowerCase().includes(term);
-        const matchCode = item.itemCode.toLowerCase().includes(term);
-        const matchMachine = item.machineName.toLowerCase().includes(term);
-        const matchPO = item.prodOrder.toLowerCase().includes(term);
-        const matchProj = item.projectName.toLowerCase().includes(term) || item.projectCode.toLowerCase().includes(term);
-        const matchDept = item.requestDept?.toLowerCase().includes(term);
-        const matchQC = item.isQcPassed && ('ผ่าน qc'.includes(term) || item.qcInspector?.toLowerCase().includes(term));
-        const matchReadyOp = item.readyOp?.toLowerCase().includes(term) || item.readyOpDesc?.toLowerCase().includes(term);
-        const matchActiveOp = item.activeOp?.toLowerCase().includes(term) || item.activeOpDesc?.toLowerCase().includes(term);
-        const isOvDone = isOverviewCompletedOrClosed(item.overviewStatus);
-        const matchOverview = item.overviewStatus?.toLowerCase().includes(term) || (isOvDone && ('เสร็จแล้ว'.includes(term) || term.includes('เสร็จ')));
-        if (!matchName && !matchCode && !matchMachine && !matchPO && !matchProj && !matchDept && !matchQC && !matchReadyOp && !matchActiveOp && !matchOverview) {
-          return false;
-        }
+      // Quick text / Document number search
+      if (internalSearch && !matchItemWithQuickSearch(item, internalSearch)) {
+        return false;
       }
 
       // Quick Date Window Filter
