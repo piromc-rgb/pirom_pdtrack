@@ -34,7 +34,7 @@ import {
   extractCustomer 
 } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
-import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
+import { searchAndOpenItemPdf, formatItemCodeWithHyphens, refreshDwgIndex } from '../utils/pdfFinder';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
 export interface DeliveryDateGroup {
@@ -75,6 +75,34 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [selectedPrintDate, setSelectedPrintDate] = useState<string | null>(null);
+  const [isRefreshingDwg, setIsRefreshingDwg] = useState(false);
+
+  const handleRefreshDwg = async () => {
+    if (isRefreshingDwg) return;
+    setIsRefreshingDwg(true);
+    try {
+      const result = await refreshDwgIndex();
+      window.dispatchEvent(
+        new CustomEvent('pdtrack:toast', {
+          detail: {
+            type: 'success',
+            text: result.message,
+          },
+        })
+      );
+    } catch (err: any) {
+      window.dispatchEvent(
+        new CustomEvent('pdtrack:toast', {
+          detail: {
+            type: 'warning',
+            text: `รีเฟรช DWG ไม่สำเร็จ: ${err?.message || 'เกิดข้อผิดพลาด'}`,
+          },
+        })
+      );
+    } finally {
+      setIsRefreshingDwg(false);
+    }
+  };
 
   const statusSource = searchCriteria.statusSource || 'overview';
   const dateWindowFilter = searchCriteria.dateWindow || 'all';
@@ -436,6 +464,21 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                           }`} />
                           <span>PD เสร็จแล้ว {group.pdCompletedCount}/{group.items.length} ({group.pdPercentText})</span>
                         </div>
+
+                        {/* ปุ่ม Refresh DWG ด้านขวาของ PD เสร็จแล้ว */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRefreshDwg();
+                          }}
+                          disabled={isRefreshingDwg}
+                          title="กดเพื่อสแกนและรีเฟรชไฟล์แบบ DWG ล่าสุดจาก Google Drive"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 hover:border-rose-300 shadow-2xs transition active:scale-95 cursor-pointer disabled:opacity-60"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 text-rose-600 ${isRefreshingDwg ? 'animate-spin' : ''}`} />
+                          <span>{isRefreshingDwg ? 'กำลังรีเฟรช DWG...' : 'Refresh DWG'}</span>
+                        </button>
                       </div>
 
                       <p className="text-xs text-slate-500 mt-0.5">

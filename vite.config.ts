@@ -104,6 +104,22 @@ export default defineConfig({
             res.end('Error reading PDF file');
           }
         });
+
+        server.middlewares.use('/api/drive-pdf-refresh', async (req, res) => {
+          res.setHeader('Content-Type', 'application/json; charset=utf-8');
+          try {
+            const { execSync } = await import('child_process');
+            execSync('python scripts/sync_dwg_index.py', { cwd: process.cwd(), timeout: 15000 });
+            const indexPath = path.join(process.cwd(), 'src', 'data', 'drivePdfIndex.json');
+            const content = fs.readFileSync(indexPath, 'utf-8');
+            const items = JSON.parse(content);
+            res.end(JSON.stringify({ success: true, count: items.length, items }));
+          } catch (err: any) {
+            console.error('Error refreshing DWG index:', err);
+            res.statusCode = 500;
+            res.end(JSON.stringify({ success: false, error: err?.message || 'Error running sync' }));
+          }
+        });
       },
     },
   ],

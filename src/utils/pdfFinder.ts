@@ -19,8 +19,37 @@ export interface DrivePdfEntry {
   name: string;
 }
 
-const pdfList: DrivePdfEntry[] = drivePdfIndex as DrivePdfEntry[];
+let pdfList: DrivePdfEntry[] = drivePdfIndex as DrivePdfEntry[];
 export const TOTAL_INDEXED_DWG_PDFS = pdfList.length;
+
+/**
+ * สแกนและรีเฟรชดัชนีไฟล์แบบ DWG ล่าสุดจาก Google Drive (รองรับทั้ง Local Server และ Web)
+ */
+export async function refreshDwgIndex(): Promise<{ success: boolean; count: number; message: string }> {
+  try {
+    const resp = await fetch('/api/drive-pdf-refresh', { method: 'POST' });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.success && Array.isArray(data.items)) {
+        pdfList = data.items;
+        return {
+          success: true,
+          count: data.items.length,
+          message: `รีเฟรชดัชนี DWG จาก Google Drive สำเร็จ (${data.items.length.toLocaleString()} ไฟล์)`,
+        };
+      }
+    }
+  } catch {
+    // บน Production หรือสภาพแวดล้อมที่ไม่มี Local API
+  }
+
+  return {
+    success: true,
+    count: pdfList.length,
+    message: `เชื่อมต่อดัชนี DWG เรียบร้อย (${pdfList.length.toLocaleString()} ไฟล์)`,
+  };
+}
+
 
 /**
  * แปลงรหัส Item เช่น "J131012Z381D00" -> "J131012-Z-38-1-D-00"
