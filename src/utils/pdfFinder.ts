@@ -162,8 +162,8 @@ export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
   window.dispatchEvent(
     new CustomEvent('pdtrack:toast', {
       detail: {
-        type: 'info',
-        text: `เปิดโฟลเดอร์ dwg เรียบร้อยแล้ว (คัดลอกรหัส "${hyphenated}" ลงคลิปบอร์ดแล้ว เพื่อค้นหาเฉพาะในโฟลเดอร์นี้)`,
+        type: 'warning',
+        text: `ไม่พบไฟล์แบบ PDF สำหรับรหัส "${hyphenated}" จึงเปิดโฟลเดอร์ dwg ให้แทน (คัดลอกรหัสลงคลิปบอร์ดแล้ว)`,
       },
     })
   );
