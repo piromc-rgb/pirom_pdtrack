@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { 
-  Search, 
-  X, 
   RotateCcw, 
   FileText, 
   Hash, 
@@ -25,7 +23,6 @@ import {
 } from 'lucide-react';
 import { SearchCriteria, DeliveryItem } from '../types';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
-import { parseDocRefSearch } from '../utils/searchUtils';
 
 interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
@@ -149,12 +146,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     };
   }, [items]);
 
-  const parsedDoc = useMemo(() => parseDocRefSearch(searchCriteria.quickSearch || ''), [searchCriteria.quickSearch]);
-
   const hasAnyFilter = Boolean(
     (statusFilter && statusFilter !== 'all') ||
     (searchCriteria.workTag && searchCriteria.workTag !== 'all') ||
-    searchCriteria.quickSearch ||
     (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') ||
     searchCriteria.docRef ||
     searchCriteria.projectCode ||
@@ -204,7 +198,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     let count = 0;
     if (statusFilter && statusFilter !== 'all') count++;
     if (searchCriteria.workTag && searchCriteria.workTag !== 'all') count++;
-    if (searchCriteria.quickSearch) count++;
     if (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') count++;
     if (searchCriteria.docRef) count++;
     if (searchCriteria.projectCode) count++;
@@ -320,54 +313,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {/* แถวที่ 2: หัวข้อการกรองเรียงเป็นแนวบรรทัดเดียว และแต่ละหัวข้อเป็น Dropdown เลือก */}
       {!isCollapsed && (
         <div className="px-3.5 sm:px-4 py-2.5 bg-white">
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 xl:grid-cols-12 gap-2 items-end">
-            {/* 1. ค้นหาตามเลขที่ใบแจ้งดำเนินการ (Document number / Quick Search) */}
-            <div className="col-span-2 sm:col-span-2 md:col-span-2 xl:col-span-2 space-y-1 min-w-0">
-              <label 
-                className="text-[10px] font-bold text-slate-700 flex items-center justify-between gap-1 truncate"
-                title="ค้นหาตามเลขที่ใบแจ้งดำเนินการ เช่น 47-9(26-09-77) -> แปลงเป็น EN 69-9-47 หรือพิมพ์ค้นหาทั่วไป"
-              >
-                <span className="flex items-center gap-1 truncate">
-                  <FileText className="w-3 h-3 text-sky-600 shrink-0" />
-                  <span className="truncate">เลขที่ใบแจ้ง</span>
-                </span>
-                {parsedDoc.isDocRefPattern && (
-                  <span 
-                    className="text-[9px] font-mono font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-1 py-0.2 rounded truncate animate-pulse shrink-0"
-                    title={`แปลงเป็น: ${parsedDoc.docRef}`}
-                  >
-                    → {parsedDoc.docRef}
-                  </span>
-                )}
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchCriteria.quickSearch || ''}
-                  onChange={(e) => updateField('quickSearch', e.target.value)}
-                  placeholder="เช่น 47-9(26-09-77)"
-                  title={parsedDoc.isDocRefPattern ? `แปลงเป็นค้นหา: ${parsedDoc.docRef}` : 'พิมพ์เลขที่ใบแจ้ง เช่น 47-9(26-09-77), EN 69-9-47, หรือชื่อชิ้นงาน'}
-                  className={`w-full px-2 py-1.5 text-xs rounded-lg border outline-none transition pr-6 ${
-                    parsedDoc.isDocRefPattern
-                      ? 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold font-mono shadow-xs'
-                      : searchCriteria.quickSearch
-                      ? 'bg-sky-50 border-sky-400 text-slate-900 font-semibold'
-                      : 'bg-slate-50 hover:bg-slate-100/70 focus:bg-white border-slate-200 focus:border-sky-500 text-slate-700'
-                  }`}
-                />
-                {searchCriteria.quickSearch && (
-                  <button
-                    onClick={() => updateField('quickSearch', '')}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                    title="ล้างข้อความค้นหา"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* 2. ช่วงเวลาแผนส่งมอบ (Dropdown) */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 xl:grid-cols-10 gap-2 items-end">
+            {/* 1. ช่วงเวลาแผนส่งมอบ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <AlertTriangle className="w-3 h-3 text-rose-500 shrink-0" />
@@ -389,7 +336,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 3. สถานะ Overview (Dropdown) */}
+            {/* 2. สถานะ Overview (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <TrendingUp className="w-3 h-3 text-blue-600 shrink-0" />
@@ -413,7 +360,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 4. สถานะ QC (Dropdown) */}
+            {/* 3. สถานะ QC (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
@@ -437,7 +384,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 6. ชื่อเครื่องจักร (Dropdown) */}
+            {/* 4. ชื่อเครื่องจักร (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Cpu className="w-3 h-3 text-purple-600 shrink-0" />
@@ -459,7 +406,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 7. ชื่อโครงการ (Dropdown) */}
+            {/* 5. ชื่อโครงการ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Building2 className="w-3 h-3 text-blue-600 shrink-0" />
@@ -481,7 +428,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 8. เลขที่โครงการ (Dropdown) */}
+            {/* 6. เลขที่โครงการ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Hash className="w-3 h-3 text-indigo-600 shrink-0" />
@@ -503,7 +450,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 9. Document Ref (Dropdown) */}
+            {/* 7. Document Ref (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <FileText className="w-3 h-3 text-sky-600 shrink-0" />
@@ -525,7 +472,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 10. ประเภท (Dropdown) */}
+            {/* 8. ประเภท (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Tag className="w-3 h-3 text-emerald-600 shrink-0" />
@@ -547,7 +494,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 11. แผนกที่แจ้ง (Dropdown) */}
+            {/* 9. แผนกที่แจ้ง (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Briefcase className="w-3 h-3 text-amber-600 shrink-0" />
@@ -569,7 +516,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 12. สาเหตุสั่งผลิต (Dropdown) */}
+            {/* 10. สาเหตุสั่งผลิต (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <SlidersHorizontal className="w-3 h-3 text-teal-600 shrink-0" />
