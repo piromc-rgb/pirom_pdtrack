@@ -34,7 +34,7 @@ import {
   extractCustomer 
 } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
-import { matchItemWithQuickSearch } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens, refreshDwgIndex } from '../utils/pdfFinder';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
@@ -116,7 +116,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       if (item.status === 'ส่งแล้ว') return false;
 
       // Apply 5-field Search criteria
-      if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase().trim())) return false;
+      if (searchCriteria.docRef && !matchDocRefFilter(item.docRef, searchCriteria.docRef)) return false;
       if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
       if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase().trim())) return false;

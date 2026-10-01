@@ -21,7 +21,7 @@ import {
   getQcWarehouseStatus
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
-import { matchItemWithQuickSearch } from './utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter } from './utils/searchUtils';
 import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
 import { 
   AlertCircle, 
@@ -130,7 +130,7 @@ export function App() {
         if (searchCriteria.dateWindow === 'month' && (daysDiff === null || daysDiff < 0 || daysDiff > 30)) return false;
         if (searchCriteria.dateWindow === 'qc-ready' && !item.isQcPassed) return false;
       }
-      if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase().trim())) return false;
+      if (searchCriteria.docRef && !matchDocRefFilter(item.docRef, searchCriteria.docRef)) return false;
       if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
       if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase().trim())) return false;

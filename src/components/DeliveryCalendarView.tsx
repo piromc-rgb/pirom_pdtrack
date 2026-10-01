@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { parseDate, formatThaiDate, formatThaiDayOfWeek, extractCustomer } from '../utils/dateUtils';
-import { matchItemWithQuickSearch } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
@@ -114,7 +114,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
         if (workTypeFilter !== 'all' && itemTag !== workTypeFilter) return false;
 
         // 3. Global SearchCriteria filters
-        if (searchCriteria.docRef && !item.docRef.toLowerCase().includes(searchCriteria.docRef.toLowerCase())) {
+        if (searchCriteria.docRef && !matchDocRefFilter(item.docRef, searchCriteria.docRef)) {
           return false;
         }
         if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase())) {

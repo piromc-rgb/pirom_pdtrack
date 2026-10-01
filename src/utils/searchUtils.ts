@@ -126,3 +126,30 @@ export function matchItemWithQuickSearch(item: DeliveryItem, quickSearch: string
 
   return false;
 }
+
+/**
+ * Checks if a DeliveryItem's docRef matches the searchDocRef query,
+ * supporting pattern conversion like '47-9(26-09-77)' -> 'EN 69-9-47'.
+ */
+export function matchDocRefFilter(itemDocRef: string | undefined | null, searchDocRef: string | undefined | null): boolean {
+  if (!searchDocRef) return true;
+  const raw = searchDocRef.trim();
+  if (!raw) return true;
+
+  const parsed = parseDocRefSearch(raw);
+  const cleanItem = (itemDocRef || '').replace(/\s+/g, '').toLowerCase();
+
+  if (parsed.isDocRefPattern) {
+    const cleanTarget = parsed.docRef.replace(/\s+/g, '').toLowerCase();
+    if (cleanItem.includes(cleanTarget)) return true;
+    if (parsed.group1 && parsed.group2 && parsed.yearBE) {
+      const altTarget = `en${parsed.yearBE}-${parsed.group2}-${parsed.group1.replace(/^0+/, '')}`.toLowerCase();
+      if (cleanItem.includes(altTarget)) return true;
+    }
+    return false;
+  }
+
+  const cleanRaw = raw.replace(/\s+/g, '').toLowerCase();
+  return cleanItem.includes(cleanRaw) || (itemDocRef || '').toLowerCase().includes(raw.toLowerCase());
+}
+

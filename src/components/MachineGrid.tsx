@@ -14,8 +14,7 @@ import {
 } from 'lucide-react';
 import { MachineSummary, SearchCriteria } from '../types';
 import { MachineCard } from './MachineCard';
-import { formatThaiDate } from '../utils/dateUtils';
-import { matchItemWithQuickSearch } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
 
 interface MachineGridProps {
   machines: MachineSummary[];
@@ -59,8 +58,7 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
 
       // 2. Document number Reference Filter (Document number Reference)
       if (searchCriteria.docRef) {
-        const term = searchCriteria.docRef.toLowerCase().trim();
-        const matchDoc = machine.items.some(i => i.docRef.toLowerCase().includes(term));
+        const matchDoc = machine.items.some(i => matchDocRefFilter(i.docRef, searchCriteria.docRef));
         if (!matchDoc) return false;
       }
 

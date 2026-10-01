@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { 
+  Search,
+  X,
   RotateCcw, 
   FileText, 
   Hash, 
@@ -23,6 +25,7 @@ import {
 } from 'lucide-react';
 import { SearchCriteria, DeliveryItem } from '../types';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
+import { parseDocRefSearch } from '../utils/searchUtils';
 
 interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
@@ -146,6 +149,8 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     };
   }, [items]);
 
+  const parsedDocRef = useMemo(() => parseDocRefSearch(searchCriteria.docRef || ''), [searchCriteria.docRef]);
+
   const hasAnyFilter = Boolean(
     (statusFilter && statusFilter !== 'all') ||
     (searchCriteria.workTag && searchCriteria.workTag !== 'all') ||
@@ -260,6 +265,52 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               <option value="qc">🛡️ QC Record</option>
               <option value="dual">⚡ แสดงทั้ง 2 แหล่ง (Dual)</option>
             </select>
+          </div>
+        </div>
+
+        {/* Middle: ช่องค้นหา Document Ref (ช่องว่างตรงกลาง) */}
+        <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md mx-1 sm:mx-3 min-w-[200px]">
+          <div className="relative flex items-center">
+            <Search className="w-3.5 h-3.5 text-sky-600 absolute left-2.5 pointer-events-none shrink-0" />
+            <input
+              type="text"
+              list="docref-suggestions"
+              value={searchCriteria.docRef || ''}
+              onChange={(e) => updateField('docRef', e.target.value)}
+              placeholder="ค้นหา Document Ref (เช่น 47-9(26-09-77), EN 69-9-47)..."
+              title="กรอกเลขที่ Document Ref เช่น 47-9(26-09-77) หรือ EN 69-9-47"
+              className={`w-full pl-8 py-1.5 text-xs rounded-xl border outline-none transition shadow-2xs ${
+                parsedDocRef.isDocRefPattern ? 'pr-28' : searchCriteria.docRef ? 'pr-7' : 'pr-3'
+              } ${
+                parsedDocRef.isDocRefPattern
+                  ? 'bg-emerald-50/80 border-emerald-400 text-emerald-950 font-bold font-mono'
+                  : searchCriteria.docRef
+                  ? 'bg-sky-50/80 border-sky-400 text-slate-900 font-semibold font-mono'
+                  : 'bg-white hover:bg-slate-50 focus:bg-white border-slate-300 focus:border-sky-500 text-slate-700'
+              }`}
+            />
+            <datalist id="docref-suggestions">
+              {docRefs.slice(0, 100).map((r, i) => (
+                <option key={i} value={r} />
+              ))}
+            </datalist>
+            {parsedDocRef.isDocRefPattern && (
+              <span 
+                className="absolute right-7 px-1.5 py-0.5 text-[9.5px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 rounded shadow-2xs pointer-events-none animate-pulse truncate max-w-[100px]"
+                title={`แปลงเป็น: ${parsedDocRef.docRef}`}
+              >
+                → {parsedDocRef.docRef}
+              </span>
+            )}
+            {searchCriteria.docRef && (
+              <button
+                onClick={() => updateField('docRef', '')}
+                className="absolute right-2 text-slate-400 hover:text-slate-600 cursor-pointer p-0.5 rounded-full hover:bg-slate-200/60 transition"
+                title="ล้างข้อความ"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 

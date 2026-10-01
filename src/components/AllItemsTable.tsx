@@ -18,7 +18,7 @@ import {
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
-import { matchItemWithQuickSearch } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface AllItemsTableProps {
@@ -49,9 +49,8 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
       }
 
       // 1. Document number Reference filter
-      if (searchCriteria.docRef) {
-        const term = searchCriteria.docRef.toLowerCase().trim();
-        if (!item.docRef.toLowerCase().includes(term)) return false;
+      if (searchCriteria.docRef && !matchDocRefFilter(item.docRef, searchCriteria.docRef)) {
+        return false;
       }
 
       // 2. Project Code filter
