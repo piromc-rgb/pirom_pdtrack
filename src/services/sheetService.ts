@@ -92,6 +92,18 @@ export function getCsvExportUrl(url: string): string {
   }
 }
 
+export function getXlsxExportUrl(url: string): string {
+  try {
+    const sheetIdMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (!sheetIdMatch) return url;
+    const sheetId = sheetIdMatch[1];
+    return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=xlsx`;
+  } catch (err) {
+    console.error('Error generating XLSX URL:', err);
+    return url;
+  }
+}
+
 export function getSavedSheetUrl(): string {
   return localStorage.getItem(STORAGE_URL_KEY) || DEFAULT_SHEET_URL;
 }
@@ -238,6 +250,76 @@ export function extractPdNumbers(prodOrder: string): string[] {
   }
 
   return pds;
+}
+
+/**
+ * Parses raw ArrayBuffer or Uint8Array of Google Sheet 3 (QC Checklist) as an XLSX workbook across ALL sheets/tabs.
+ * Excludes photo/non-data sheets (e.g. names containing 'รูป').
+ * Rule: If a PD No exists in any sheet in this workbook, it is considered QC Passed!
+ */
+export function parseQcWorkbook(data: ArrayBuffer | Uint8Array): Record<string, QcMeta> {
+  const wb = XLSX.read(data, { type: 'array' });
+  const qcMap: Record<string, QcMeta> = {};
+
+  for (const sheetName of wb.SheetNames) {
+    if (sheetName.includes('รูป')) continue; // Skip photo sheets
+    const ws = wb.Sheets[sheetName];
+    if (!ws) continue;
+
+    const rows = XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, raw: false });
+    if (!rows || rows.length < 2) continue;
+
+    let headerIdx = -1;
+    let pdIdx = -1, dateIdx = -1, inspIdx = -1, passIdx = -1, failIdx = -1, actionIdx = -1, remarkIdx = -1, topicIdx = -1, projIdx = -1;
+
+    for (let r = 0; r < Math.min(rows.length, 5); r++) {
+      const row = (rows[r] || []).map(cell => String(cell || '').trim());
+      const pIdx = row.findIndex(c => /PD\s*No/i.test(c));
+      if (pIdx !== -1) {
+        headerIdx = r;
+        pdIdx = pIdx;
+        dateIdx = row.findIndex(c => c.includes('วันที่ตรวจ'));
+        inspIdx = row.findIndex(c => c.includes('ผู้ตรวจสอบ'));
+        passIdx = row.findIndex(c => c === 'ผ่าน' || c.includes('ผ่าน'));
+        failIdx = row.findIndex(c => c.includes('ไม่ผ่าน'));
+        actionIdx = row.findIndex(c => c.includes('การดำเนินการ'));
+        remarkIdx = row.findIndex(c => c.includes('หมายเหตุ') || c.includes('รายละเอียด'));
+        topicIdx = row.findIndex(c => c.includes('หัวข้อการตรวจสอบ'));
+        projIdx = row.findIndex(c => c.includes('เลขที่โครงการ'));
+        break;
+      }
+    }
+
+    if (headerIdx === -1 || pdIdx === -1) continue;
+
+    for (let i = headerIdx + 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || !row[pdIdx]) continue;
+      const pdVal = String(row[pdIdx]).trim();
+      const matches = pdVal.match(/PD\d+/gi);
+      if (!matches) continue;
+
+      const getVal = (idx: number) => (idx !== -1 && idx < row.length && row[idx] != null ? String(row[idx]).trim() : '');
+
+      const meta: QcMeta = {
+        pdNo: matches[0].toUpperCase(),
+        qcDate: getVal(dateIdx),
+        inspector: getVal(inspIdx),
+        qtyPass: getVal(passIdx),
+        qtyFail: getVal(failIdx),
+        action: getVal(actionIdx),
+        remarks: getVal(remarkIdx),
+        topic: getVal(topicIdx),
+        project: getVal(projIdx),
+      };
+
+      for (const m of matches) {
+        qcMap[m.toUpperCase()] = meta;
+      }
+    }
+  }
+
+  return qcMap;
 }
 
 /**
@@ -1180,6 +1262,7 @@ export async function fetchDeliveryData(
 
   const csvUrl1 = getCsvExportUrl(sheetUrl);
   const csvUrl2 = getCsvExportUrl(prodUrl);
+  const xlsxUrl3 = getXlsxExportUrl(qcUrl);
   const csvUrl3 = getCsvExportUrl(qcUrl);
   const hasOverviewUrl = !!(overviewUrl && overviewUrl.trim());
   const csvUrl4 = hasOverviewUrl ? getCsvExportUrl(overviewUrl.trim()) : '';
@@ -1189,7 +1272,7 @@ export async function fetchDeliveryData(
     const fetchPromises: Promise<Response>[] = [
       fetch(csvUrl1, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
       fetch(csvUrl2, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
-      fetch(csvUrl3, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
+      fetch(xlsxUrl3, { method: 'GET' }),
     ];
     if (csvUrl4) {
       fetchPromises.push(
@@ -1220,17 +1303,43 @@ export async function fetchDeliveryData(
       }
     }
 
-    // QC Sheet 3 map
+    // QC Sheet 3 map (Fetch all sheets via XLSX across all monthly tabs, fallback to CSV if needed)
     let qcMap = defaultQcData as Record<string, QcMeta>;
     if (res3.status === 'fulfilled' && res3.value.ok) {
       try {
-        const csvText3 = await res3.value.text();
-        const liveQcMap = parseQcCsv(csvText3);
+        const arrayBuf = await res3.value.arrayBuffer();
+        const liveQcMap = parseQcWorkbook(arrayBuf);
         if (Object.keys(liveQcMap).length > 0) {
           qcMap = liveQcMap;
         }
       } catch (qcErr) {
-        console.warn('Could not parse live QC Sheet, using cached QC data:', qcErr);
+        console.warn('Could not parse live QC XLSX, trying fallback CSV:', qcErr);
+        try {
+          const fallbackRes = await fetch(csvUrl3, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } });
+          if (fallbackRes.ok) {
+            const csvText = await fallbackRes.text();
+            const liveQcMap = parseQcCsv(csvText);
+            if (Object.keys(liveQcMap).length > 0) {
+              qcMap = liveQcMap;
+            }
+          }
+        } catch (fbErr) {
+          console.warn('Could not parse fallback QC CSV, using cached QC data:', fbErr);
+        }
+      }
+    } else {
+      // If XLSX fetch failed directly, try CSV fallback
+      try {
+        const fallbackRes = await fetch(csvUrl3, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } });
+        if (fallbackRes.ok) {
+          const csvText = await fallbackRes.text();
+          const liveQcMap = parseQcCsv(csvText);
+          if (Object.keys(liveQcMap).length > 0) {
+            qcMap = liveQcMap;
+          }
+        }
+      } catch (fbErr) {
+        console.warn('Fallback QC CSV fetch failed, using cached QC data:', fbErr);
       }
     }
 
