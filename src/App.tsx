@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import appLogo from './assets/logo.png';
 import { Navbar } from './components/Navbar';
 import { KpiSummary } from './components/KpiSummary';
 import { SearchFilterBar } from './components/SearchFilterBar';
@@ -472,6 +473,7 @@ export function App() {
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
         <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
+            <img src={appLogo} alt="AMW" className="h-5 w-auto object-contain inline-block" />
             <span className="font-semibold text-slate-700">AMW PDTrack</span>
             <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.3</span>
             <span>- ระบบติดตามเป้าหมายการส่งมอบ</span>

@@ -1,4 +1,5 @@
 import React from 'react';
+import appLogo from '../assets/logo.png';
 import { 
   Cog, 
   RefreshCw, 
@@ -50,9 +51,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           
           {/* Logo & System Name */}
           <div className="flex items-center gap-3 min-w-max">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-blue-700 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
-              <Cog className="w-6 h-6 animate-spin-slow" />
-            </div>
+            <img 
+              src={appLogo} 
+              alt="Auto Motion Works" 
+              className="h-11 w-auto object-contain cursor-pointer transition hover:opacity-90"
+              onClick={() => setActiveTab('machines')}
+              title="Auto Motion Works - AMW PDTrack"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold tracking-tight text-slate-900">AMW PD<span className="text-sky-600">Track</span></span>
