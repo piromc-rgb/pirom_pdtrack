@@ -1,4 +1,5 @@
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import defaultItemsJson from '../data/defaultData.json';
 import defaultProjectItemsJson from '../data/defaultProjectItems.json';
 import defaultProductionMap from '../data/productionMap.json';
@@ -17,6 +18,7 @@ let initialOverviewItemMap = defaultOverviewItemMap as {
 };
 
 const STORAGE_OVERVIEW_CACHE_KEY = 'pdtrack_cached_overview_v3';
+export const STORAGE_OVERVIEW_FILENAME_KEY = 'pdtrack_overview_filename';
 try {
   const cachedOverview = localStorage.getItem(STORAGE_OVERVIEW_CACHE_KEY);
   if (cachedOverview) {
@@ -43,6 +45,8 @@ export const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1l5Fbiz
 export const DEFAULT_PRODUCTION_URL = 'https://docs.google.com/spreadsheets/d/1YLgaxdeJR_MCHJhFkoAPAJfGmvUJB2K9GPgirYqlhPE/edit?gid=1308741309#gid=1308741309';
 export const DEFAULT_QC_URL = 'https://docs.google.com/spreadsheets/d/1w8B0DyG7PEy_YLHM5HCI_eVU_nt4HvA8xHWShuLRL_8/edit?gid=1814251242#gid=1814251242';
 export const DEFAULT_OVERVIEW_URL = '';
+export const DEFAULT_OVERVIEW_FOLDER_URL = 'https://drive.google.com/drive/folders/1Yt8drFmq0END9fAEWUy0No6sZ76H1dtA?usp=drive_link';
+export const DEFAULT_OVERVIEW_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLDxqPOnJAC8aRVyr8-_oNLWLdXEbSvJqbGSh-5W-zFVo_cwdVhsQPISjUUF3NSpJJFg/exec';
 
 const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
@@ -291,21 +295,19 @@ export function parseQcCsv(csvText: string): Record<string, QcMeta> {
 }
 
 /**
- * Parses raw CSV of Google Sheet 4 (Status Overview ฝ่ายผลิต)
- * Matches columns: Production Order, Item Code, Description, Project, Customer, Order Status
+ * Core parser for Status Overview table rows (from CSV, Excel, or Sheet)
+ * Matches columns: Production Order, Item Code, Description, Project, Customer, Order Status, Operations
  */
-export function parseOverviewCsv(csvText: string): {
+export function parseOverviewRows(rows: (string | null | undefined)[][]): {
   byPd: Record<string, OverviewMeta>;
   byItem: Record<string, OverviewMeta>;
   byProjItem: Record<string, OverviewMeta>;
 } {
-  const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
-  const rows = parsed.data;
   if (!rows || rows.length < 2) {
     return { byPd: {}, byItem: {}, byProjItem: {} };
   }
 
-  const headers = rows[0].map(h => h.trim().replace(/\n/g, ' '));
+  const headers = (rows[0] || []).map(h => (h !== undefined && h !== null ? String(h) : '').trim().replace(/\n/g, ' '));
   const findCol = (keywords: string[]) => {
     // 1. Exact match first
     const exact = headers.findIndex(h => keywords.some(k => h.toLowerCase() === k.toLowerCase()));
@@ -315,14 +317,14 @@ export function parseOverviewCsv(csvText: string): {
   };
 
   const pdIdx = findCol(['Production Order', 'Prod Order', 'PD No', 'PD No.', 'PD', 'prodOrder']);
-  const itemIdx = findCol(['Item_4', 'Item_5', 'Item Code', 'Item No', 'รหัส Item', 'เลขที่ Item', 'itemCode']);
-  const descIdx = findCol(['Description', 'Item Name', 'ชื่อ Item', 'รายละเอียด', 'description']);
+  const itemIdx = findCol(['Item_4', 'Item_5', 'Item Code', 'Item No', 'รหัส Item', 'เลขที่ Item', 'itemCode', 'DWG No', 'dwgNo']);
+  const descIdx = findCol(['Description', 'Item Name', 'ชื่อ Item', 'รายละเอียด', 'description', 'partName']);
   const projIdx = findCol(['Project', 'Project No', 'เลขที่โครงการ', 'โครงการ', 'projectCode']);
   const custIdx = findCol(['Customer', 'ลูกค้า', 'customer']);
   const statusIdx = findCol(['Order Status', 'Operation Status', 'Status', 'สถานะ', 'status']);
-  const opIdx = findCol(['Operation', 'ลำดับ']);
-  const wcIdx = findCol(['Work Center', 'WorkCenter', 'WC', 'เครื่อง']);
-  const opDescIdx = findCol(['r.ref.oper.desc', 'Operation Description', 'ชื่อ Operation', 'ชื่อกระบวนการ']);
+  const opIdx = findCol(['Operation', 'ลำดับ', 'Step']);
+  const wcIdx = findCol(['Work Center', 'WorkCenter', 'WC', 'เครื่อง', 'Machine']);
+  const opDescIdx = findCol(['r.ref.oper.desc', 'Operation Description', 'ชื่อ Operation', 'ชื่อกระบวนการ', 'Step Name']);
   const opStatusIdx = findCol(['Operation Status', 'สถานะ Operation']);
 
   const byPd: Record<string, OverviewMeta> = {};
@@ -343,22 +345,24 @@ export function parseOverviewCsv(csvText: string): {
     const r = rows[i];
     if (!r || r.length === 0) continue;
 
-    const pdVal = pdIdx !== -1 && pdIdx < r.length ? r[pdIdx]?.trim().toUpperCase() : '';
-    const itemCode = itemIdx !== -1 && itemIdx < r.length ? r[itemIdx]?.trim().toUpperCase() : '';
-    const desc = descIdx !== -1 && descIdx < r.length ? r[descIdx]?.trim() : '';
-    const project = projIdx !== -1 && projIdx < r.length ? r[projIdx]?.trim().toUpperCase() : '';
-    const customer = custIdx !== -1 && custIdx < r.length ? r[custIdx]?.trim() : '';
-    const status = statusIdx !== -1 && statusIdx < r.length ? r[statusIdx]?.trim() : '';
-    const op = opIdx !== -1 && opIdx < r.length ? r[opIdx]?.trim() : '';
-    const wc = wcIdx !== -1 && wcIdx < r.length ? r[wcIdx]?.trim() : '';
-    const opDesc = opDescIdx !== -1 && opDescIdx < r.length ? r[opDescIdx]?.trim() : '';
-    const opStatus = opStatusIdx !== -1 && opStatusIdx < r.length ? r[opStatusIdx]?.trim() : '';
+    const getCell = (idx: number) => (idx !== -1 && idx < r.length && r[idx] !== undefined && r[idx] !== null ? String(r[idx]).trim() : '');
+
+    const pdVal = getCell(pdIdx).toUpperCase();
+    const itemCode = getCell(itemIdx).toUpperCase();
+    const desc = getCell(descIdx);
+    const project = getCell(projIdx).toUpperCase();
+    const customer = getCell(custIdx);
+    const status = getCell(statusIdx);
+    const op = getCell(opIdx);
+    const wc = getCell(wcIdx);
+    const opDesc = getCell(opDescIdx);
+    const opStatus = getCell(opStatusIdx);
 
     if (!pdVal && !itemCode) continue;
 
     const isReady = opStatus.toLowerCase() === 'ready to start';
     const isActive = opStatus.toLowerCase() === 'active';
-    const isCompleted = ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น'].includes(opStatus.toLowerCase());
+    const isCompleted = ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น'].includes(opStatus.toLowerCase()) || ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น'].includes(status.toLowerCase());
     const opLabel = opDesc ? `Op ${op}: ${opDesc}${wc ? ` (${wc})` : ''}` : '';
 
     const meta: OverviewMeta = {
@@ -436,6 +440,161 @@ export function parseOverviewCsv(csvText: string): {
   }
 
   return { byPd, byItem, byProjItem };
+}
+
+/**
+ * Parses raw CSV of Google Sheet 4 (Status Overview ฝ่ายผลิต)
+ */
+export function parseOverviewCsv(csvText: string): {
+  byPd: Record<string, OverviewMeta>;
+  byItem: Record<string, OverviewMeta>;
+  byProjItem: Record<string, OverviewMeta>;
+} {
+  const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
+  return parseOverviewRows(parsed.data);
+}
+
+/**
+ * Parses binary Excel file (.xlsx / .xls) of Status Overview
+ * Supports 'Data', 'data', or any sheet containing production orders
+ */
+export function parseOverviewExcel(buffer: ArrayBuffer): {
+  byPd: Record<string, OverviewMeta>;
+  byItem: Record<string, OverviewMeta>;
+  byProjItem: Record<string, OverviewMeta>;
+} {
+  const wb = XLSX.read(buffer, { type: 'array' });
+  let ws = wb.Sheets['Data'] || wb.Sheets['data'];
+  if (!ws) {
+    const matched = wb.SheetNames.find(n => n.trim().toLowerCase().includes('data'));
+    ws = matched ? wb.Sheets[matched] : wb.Sheets[wb.SheetNames[0]];
+  }
+  const rows = XLSX.utils.sheet_to_json<string[]>(ws, { header: 1, defval: '' });
+  return parseOverviewRows(rows);
+}
+
+/**
+ * Parses JSON from Plan.json (Google Drive / Apps Script) or cached overview
+ */
+export function parseOverviewJson(jsonObj: any): {
+  byPd: Record<string, OverviewMeta>;
+  byItem: Record<string, OverviewMeta>;
+  byProjItem: Record<string, OverviewMeta>;
+} {
+  if (jsonObj?.byPd && jsonObj?.byItem) {
+    return {
+      byPd: jsonObj.byPd || {},
+      byItem: jsonObj.byItem || {},
+      byProjItem: jsonObj.byProjItem || {},
+    };
+  }
+
+  const byPd: Record<string, OverviewMeta> = {};
+  const byItem: Record<string, OverviewMeta> = {};
+  const byProjItem: Record<string, OverviewMeta> = {};
+
+  const jobs: any[] = jsonObj?.scheduledJobs || jsonObj?.data?.scheduledJobs || [];
+  for (const job of jobs) {
+    const pdVal = String(job.woId || job.prodOrder || '').trim().toUpperCase();
+    const itemCode = String(job.dwgNo || job.itemCode || '').trim().toUpperCase();
+    const project = String(job.project || '').trim().toUpperCase();
+    const customer = String(job.customer || '').trim();
+    const status = String(job.status || job.opStatus || '').trim();
+    const op = job.stepNum || job.stepNo || '';
+    const opDesc = job.stepName || '';
+    const wc = job.machine || '';
+    const opLabel = opDesc ? `Op ${op}: ${opDesc}${wc ? ` (${wc})` : ''}` : '';
+    const isReady = status.toLowerCase() === 'ready to start';
+    const isActive = status.toLowerCase() === 'active';
+    const isCompleted =
+      ['completed', 'close', 'closed', 'เสร็จแล้ว', 'เสร็จสิ้น'].includes(status.toLowerCase()) ||
+      Boolean(job.erpCompleted);
+
+    const meta: OverviewMeta = {
+      status: isCompleted ? 'Completed' : (status || ''),
+      project,
+      customer,
+      itemCode,
+      description: job.partName || '',
+      prodOrder: pdVal,
+      readyOp: isReady ? opLabel : undefined,
+      readyOpDesc: isReady ? opDesc : undefined,
+      readyOpWc: isReady ? wc : undefined,
+      readyOpNo: isReady ? op : undefined,
+      hasReadyOp: isReady,
+      activeOp: isActive ? opLabel : undefined,
+      activeOpDesc: isActive ? opDesc : undefined,
+      activeOpWc: isActive ? wc : undefined,
+      activeOpNo: isActive ? op : undefined,
+      currentOp: isReady || isActive ? opLabel : undefined,
+      currentOpDesc: isReady || isActive ? opDesc : undefined,
+      currentOpStatus: isReady ? 'Ready to Start' : isActive ? 'Active' : undefined,
+      lastCompletedOp: isCompleted ? `Op ${op}` : undefined,
+      lastCompletedOpDesc: isCompleted ? opDesc : undefined,
+      lastCompletedOpWc: isCompleted ? wc : undefined,
+      lastCompletedOpNo: isCompleted ? op : undefined,
+      isAllCompleted: isCompleted,
+    };
+
+    if (pdVal) byPd[pdVal] = meta;
+    if (itemCode) {
+      byItem[itemCode] = meta;
+      if (project) byProjItem[`${project}|${itemCode}`] = meta;
+    }
+  }
+
+  return { byPd, byItem, byProjItem };
+}
+
+/**
+ * Gets saved name of the active overview file
+ */
+export function getSavedOverviewFilename(): string {
+  return localStorage.getItem(STORAGE_OVERVIEW_FILENAME_KEY) || 'Week 40 26-09-30 Status Overview.xlsx (Google Drive)';
+}
+
+/**
+ * Saves overview data to memory and persistent localStorage
+ */
+export function saveActiveOverviewData(
+  overviewData: { byPd: Record<string, OverviewMeta>; byItem: Record<string, OverviewMeta>; byProjItem: Record<string, OverviewMeta> },
+  fileName: string
+): void {
+  overviewStatusMap = { ...defaultOverviewData, ...overviewData.byPd };
+  overviewItemMap = {
+    byItem: { ...defaultOverviewItemMap.byItem, ...overviewData.byItem },
+    byProjItem: { ...defaultOverviewItemMap.byProjItem, ...overviewData.byProjItem },
+  };
+  try {
+    localStorage.setItem(STORAGE_OVERVIEW_CACHE_KEY, JSON.stringify(overviewData));
+    localStorage.setItem(STORAGE_OVERVIEW_FILENAME_KEY, fileName);
+  } catch (err) {
+    console.warn('Could not save overview data to localStorage:', err);
+  }
+}
+
+/**
+ * Fetches latest overview data directly from the Google Drive Apps Script endpoint
+ */
+export async function fetchOverviewFromAppsScript(
+  endpointUrl: string = DEFAULT_OVERVIEW_APPS_SCRIPT_URL
+): Promise<{
+  byPd: Record<string, OverviewMeta>;
+  byItem: Record<string, OverviewMeta>;
+  byProjItem: Record<string, OverviewMeta>;
+  fileName: string;
+}> {
+  const res = await fetch(endpointUrl, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  });
+  if (!res.ok) {
+    throw new Error(`ไม่สามารถเชื่อมต่อ Google Apps Script (${res.status} ${res.statusText})`);
+  }
+  const data = await res.json();
+  const parsed = parseOverviewJson(data);
+  const fileName = data.fileName || 'Plan.json (Google Drive Folder)';
+  return { ...parsed, fileName };
 }
 
 /**

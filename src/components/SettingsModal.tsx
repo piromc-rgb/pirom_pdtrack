@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   X, 
   Cog, 
@@ -8,21 +8,35 @@ import {
   Database, 
   RotateCcw,
   AlertCircle,
-  Link2
+  Link2,
+  FileSpreadsheet,
+  FolderUp,
+  CloudDownload,
+  CheckCircle2,
+  FolderOpen
 } from 'lucide-react';
 import { 
   DEFAULT_SHEET_URL, 
   DEFAULT_PRODUCTION_URL,
   DEFAULT_QC_URL,
   DEFAULT_OVERVIEW_URL,
+  DEFAULT_OVERVIEW_FOLDER_URL,
+  DEFAULT_OVERVIEW_APPS_SCRIPT_URL,
   saveSheetUrl, 
   getSavedSheetUrl,
-  saveProdUrl,
+  saveProdUrl, 
   getSavedProdUrl,
-  saveQcUrl,
+  saveQcUrl, 
   getSavedQcUrl,
-  saveOverviewUrl,
-  getSavedOverviewUrl
+  saveOverviewUrl, 
+  getSavedOverviewUrl,
+  getSavedOverviewFilename,
+  saveActiveOverviewData,
+  parseOverviewExcel,
+  parseOverviewJson,
+  parseOverviewCsv,
+  fetchOverviewFromAppsScript,
+  overviewStatusMap
 } from '../services/sheetService';
 import {
   DEFAULT_DWG_FOLDER_URL,
@@ -58,6 +72,100 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Overview Google Drive & File Selection States
+  const [activeOverviewFilename, setActiveOverviewFilename] = useState(getSavedOverviewFilename());
+  const [overviewPdCount, setOverviewPdCount] = useState(Object.keys(overviewStatusMap).length);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const [isSyncingDrive, setIsSyncingDrive] = useState(false);
+  const [overviewMessage, setOverviewMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle local file selection (.xlsx, .xls, .json, .csv)
+  const handleOverviewFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessingFile(true);
+    setOverviewMessage(null);
+
+    try {
+      let parsedResult;
+      const ext = file.name.split('.').pop()?.toLowerCase();
+
+      if (ext === 'xlsx' || ext === 'xls') {
+        const buffer = await file.arrayBuffer();
+        parsedResult = parseOverviewExcel(buffer);
+      } else if (ext === 'json') {
+        const text = await file.text();
+        const jsonObj = JSON.parse(text);
+        parsedResult = parseOverviewJson(jsonObj);
+      } else if (ext === 'csv') {
+        const text = await file.text();
+        parsedResult = parseOverviewCsv(text);
+      } else {
+        throw new Error('รองรับเฉพาะไฟล์ .xlsx, .xls, .json หรือ .csv');
+      }
+
+      const pdCount = Object.keys(parsedResult.byPd).length;
+      if (pdCount === 0) {
+        throw new Error(`ไม่พบข้อมูล Production Order ในไฟล์ "${file.name}" กรุณาตรวจสอบแท็บ Data`);
+      }
+
+      saveActiveOverviewData(parsedResult, file.name);
+      setActiveOverviewFilename(file.name);
+      setOverviewPdCount(pdCount);
+      setOverviewMessage({
+        type: 'success',
+        text: `โหลดข้อมูลจากไฟล์ "${file.name}" สำเร็จ (พบ ${pdCount.toLocaleString()} Production Orders)`
+      });
+
+      // Auto refresh data in main App
+      await onRefreshData(sheetUrl.trim(), prodUrl.trim(), qcUrl.trim(), overviewUrl.trim());
+    } catch (err: any) {
+      setOverviewMessage({
+        type: 'error',
+        text: err.message || 'เกิดข้อผิดพลาดในการอ่านไฟล์'
+      });
+    } finally {
+      setIsProcessingFile(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // Handle live cloud sync from Google Drive folder via Apps Script
+  const handleSyncFromDriveFolder = async () => {
+    setIsSyncingDrive(true);
+    setOverviewMessage(null);
+
+    try {
+      const res = await fetchOverviewFromAppsScript();
+      const pdCount = Object.keys(res.byPd).length;
+      if (pdCount === 0) {
+        throw new Error('ไม่พบข้อมูลจาก Google Drive');
+      }
+
+      saveActiveOverviewData(res, res.fileName);
+      setActiveOverviewFilename(res.fileName);
+      setOverviewPdCount(pdCount);
+      setOverviewMessage({
+        type: 'success',
+        text: `ซิงค์สดจาก Google Drive Folder สำเร็จ (${res.fileName}, พบ ${pdCount.toLocaleString()} PDs)`
+      });
+
+      // Refresh data
+      await onRefreshData(sheetUrl.trim(), prodUrl.trim(), qcUrl.trim(), overviewUrl.trim());
+    } catch (err: any) {
+      setOverviewMessage({
+        type: 'error',
+        text: `ไม่สามารถซิงค์สด: ${err.message}`
+      });
+    } finally {
+      setIsSyncingDrive(false);
+    }
+  };
 
   const handleSaveAndSync = async () => {
     setIsSaving(true);
@@ -119,8 +227,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <Database className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-white">การเชื่อมต่อ Google Sheets & Location DWG</h3>
-              <p className="text-xs text-slate-400">ผสาน Check list ส่งมอบ + Record ฝ่ายผลิต + ข้อมูล QC + Status Overview + โฟลเดอร์ DWG (PDF)</p>
+              <h3 className="font-bold text-base text-white">การเชื่อมต่อ Google Sheets, Google Drive & Location DWG</h3>
+              <p className="text-xs text-slate-400">ผสาน Check list ส่งมอบ + Record ฝ่ายผลิต + ข้อมูล QC + Status Overview (Google Drive) + โฟลเดอร์ DWG (PDF)</p>
             </div>
           </div>
           <button 
@@ -140,7 +248,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <span className="text-slate-500">สถานะการเชื่อมต่อ:</span>
               <span className={`font-semibold flex items-center gap-1 ${isLive ? 'text-emerald-600' : 'text-amber-600'}`}>
                 <Link2 className="w-3.5 h-3.5" />
-                {isLive ? 'เชื่อมโยง 4 สเปรดชีตสด + Location DWG อัตโนมัติ' : 'ใช้งานออฟไลน์/แคชสำรองที่เชื่อมโยงแล้ว'}
+                {isLive ? 'เชื่อมโยงข้อมูลสดทั้ง 4 แหล่ง + Location DWG อัตโนมัติ' : 'ใช้งานออฟไลน์/แคชสำรองที่เชื่อมโยงแล้ว'}
               </span>
             </div>
             <div className="flex items-center justify-between">
@@ -241,38 +349,109 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </span>
           </div>
 
-          {/* URL 4 Input: Status Overview */}
-          <div className="space-y-1.5">
+          {/* Section 4: Status Overview from Google Drive Folder */}
+          <div className="p-3.5 rounded-xl border border-amber-200/90 bg-amber-50/40 space-y-2.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                 <span>ไฟล์ที่ 4: ข้อมูล Status Overview ฝ่ายผลิต (Production Order Status)</span>
               </label>
-              {overviewUrl.trim() ? (
-                <a
-                  href={overviewUrl.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[11px] text-amber-600 hover:underline flex items-center gap-0.5"
-                >
-                  <span>เปิดดู</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              ) : (
-                <span className="text-[10px] text-slate-400">ใช้ฐานข้อมูล Overview ล่าสุดในระบบ</span>
-              )}
+              <a
+                href={DEFAULT_OVERVIEW_FOLDER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-semibold text-amber-700 hover:text-amber-900 hover:underline flex items-center gap-1 bg-amber-100 hover:bg-amber-200 px-2 py-0.5 rounded-md transition"
+                title="เปิดโฟลเดอร์ Google Drive ในแท็บใหม่"
+              >
+                <span>เปิดโฟลเดอร์ Google Drive</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
             </div>
 
-            <textarea
-              rows={2}
-              value={overviewUrl}
-              onChange={(e) => setOverviewUrl(e.target.value)}
-              className="w-full p-2.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-amber-500 focus:bg-white"
-              placeholder="https://docs.google.com/spreadsheets/d/.../edit?gid=... (สเปรดชีต Status Overview ฝ่ายผลิต)"
-            />
-            <span className="text-[11px] text-slate-400 block">
-              * หากระบุลิงก์ ระบบจะดึงข้อมูลสถานะฝ่ายผลิตสด เช่น Completed, Active, Planned, Ready to Start
-            </span>
+            <div className="text-[11px] text-slate-600 leading-relaxed">
+              โฟลเดอร์ Google Drive: <a href={DEFAULT_OVERVIEW_FOLDER_URL} target="_blank" rel="noopener noreferrer" className="font-mono text-amber-700 underline font-semibold">staus overview (1Yt8drFmq0END9fAEWUy0No6sZ76H1dtA)</a>
+              <span className="block text-slate-500 text-[10px] mt-0.5">
+                เลือกไฟล์ .xlsx สดประจำสัปดาห์ (เช่น Week 40... หรือ LN Status Overview) จากโฟลเดอร์ Google Drive ด้านบน
+              </span>
+            </div>
+
+            {/* Active Overview Card */}
+            <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-amber-200 shadow-2xs text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600 shrink-0" />
+                <div className="truncate">
+                  <span className="text-slate-400 text-[10px] block">ไฟล์/ฐานข้อมูล Overview ที่ใช้งานอยู่:</span>
+                  <span className="font-bold text-slate-800 truncate block">{activeOverviewFilename}</span>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0 ml-2">
+                {overviewPdCount.toLocaleString()} PDs
+              </span>
+            </div>
+
+            {/* Overview Alerts */}
+            {overviewMessage && (
+              <div className={`p-2.5 rounded-lg text-xs flex items-center gap-2 ${
+                overviewMessage.type === 'success' 
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' 
+                  : 'bg-rose-50 text-rose-800 border border-rose-200'
+              }`}>
+                {overviewMessage.type === 'success' ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                )}
+                <span>{overviewMessage.text}</span>
+              </div>
+            )}
+
+            {/* Action Buttons: Pick File & Cloud Sync */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".xlsx,.xls,.csv,.json"
+                  className="hidden"
+                  onChange={handleOverviewFileSelect}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isProcessingFile}
+                  className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+                  title="เลือกไฟล์ Status Overview (.xlsx / .csv / .json) จากเครื่องหรือ Google Drive"
+                >
+                  <FolderUp className="w-3.5 h-3.5" />
+                  <span>{isProcessingFile ? 'กำลังอ่านไฟล์...' : 'เลือกไฟล์ .xlsx จาก Google Drive'}</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSyncFromDriveFolder}
+                disabled={isSyncingDrive}
+                className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+                title="ซิงค์ข้อมูลล่าสุดจาก Google Drive Folder อัตโนมัติ"
+              >
+                <CloudDownload className={`w-3.5 h-3.5 ${isSyncingDrive ? 'animate-bounce' : ''}`} />
+                <span>{isSyncingDrive ? 'กำลังดึงจาก Google Drive...' : 'ซิงค์สดจาก Google Drive Folder'}</span>
+              </button>
+            </div>
+
+            {/* Alternative: Google Sheet URL Input */}
+            <div className="pt-1.5">
+              <span className="text-[10px] text-slate-500 block mb-1">
+                หรือระบุลิงก์ Google Sheet / ลิงก์ไฟล์ใน Google Drive โดยตรง:
+              </span>
+              <textarea
+                rows={2}
+                value={overviewUrl}
+                onChange={(e) => setOverviewUrl(e.target.value)}
+                className="w-full p-2 text-xs font-mono bg-white border border-slate-200 rounded-lg outline-none focus:border-amber-500 focus:bg-white"
+                placeholder="https://docs.google.com/spreadsheets/d/.../edit?gid=... หรือลิงก์ไฟล์ Google Drive"
+              />
+            </div>
           </div>
 
           {/* URL 5 Input: Location DWG (Google Drive Folder) */}
@@ -329,7 +508,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {saveSuccess && (
             <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 flex items-center gap-2">
               <Check className="w-4 h-4 flex-shrink-0" />
-              <span>เชื่อมต่อและบันทึกข้อมูลทั้ง 4 สเปรดชีตและ Location DWG เรียบร้อยแล้ว!</span>
+              <span>เชื่อมต่อและบันทึกข้อมูลทั้ง 4 แหล่งและ Location DWG เรียบร้อยแล้ว!</span>
             </div>
           )}
         </div>

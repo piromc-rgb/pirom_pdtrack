@@ -41,7 +41,7 @@ def find_latest_status_overview_file():
     if os.path.exists(GDRIVE_DIR):
         print(f"Checking Google Drive folder: {GDRIVE_DIR}")
         for f in os.listdir(GDRIVE_DIR):
-            if f.endswith('.xlsx') and not f.startswith('~$'):
+            if f.endswith('.xlsx') and 'status overview' in f.lower() and not f.startswith('~$'):
                 full_p = os.path.join(GDRIVE_DIR, f)
                 dt = parse_file_date(f, full_p)
                 mtime = os.path.getmtime(full_p)
