@@ -1,7 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { 
-  Search,
-  X,
   RotateCcw, 
   FileText, 
   Hash, 
@@ -25,7 +23,6 @@ import {
 } from 'lucide-react';
 import { SearchCriteria, DeliveryItem } from '../types';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
-import { parseDocRefSearch } from '../utils/searchUtils';
 
 interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
@@ -149,8 +146,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     };
   }, [items]);
 
-  const parsedDocRef = useMemo(() => parseDocRefSearch(searchCriteria.docRef || ''), [searchCriteria.docRef]);
-
   const hasAnyFilter = Boolean(
     (statusFilter && statusFilter !== 'all') ||
     (searchCriteria.workTag && searchCriteria.workTag !== 'all') ||
@@ -268,52 +263,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
           </div>
         </div>
 
-        {/* Middle: ช่องค้นหา Document Ref (ช่องว่างตรงกลาง) */}
-        <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md mx-1 sm:mx-3 min-w-[200px]">
-          <div className="relative flex items-center">
-            <Search className="w-3.5 h-3.5 text-sky-600 absolute left-2.5 pointer-events-none shrink-0" />
-            <input
-              type="text"
-              list="docref-suggestions"
-              value={searchCriteria.docRef || ''}
-              onChange={(e) => updateField('docRef', e.target.value)}
-              placeholder="ค้นหา Document Ref (เช่น 47-9(26-09-77), EN 69-9-47)..."
-              title="กรอกเลขที่ Document Ref เช่น 47-9(26-09-77) หรือ EN 69-9-47"
-              className={`w-full pl-8 py-1.5 text-xs rounded-xl border outline-none transition shadow-2xs ${
-                parsedDocRef.isDocRefPattern ? 'pr-28' : searchCriteria.docRef ? 'pr-7' : 'pr-3'
-              } ${
-                parsedDocRef.isDocRefPattern
-                  ? 'bg-emerald-50/80 border-emerald-400 text-emerald-950 font-bold font-mono'
-                  : searchCriteria.docRef
-                  ? 'bg-sky-50/80 border-sky-400 text-slate-900 font-semibold font-mono'
-                  : 'bg-white hover:bg-slate-50 focus:bg-white border-slate-300 focus:border-sky-500 text-slate-700'
-              }`}
-            />
-            <datalist id="docref-suggestions">
-              {docRefs.slice(0, 100).map((r, i) => (
-                <option key={i} value={r} />
-              ))}
-            </datalist>
-            {parsedDocRef.isDocRefPattern && (
-              <span 
-                className="absolute right-7 px-1.5 py-0.5 text-[9.5px] font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 rounded shadow-2xs pointer-events-none animate-pulse truncate max-w-[100px]"
-                title={`แปลงเป็น: ${parsedDocRef.docRef}`}
-              >
-                → {parsedDocRef.docRef}
-              </span>
-            )}
-            {searchCriteria.docRef && (
-              <button
-                onClick={() => updateField('docRef', '')}
-                className="absolute right-2 text-slate-400 hover:text-slate-600 cursor-pointer p-0.5 rounded-full hover:bg-slate-200/60 transition"
-                title="ล้างข้อความ"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-        </div>
-
         {/* Right: ปุ่มเครื่องมือ + ปุ่มเปิด/พับตัวกรอง + Reset (บรรทัดเดียวกัน) */}
         <div className="flex items-center gap-1.5 flex-nowrap shrink-0 ml-auto">
           {actions}
@@ -365,7 +314,29 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {!isCollapsed && (
         <div className="px-3.5 sm:px-4 py-2.5 bg-white">
           <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 xl:grid-cols-10 gap-2 items-end">
-            {/* 1. Document Ref (Dropdown) */}
+            {/* 1. แผนกที่แจ้ง (Dropdown) */}
+            <div className="space-y-1 min-w-0">
+              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
+                <Briefcase className="w-3 h-3 text-amber-600 shrink-0" />
+                <span className="truncate">แผนกที่แจ้ง</span>
+              </label>
+              <select
+                value={searchCriteria.requestDept || ''}
+                onChange={(e) => updateField('requestDept', e.target.value)}
+                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer ${
+                  searchCriteria.requestDept
+                    ? 'bg-amber-50 text-amber-900 border-amber-400 font-bold'
+                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
+                }`}
+              >
+                <option value="">ทุกแผนก ({requestDepts.length})</option>
+                {requestDepts.map((d, i) => (
+                  <option key={i} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* 2. Document Ref (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <FileText className="w-3 h-3 text-sky-600 shrink-0" />
@@ -387,7 +358,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 2. ช่วงเวลาแผนส่งมอบ (Dropdown) */}
+            {/* 3. ช่วงเวลาแผนส่งมอบ (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <AlertTriangle className="w-3 h-3 text-rose-500 shrink-0" />
@@ -523,7 +494,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 8. ประเภท (Dropdown) */}
+            {/* 9. ประเภท (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Tag className="w-3 h-3 text-emerald-600 shrink-0" />
@@ -541,28 +512,6 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 <option value="">ทุกประเภท ({docTypes.length})</option>
                 {docTypes.map((t, i) => (
                   <option key={i} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* 9. แผนกที่แจ้ง (Dropdown) */}
-            <div className="space-y-1 min-w-0">
-              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
-                <Briefcase className="w-3 h-3 text-amber-600 shrink-0" />
-                <span className="truncate">แผนกที่แจ้ง</span>
-              </label>
-              <select
-                value={searchCriteria.requestDept || ''}
-                onChange={(e) => updateField('requestDept', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer ${
-                  searchCriteria.requestDept
-                    ? 'bg-amber-50 text-amber-900 border-amber-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="">ทุกแผนก ({requestDepts.length})</option>
-                {requestDepts.map((d, i) => (
-                  <option key={i} value={d}>{d}</option>
                 ))}
               </select>
             </div>
