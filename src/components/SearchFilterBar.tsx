@@ -364,13 +364,10 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     if (searchCriteria.dateWindow && searchCriteria.dateWindow !== 'all') count++;
     if (searchCriteria.docRef) count++;
     if (searchCriteria.projectCode) count++;
-    if (searchCriteria.projectName) count++;
     if (searchCriteria.docType) count++;
     if (searchCriteria.machineName) count++;
     if (searchCriteria.requestDept) count++;
     if (searchCriteria.actionTopic) count++;
-    if (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') count++;
-    if (searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all') count++;
     if (searchCriteria.operationStatus && searchCriteria.operationStatus !== 'all') count++;
     return count;
   }, [searchCriteria, statusFilter]);
@@ -476,7 +473,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {/* แถวที่ 2: หัวข้อการกรองเรียงเป็นแนวบรรทัดเดียว และแต่ละหัวข้อเป็น Dropdown เลือก */}
       {!isCollapsed && (
         <div className="px-3.5 sm:px-4 py-2.5 bg-white rounded-b-2xl">
-          <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 xl:grid-cols-10 gap-2 items-end">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 xl:grid-cols-7 gap-2 items-end">
             {/* 1. เลขที่เอกสาร 04 (Key ค้นหาได้ + เลือกจาก Dropdown ได้) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
@@ -561,77 +558,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 5. สถานะ Overview (Dropdown) */}
-            <div className="space-y-1 min-w-0">
-              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
-                <TrendingUp className="w-3 h-3 text-blue-600 shrink-0" />
-                <span className="truncate">สถานะ Overview</span>
-              </label>
-              <select
-                value={searchCriteria.overviewStatus || 'all'}
-                onChange={(e) => updateField('overviewStatus', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer ${
-                  searchCriteria.overviewStatus && searchCriteria.overviewStatus !== 'all'
-                    ? 'bg-blue-50 text-blue-900 border-blue-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="all">ทุกสถานะ ({overviewCounts.all})</option>
-                <option value="Active">⚡ Active ({overviewCounts.Active})</option>
-                <option value="Planned">📅 Planned ({overviewCounts.Planned})</option>
-                <option value="Ready to Start">🕒 Ready to Start ({overviewCounts['Ready to Start']})</option>
-                <option value="Completed">✓ เสร็จแล้ว ({overviewCounts.Completed}/{overviewCounts.all} - {pendingStats.pdPercentText})</option>
-                <option value="none">ไม่มีสถานะ ({overviewCounts.none})</option>
-              </select>
-            </div>
-
-            {/* 6. สถานะ QC (Dropdown) */}
-            <div className="space-y-1 min-w-0">
-              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-                <span className="truncate">สถานะ QC</span>
-              </label>
-              <select
-                value={searchCriteria.qcStatus || 'all'}
-                onChange={(e) => updateField('qcStatus', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer ${
-                  searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all'
-                    ? 'bg-emerald-50 text-emerald-900 border-emerald-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="all">ทั้งหมด</option>
-                <option value="prd">คลัง PRD</option>
-                <option value="semi">คลัง SEMI</option>
-                <option value="not_in_warehouse">ยังไม่ส่งเข้าคลัง</option>
-                <option value="passed">✓ ผ่าน QC (คลัง PRD / SEMI)</option>
-                <option value="pending">ยังไม่ส่งเข้าคลัง / ยังไม่ตรวจ</option>
-              </select>
-            </div>
-
-            {/* 7. ชื่อโครงการ (Dropdown) */}
-            <div className="space-y-1 min-w-0">
-              <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
-                <Building2 className="w-3 h-3 text-blue-600 shrink-0" />
-                <span className="truncate">ชื่อโครงการ</span>
-              </label>
-              <select
-                value={searchCriteria.projectName || ''}
-                onChange={(e) => updateField('projectName', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer ${
-                  searchCriteria.projectName
-                    ? 'bg-blue-50 text-blue-900 border-blue-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="">ทุกโครงการ ({projectNames.length})</option>
-                {projectNames.map((n, i) => (
-                  <option key={i} value={n}>{n}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* 8. เลขที่โครงการ (Key ค้นหาได้ + เลือกจาก Dropdown ได้) */}
+            {/* 5. เลขที่โครงการ (Key ค้นหาได้ + เลือกจาก Dropdown ได้) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Hash className="w-3 h-3 text-indigo-600 shrink-0" />
@@ -649,7 +576,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               />
             </div>
 
-            {/* 9. ประเภท (Dropdown) */}
+            {/* 6. ประเภท (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Tag className="w-3 h-3 text-emerald-600 shrink-0" />
@@ -671,7 +598,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 10. สาเหตุสั่งผลิต (Dropdown) */}
+            {/* 7. สาเหตุสั่งผลิต (Dropdown) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <SlidersHorizontal className="w-3 h-3 text-teal-600 shrink-0" />
