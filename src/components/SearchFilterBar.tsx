@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { 
   RotateCcw, 
   FileText, 
@@ -19,10 +19,171 @@ import {
   SlidersHorizontal,
   Eye,
   EyeOff,
-  Clock
+  Clock,
+  X
 } from 'lucide-react';
 import { SearchCriteria, DeliveryItem } from '../types';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
+
+interface SearchableComboboxProps {
+  value: string;
+  onChange: (val: string) => void;
+  options: string[];
+  placeholder?: string;
+  allLabel?: string;
+  activeColorClass?: string;
+  fontMono?: boolean;
+}
+
+const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
+  value,
+  onChange,
+  options,
+  placeholder = 'ค้นหา...',
+  allLabel = 'ทุกรหัส',
+  activeColorClass = 'bg-indigo-50 text-indigo-900 border-indigo-400 font-bold',
+  fontMono = true,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // ปิดรายการเมื่อคลิกนอกพื้นที่
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // กรองตัวเลือกตามข้อความที่พิมพ์
+  const filteredOptions = useMemo(() => {
+    if (!value) return options;
+    const term = value.toLowerCase().trim();
+    return options.filter(opt => opt.toLowerCase().includes(term));
+  }, [options, value]);
+
+  const handleSelect = (selectedVal: string) => {
+    onChange(selectedVal);
+    setIsOpen(false);
+  };
+
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange('');
+    setIsOpen(true);
+    inputRef.current?.focus();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    } else if (e.key === 'Enter') {
+      if (filteredOptions.length > 0) {
+        handleSelect(filteredOptions[0]);
+      } else {
+        setIsOpen(false);
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (!isOpen) setIsOpen(true);
+    }
+  };
+
+  return (
+    <div ref={containerRef} className="relative w-full">
+      <div className="relative flex items-center">
+        <input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value);
+            if (!isOpen) setIsOpen(true);
+          }}
+          onFocus={() => setIsOpen(true)}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder}
+          title="พิมพ์เพื่อค้นหา หรือคลิกเพื่อเลือกจากรายการ"
+          className={`w-full pl-2 pr-12 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-text ${
+            fontMono ? 'font-mono' : ''
+          } ${
+            value
+              ? activeColorClass
+              : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
+          }`}
+        />
+        <div className="absolute right-1 flex items-center gap-0.5">
+          {value && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="p-1 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-200/60 transition cursor-pointer"
+              title="ล้างข้อความ"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              setIsOpen(prev => !prev);
+              if (!isOpen) inputRef.current?.focus();
+            }}
+            className="p-1 text-slate-400 hover:text-slate-600 transition cursor-pointer"
+            tabIndex={-1}
+            title={isOpen ? 'ปิดรายการ' : 'เปิดรายการ'}
+          >
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${isOpen ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+      </div>
+
+      {/* Floating Dropdown List */}
+      {isOpen && (
+        <div className="absolute right-0 top-full mt-1 w-full min-w-[200px] max-h-60 overflow-y-auto bg-white rounded-lg border border-slate-200 shadow-xl z-50 py-1 text-xs animate-in fade-in duration-100">
+          <div
+            onClick={() => handleSelect('')}
+            className={`px-2.5 py-1.5 cursor-pointer hover:bg-indigo-50 transition flex items-center justify-between text-slate-700 ${
+              !value ? 'bg-indigo-50/70 font-bold text-indigo-700' : ''
+            }`}
+          >
+            <span>{allLabel} ({options.length})</span>
+            {!value && <Check className="w-3 h-3 text-indigo-600 shrink-0" />}
+          </div>
+
+          <div className="h-px bg-slate-100 my-1" />
+
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map((opt, i) => {
+              const isSelected = value.trim().toLowerCase() === opt.toLowerCase();
+              return (
+                <div
+                  key={i}
+                  onClick={() => handleSelect(opt)}
+                  className={`px-2.5 py-1.5 cursor-pointer hover:bg-indigo-50 transition flex items-center justify-between ${
+                    fontMono ? 'font-mono' : ''
+                  } ${
+                    isSelected ? 'bg-indigo-50 font-bold text-indigo-900' : 'text-slate-700'
+                  }`}
+                >
+                  <span className="truncate">{opt}</span>
+                  {isSelected && <Check className="w-3 h-3 text-indigo-600 shrink-0 ml-1.5" />}
+                </div>
+              );
+            })
+          ) : (
+            <div className="px-2.5 py-2 text-center text-slate-400 text-[11px] italic">
+              ไม่พบรหัสที่ตรงกับ "{value}"
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
@@ -222,9 +383,9 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   const currentWorkTag = searchCriteria.workTag || 'all';
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden divide-y divide-slate-200/80 animate-in fade-in duration-150">
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-sm divide-y divide-slate-200/80 animate-in fade-in duration-150">
       {/* แถวที่ 1: มุมมองการดู (Dropdown และเรียงเป็นบรรทัดเดียวกันทั้งหมด) */}
-      <div className="px-3.5 sm:px-4 py-2 bg-slate-50/80 flex items-center justify-between gap-2 flex-nowrap overflow-x-auto whitespace-nowrap">
+      <div className="px-3.5 sm:px-4 py-2 bg-slate-50/80 rounded-t-2xl flex items-center justify-between gap-2 flex-nowrap overflow-x-auto whitespace-nowrap">
         {/* Left: มุมมองการดู (Dropdowns) */}
         <div className="flex items-center gap-2 flex-nowrap shrink-0">
           <span className="text-xs font-bold text-slate-700 flex items-center gap-1 select-none shrink-0">
@@ -312,7 +473,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
 
       {/* แถวที่ 2: หัวข้อการกรองเรียงเป็นแนวบรรทัดเดียว และแต่ละหัวข้อเป็น Dropdown เลือก */}
       {!isCollapsed && (
-        <div className="px-3.5 sm:px-4 py-2.5 bg-white">
+        <div className="px-3.5 sm:px-4 py-2.5 bg-white rounded-b-2xl">
           <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 xl:grid-cols-10 gap-2 items-end">
             {/* 1. เลขที่เอกสาร 04 (Dropdown) */}
             <div className="space-y-1 min-w-0">
@@ -472,26 +633,21 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               </select>
             </div>
 
-            {/* 8. เลขที่โครงการ (Dropdown) */}
+            {/* 8. เลขที่โครงการ (Key ค้นหาได้ + เลือกจาก Dropdown ได้) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Hash className="w-3 h-3 text-indigo-600 shrink-0" />
                 <span className="truncate">เลขที่โครงการ</span>
               </label>
-              <select
+              <SearchableCombobox
                 value={searchCriteria.projectCode || ''}
-                onChange={(e) => updateField('projectCode', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer font-mono ${
-                  searchCriteria.projectCode
-                    ? 'bg-indigo-50 text-indigo-900 border-indigo-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="">ทุกรหัส ({projectCodes.length})</option>
-                {projectCodes.map((c, i) => (
-                  <option key={i} value={c}>{c}</option>
-                ))}
-              </select>
+                onChange={(val) => updateField('projectCode', val)}
+                options={projectCodes}
+                placeholder={`ทุกรหัส (${projectCodes.length})`}
+                allLabel="ทุกรหัส"
+                activeColorClass="bg-indigo-50 text-indigo-900 border-indigo-400 font-bold"
+                fontMono={true}
+              />
             </div>
 
             {/* 9. ประเภท (Dropdown) */}
