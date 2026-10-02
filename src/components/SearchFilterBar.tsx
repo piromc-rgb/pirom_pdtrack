@@ -33,6 +33,7 @@ interface SearchableComboboxProps {
   allLabel?: string;
   activeColorClass?: string;
   fontMono?: boolean;
+  dropdownAlign?: 'left' | 'right';
 }
 
 const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
@@ -43,6 +44,7 @@ const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
   allLabel = 'ทุกรหัส',
   activeColorClass = 'bg-indigo-50 text-indigo-900 border-indigo-400 font-bold',
   fontMono = true,
+  dropdownAlign = 'left',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -143,11 +145,11 @@ const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
 
       {/* Floating Dropdown List */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-full min-w-[200px] max-h-60 overflow-y-auto bg-white rounded-lg border border-slate-200 shadow-xl z-50 py-1 text-xs animate-in fade-in duration-100">
+        <div className={`absolute ${dropdownAlign === 'right' ? 'right-0' : 'left-0'} top-full mt-1 w-full min-w-[200px] max-h-60 overflow-y-auto bg-white rounded-lg border border-slate-200 shadow-xl z-50 py-1 text-xs animate-in fade-in duration-100`}>
           <div
             onClick={() => handleSelect('')}
-            className={`px-2.5 py-1.5 cursor-pointer hover:bg-indigo-50 transition flex items-center justify-between text-slate-700 ${
-              !value ? 'bg-indigo-50/70 font-bold text-indigo-700' : ''
+            className={`px-2.5 py-1.5 cursor-pointer hover:bg-slate-100 transition flex items-center justify-between text-slate-700 ${
+              !value ? 'bg-slate-100/80 font-bold text-slate-900' : ''
             }`}
           >
             <span>{allLabel} ({options.length})</span>
@@ -163,14 +165,14 @@ const SearchableCombobox: React.FC<SearchableComboboxProps> = ({
                 <div
                   key={i}
                   onClick={() => handleSelect(opt)}
-                  className={`px-2.5 py-1.5 cursor-pointer hover:bg-indigo-50 transition flex items-center justify-between ${
+                  className={`px-2.5 py-1.5 cursor-pointer hover:bg-slate-100 transition flex items-center justify-between ${
                     fontMono ? 'font-mono' : ''
                   } ${
-                    isSelected ? 'bg-indigo-50 font-bold text-indigo-900' : 'text-slate-700'
+                    isSelected ? 'bg-slate-100 font-bold text-slate-900' : 'text-slate-700'
                   }`}
                 >
                   <span className="truncate">{opt}</span>
-                  {isSelected && <Check className="w-3 h-3 text-indigo-600 shrink-0 ml-1.5" />}
+                  {isSelected && <Check className="w-3 h-3 text-slate-700 shrink-0 ml-1.5" />}
                 </div>
               );
             })
@@ -475,26 +477,22 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
       {!isCollapsed && (
         <div className="px-3.5 sm:px-4 py-2.5 bg-white rounded-b-2xl">
           <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-5 xl:grid-cols-10 gap-2 items-end">
-            {/* 1. เลขที่เอกสาร 04 (Dropdown) */}
+            {/* 1. เลขที่เอกสาร 04 (Key ค้นหาได้ + เลือกจาก Dropdown ได้) */}
             <div className="space-y-1 min-w-0">
               <label className="text-[10px] font-bold text-slate-600 flex items-center gap-1 truncate">
                 <Cpu className="w-3 h-3 text-purple-600 shrink-0" />
                 <span className="truncate">เลขที่เอกสาร 04</span>
               </label>
-              <select
+              <SearchableCombobox
                 value={searchCriteria.machineName || ''}
-                onChange={(e) => updateField('machineName', e.target.value)}
-                className={`w-full px-2 py-1.5 rounded-lg border text-xs outline-none transition truncate cursor-pointer font-mono ${
-                  searchCriteria.machineName
-                    ? 'bg-purple-50 text-purple-900 border-purple-400 font-bold'
-                    : 'bg-slate-50 hover:bg-slate-100/70 text-slate-700 border-slate-200 font-medium'
-                }`}
-              >
-                <option value="">ทุกเอกสาร 04 ({machineNames.length})</option>
-                {machineNames.map((m, i) => (
-                  <option key={i} value={m}>{m}</option>
-                ))}
-              </select>
+                onChange={(val) => updateField('machineName', val)}
+                options={machineNames}
+                placeholder={`ทุกเอกสาร 04 (${machineNames.length})`}
+                allLabel="ทุกเอกสาร 04"
+                activeColorClass="bg-purple-50 text-purple-900 border-purple-400 font-bold"
+                fontMono={true}
+                dropdownAlign="left"
+              />
             </div>
 
             {/* 2. แผนกที่แจ้ง (Dropdown) */}
@@ -647,6 +645,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 allLabel="ทุกรหัส"
                 activeColorClass="bg-indigo-50 text-indigo-900 border-indigo-400 font-bold"
                 fontMono={true}
+                dropdownAlign="right"
               />
             </div>
 
