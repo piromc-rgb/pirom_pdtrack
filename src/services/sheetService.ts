@@ -891,11 +891,11 @@ export function parseDeliveryCsvWithProduction(
   const headers = rows[0].map(h => h.trim().replace(/\n/g, ' '));
   const findCol = (keywords: string[]) => headers.findIndex(h => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
 
-  const docRefIdx = findCol(['Document number', 'Reference', 'เอกสาร']);
+  const docRefIdx = findCol(['Document number', 'Document Reference', 'Doc Ref', 'Reference']);
   const projCodeIdx = findCol(['เลขที่โครงการ', 'Project No']);
   const projNameIdx = findCol(['ชื่อโครงการ', 'Project Name']);
   const docTypeIdx = findCol(['ประเภท', 'Doc Type']);
-  const machineIdx = findCol(['ชื่อเครื่องจักร', 'Machine Name', 'Machine']);
+  const machineIdx = findCol(['เลขที่เอกสาร 04', 'เอกสาร 04', 'ชื่อเครื่องจักร', 'Machine Name', 'Machine']);
   const itemCodeIdx = findCol(['เลขที่ Item', 'Item Code', 'Item No']);
   const itemNameIdx = findCol(['ชื่อ Item', 'Item Name', 'รายการ']);
   const qtyIdx = findCol(['จำนวน', 'Qty', 'Quantity']);
@@ -953,7 +953,7 @@ export function parseDeliveryCsvWithProduction(
     const rawStatus = getVal(statusIdx !== -1 ? statusIdx : 19);
     const closed = closedIdx !== -1 ? getVal(closedIdx) : '';
 
-    const machineName = rawMachine || '(ไม่ระบุเครื่องจักร)';
+    const machineName = rawMachine || '(ไม่ระบุเอกสาร 04)';
     const targetLatest = rawTargetLatest || target5 || target4 || target3 || target2 || target1;
 
     let qty = 1;
@@ -1157,7 +1157,7 @@ export function parseProjectItemsFromProductionCsv(
     const remark = sheet2RemarkIdx !== -1 ? getVal(sheet2RemarkIdx) : getVal(24);
     const closed = sheet2ClosedIdx !== -1 ? getVal(sheet2ClosedIdx) : getVal(26);
 
-    const machineName = rawMachine || '(ไม่ระบุเครื่องจักร)';
+    const machineName = rawMachine || '(ไม่ระบุเอกสาร 04)';
     const dedupKey = `${norm(docRef)}|${norm(machineName)}|${norm(itemCode)}`;
     if (existingServiceKeys.has(dedupKey)) continue;
 
@@ -1332,6 +1332,7 @@ function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'
 
   return {
     ...item,
+    machineName: (!item.machineName || item.machineName === '(ไม่ระบุเครื่องจักร)') ? '(ไม่ระบุเอกสาร 04)' : item.machineName,
     workTag: item.workTag || defaultTag,
     status: (isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ') as 'ส่งแล้ว' | 'รอดำเนินการ',
     remark: finalRemark,
@@ -1582,7 +1583,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
   const machineMap = new Map<string, DeliveryItem[]>();
 
   for (const item of items) {
-    const key = item.machineName || '(ไม่ระบุเครื่องจักร)';
+    const key = (!item.machineName || item.machineName === '(ไม่ระบุเครื่องจักร)') ? '(ไม่ระบุเอกสาร 04)' : item.machineName;
     if (!machineMap.has(key)) {
       machineMap.set(key, []);
     }
@@ -1684,7 +1685,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
 
     summaries.push({
       name,
-      hasMachine: name !== '(ไม่ระบุเครื่องจักร)',
+      hasMachine: name !== '(ไม่ระบุเครื่องจักร)' && name !== '(ไม่ระบุเอกสาร 04)',
       totalItems,
       deliveredItems,
       completedOrQcItems,
@@ -1710,8 +1711,8 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
   }
 
   summaries.sort((a, b) => {
-    if (a.name === '(ไม่ระบุเครื่องจักร)') return 1;
-    if (b.name === '(ไม่ระบุเครื่องจักร)') return -1;
+    if (a.name === '(ไม่ระบุเครื่องจักร)' || a.name === '(ไม่ระบุเอกสาร 04)') return 1;
+    if (b.name === '(ไม่ระบุเครื่องจักร)' || b.name === '(ไม่ระบุเอกสาร 04)') return -1;
     if (a.overdueItems > 0 && b.overdueItems === 0) return -1;
     if (b.overdueItems > 0 && a.overdueItems === 0) return 1;
     if (a.progressPercent !== b.progressPercent) return a.progressPercent - b.progressPercent;

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, parseDate, isDateOverdue } from '../utils/dateUtils';
-import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface DeliveryTimelineProps {
@@ -48,8 +48,8 @@ export const DeliveryTimeline: React.FC<DeliveryTimelineProps> = ({
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return;
       // 4. Document Type filter
       if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase().trim())) return;
-      // 5. Machine Name filter
-      if (searchCriteria.machineName && !item.machineName.toLowerCase().includes(searchCriteria.machineName.toLowerCase().trim())) return;
+      // 5. Machine Name filter (เลขที่เอกสาร 04)
+      if (searchCriteria.machineName && !matchMachineFilter(item.machineName, searchCriteria.machineName)) return;
 
       // Status Filter
       if (filterType === 'pending' && item.status === 'ส่งแล้ว') return;

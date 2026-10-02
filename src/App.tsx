@@ -21,7 +21,7 @@ import {
   getQcWarehouseStatus
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
-import { matchItemWithQuickSearch, matchDocRefFilter } from './utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from './utils/searchUtils';
 import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
 import { 
   AlertCircle, 
@@ -134,7 +134,7 @@ export function App() {
       if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
       if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase().trim())) return false;
-      if (searchCriteria.machineName && !item.machineName.toLowerCase().includes(searchCriteria.machineName.toLowerCase().trim())) return false;
+      if (searchCriteria.machineName && !matchMachineFilter(item.machineName, searchCriteria.machineName)) return false;
       if (searchCriteria.requestDept && (!item.requestDept || !item.requestDept.toLowerCase().includes(searchCriteria.requestDept.toLowerCase().trim()))) return false;
       if (searchCriteria.actionTopic && (!item.actionTopic || !item.actionTopic.toLowerCase().includes(searchCriteria.actionTopic.toLowerCase().trim()))) return false;
       if (searchCriteria.qcStatus && searchCriteria.qcStatus !== 'all') {

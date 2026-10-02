@@ -82,7 +82,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
   // Export to CSV
   const handleExportCsv = () => {
     const headers = [
-      'ชื่อเครื่องจักร',
+      'เลขที่เอกสาร 04',
       'เลขที่ Item',
       'ชื่อ Item',
       'จำนวน',
@@ -150,7 +150,7 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
                 <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                  เครื่องจักร: {machine.name}
+                  เอกสาร: {machine.name === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : machine.name}
                 </h2>
                 {(machine.workTags || ['Service']).map(tag => (
                   <span

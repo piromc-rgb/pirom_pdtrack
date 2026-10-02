@@ -153,3 +153,23 @@ export function matchDocRefFilter(itemDocRef: string | undefined | null, searchD
   return cleanItem.includes(cleanRaw) || (itemDocRef || '').toLowerCase().includes(raw.toLowerCase());
 }
 
+/**
+ * Checks if a DeliveryItem's machineName (เลขที่เอกสาร 04) matches the search criteria,
+ * handling interchangeably '(ไม่ระบุเอกสาร 04)' and '(ไม่ระบุเครื่องจักร)'.
+ */
+export function matchMachineFilter(itemMachine: string | undefined | null, searchMachine: string | undefined | null): boolean {
+  if (!searchMachine) return true;
+  const term = searchMachine.trim().toLowerCase();
+  if (!term) return true;
+
+  const itemMach = (itemMachine || '').toLowerCase();
+  if (itemMach.includes(term)) return true;
+
+  // Interchangeable '(ไม่ระบุเอกสาร 04)' and '(ไม่ระบุเครื่องจักร)'
+  const isSearchUnspecified = term.includes('ไม่ระบุ');
+  const isItemUnspecified = !itemMach || itemMach.includes('ไม่ระบุ');
+  if (isSearchUnspecified && isItemUnspecified) return true;
+
+  return false;
+}
+

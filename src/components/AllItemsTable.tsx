@@ -17,8 +17,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
-import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
-import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
 interface AllItemsTableProps {
@@ -71,10 +70,9 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
         if (!item.docType.toLowerCase().includes(term)) return false;
       }
 
-      // 5. Machine Name filter
-      if (searchCriteria.machineName) {
-        const term = searchCriteria.machineName.toLowerCase().trim();
-        if (!item.machineName.toLowerCase().includes(term)) return false;
+      // 5. Machine Name filter (เลขที่เอกสาร 04)
+      if (searchCriteria.machineName && !matchMachineFilter(item.machineName, searchCriteria.machineName)) {
+        return false;
       }
 
       // 6. Request Dept filter (from File 2)
@@ -162,7 +160,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
       'เลขที่โครงการ',
       'ชื่อโครงการ',
       'ประเภท',
-      'ชื่อเครื่องจักร',
+      'เลขที่เอกสาร 04',
       'เลขที่ Item',
       'ชื่อ Item',
       'จำนวน',
@@ -287,7 +285,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
               <tr>
                 <th className="py-3 px-3">ลำดับ</th>
                 <th className="py-3 px-3 min-w-[110px]">Doc Number Ref</th>
-                <th className="py-3 px-3 min-w-[130px]">ชื่อเครื่องจักร (ดัชนี)</th>
+                <th className="py-3 px-3 min-w-[130px]">เลขที่เอกสาร 04</th>
                 <th className="py-3 px-3">เลขที่ Item</th>
                 <th className="py-3 px-3 min-w-[180px]">ชื่อ Item / อะไหล่</th>
                 <th className="py-3 px-3 text-center">จำนวน</th>
@@ -336,7 +334,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                         className="font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center gap-1"
                       >
                         <Cpu className="w-3.5 h-3.5 text-sky-500" />
-                        <span>{item.machineName}</span>
+                        <span>{item.machineName === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : item.machineName}</span>
                       </button>
                       <div className="text-[10px] text-slate-400 leading-snug" title={item.projectName}>
                         {item.projectName}

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { MachineSummary, SearchCriteria } from '../types';
 import { MachineCard } from './MachineCard';
-import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from '../utils/searchUtils';
 
 interface MachineGridProps {
   machines: MachineSummary[];
@@ -50,10 +50,9 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
         return false;
       }
 
-      // 1. Machine Name Filter (ชื่อเครื่องจักร)
-      if (searchCriteria.machineName) {
-        const term = searchCriteria.machineName.toLowerCase().trim();
-        if (!machine.name.toLowerCase().includes(term)) return false;
+      // 1. Machine Name Filter (เลขที่เอกสาร 04)
+      if (searchCriteria.machineName && !matchMachineFilter(machine.name, searchCriteria.machineName)) {
+        return false;
       }
 
       // 2. Document number Reference Filter (Document number Reference)
@@ -245,7 +244,7 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
               <option value="progress-asc">% ความคืบหน้าน้อยสุด</option>
               <option value="progress-desc">% ความคืบหน้ามากสุด</option>
               <option value="items-desc">จำนวนชิ้นส่วนมากสุด</option>
-              <option value="name">ชื่อเครื่องจักร (A-Z)</option>
+              <option value="name">เลขที่เอกสาร 04 (A-Z)</option>
             </select>
           </div>
 
@@ -305,7 +304,7 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>
-                  <th className="py-3 px-4">ชื่อเครื่องจักร</th>
+                  <th className="py-3 px-4">เลขที่เอกสาร 04</th>
                   <th className="py-3 px-4">โครงการ</th>
                   <th className="py-3 px-4 text-center">ความคืบหน้า</th>
                   <th className="py-3 px-4 text-center">เสร็จ/ผ่าน QC</th>
@@ -328,7 +327,7 @@ export const MachineGrid: React.FC<MachineGridProps> = ({
                       <td className="py-3.5 px-4 font-bold text-slate-900">
                         <div className="flex items-center gap-2 flex-wrap">
                           <Cpu className={`w-4 h-4 ${hasOverdue ? 'text-rose-500' : isCompleted ? 'text-emerald-500' : 'text-sky-500'}`} />
-                          <span>{machine.name}</span>
+                          <span>{machine.name === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : machine.name}</span>
                           {(machine.workTags || ['Service']).map(tag => (
                             <span
                               key={tag}

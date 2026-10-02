@@ -68,7 +68,7 @@ export const MachineCard: React.FC<MachineCardProps> = ({ machine, onSelect }) =
             <div>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <h3 className="font-bold text-base text-slate-900 group-hover:text-sky-600 transition flex items-center gap-1.5">
-                  {machine.name}
+                  {machine.name === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : machine.name}
                 </h3>
                 {(machine.workTags || ['Service']).map(tag => (
                   <span

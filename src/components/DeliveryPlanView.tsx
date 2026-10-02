@@ -34,7 +34,7 @@ import {
   extractCustomer 
 } from '../utils/dateUtils';
 import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
-import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens, refreshDwgIndex } from '../utils/pdfFinder';
 import { DeliveryPlanPrintModal } from './DeliveryPlanPrintModal';
 
@@ -120,7 +120,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       if (searchCriteria.projectCode && !item.projectCode.toLowerCase().includes(searchCriteria.projectCode.toLowerCase().trim())) return false;
       if (searchCriteria.projectName && !item.projectName.toLowerCase().includes(searchCriteria.projectName.toLowerCase().trim())) return false;
       if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase().trim())) return false;
-      if (searchCriteria.machineName && !item.machineName.toLowerCase().includes(searchCriteria.machineName.toLowerCase().trim())) return false;
+      if (searchCriteria.machineName && !matchMachineFilter(item.machineName, searchCriteria.machineName)) return false;
       if (searchCriteria.requestDept && (!item.requestDept || !item.requestDept.toLowerCase().includes(searchCriteria.requestDept.toLowerCase().trim()))) return false;
       if (searchCriteria.actionTopic && (!item.actionTopic || !item.actionTopic.toLowerCase().includes(searchCriteria.actionTopic.toLowerCase().trim()))) return false;
       if (searchCriteria.qcStatus === 'passed' && !item.isQcPassed) return false;
@@ -270,7 +270,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       'แผนวันที่ส่งมอบ',
       'TAG',
       'สถานะกำหนดส่ง',
-      'ชื่อเครื่องจักร',
+      'เลขที่เอกสาร 04',
       'เลขที่ Item',
       'ชื่อ Item / รายละเอียด',
       'จำนวน (Qty)',
@@ -523,7 +523,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                         <tr>
                           <th className="py-2.5 px-3 w-10 text-center">#</th>
                           <th className="py-2.5 px-3 min-w-[130px]">ลูกค้า / โครงการ</th>
-                          <th className="py-2.5 px-3 min-w-[120px]">ชื่อเครื่องจักร</th>
+                          <th className="py-2.5 px-3 min-w-[120px]">เลขที่เอกสาร 04</th>
                           <th className="py-2.5 px-3 w-[calc(14ch+24px)] min-w-[calc(14ch+24px)] font-mono">เลขที่ Item</th>
                           <th className="py-2.5 px-3 min-w-[200px]">ชื่อชิ้นงาน / รายละเอียด</th>
                           <th className="py-2.5 px-3 text-center w-16">จำนวน</th>
@@ -587,7 +587,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   className="font-bold text-sky-700 hover:text-sky-900 hover:underline flex items-center gap-1 text-left cursor-pointer"
                                 >
                                   <Cpu className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                                  <span>{item.machineName}</span>
+                                  <span>{item.machineName === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : item.machineName}</span>
                                 </button>
                                 <div className="text-[10px] text-slate-400 leading-snug" title={item.projectName}>
                                   {item.projectName}

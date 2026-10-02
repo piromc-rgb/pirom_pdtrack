@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { parseDate, formatThaiDate, formatThaiDayOfWeek, extractCustomer } from '../utils/dateUtils';
-import { matchItemWithQuickSearch, matchDocRefFilter } from '../utils/searchUtils';
+import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from '../utils/searchUtils';
 import { isOverviewCompletedOrClosed } from '../services/sheetService';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
 
@@ -126,7 +126,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
         if (searchCriteria.docType && !item.docType.toLowerCase().includes(searchCriteria.docType.toLowerCase())) {
           return false;
         }
-        if (searchCriteria.machineName && !item.machineName.toLowerCase().includes(searchCriteria.machineName.toLowerCase())) {
+        if (searchCriteria.machineName && !matchMachineFilter(item.machineName, searchCriteria.machineName)) {
           return false;
         }
         if (searchCriteria.requestDept && !(item.requestDept || '').toLowerCase().includes(searchCriteria.requestDept.toLowerCase())) {
