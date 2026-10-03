@@ -19,6 +19,7 @@ import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { formatThaiDate, formatCompactDate } from '../utils/dateUtils';
 import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from '../utils/searchUtils';
 import { searchAndOpenItemPdf, formatItemCodeWithHyphens } from '../utils/pdfFinder';
+import { isOverviewCompletedOrClosed, getQcWarehouseStatus } from '../services/sheetService';
 
 interface AllItemsTableProps {
   items: DeliveryItem[];
@@ -285,7 +286,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
               <tr>
                 <th className="py-3 px-3">ลำดับ</th>
                 <th className="py-3 px-3 min-w-[110px]">Doc Number Ref</th>
-                <th className="py-3 px-3 min-w-[130px]">เลขที่เอกสาร 04</th>
+                <th className="py-3 px-3 min-w-[130px]">เลขที่เอกสาร 04 / หัวข้อแจ้งดำเนินการ</th>
                 <th className="py-3 px-3">เลขที่ Item</th>
                 <th className="py-3 px-3 min-w-[180px]">ชื่อ Item / อะไหล่</th>
                 <th className="py-3 px-3 text-center">จำนวน</th>
@@ -317,6 +318,8 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                           className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
                             item.workTag === 'Project'
                               ? 'bg-violet-100 text-violet-800 border-violet-300'
+                              : item.workTag === 'Service Purchase'
+                              ? 'bg-amber-100 text-amber-800 border-amber-300'
                               : 'bg-sky-100 text-sky-800 border-sky-300'
                           }`}
                         >
@@ -324,7 +327,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                         </span>
                         <span className="font-mono">{item.docRef || '-'}</span>
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">{item.projectCode}</div>
+                      <div className="text-[10px] text-slate-400 mt-0.5" title={item.projectName}>{item.projectCode}</div>
                     </td>
 
                     {/* Machine Column (Clickable) */}
@@ -336,8 +339,11 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                         <Cpu className="w-3.5 h-3.5 text-sky-500" />
                         <span>{item.machineName === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : item.machineName}</span>
                       </button>
-                      <div className="text-[10px] text-slate-400 leading-snug" title={item.projectName}>
-                        {item.projectName}
+                      <div 
+                        className="text-[10px] text-slate-500 leading-snug mt-0.5 truncate max-w-[200px]" 
+                        title={item.actionTopic ? `หัวข้อแจ้งดำเนินการ: ${item.actionTopic}` : undefined}
+                      >
+                        {item.actionTopic || '-'}
                       </div>
                     </td>
 
@@ -367,6 +373,24 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
 
                     <td className="py-3 px-3 font-mono text-[11px] text-slate-600">
                       <div className="font-semibold text-slate-800">{item.prodOrder || '-'}</div>
+                      {item.workTag === 'Service Purchase' ? (
+                        <div className="space-y-1 mt-1">
+                          {item.poPr && (
+                            <div>
+                              <span className="font-mono font-bold text-amber-800 bg-amber-50 border border-amber-300 px-1.5 py-0.5 rounded text-[9.5px]">
+                                PO: {item.poPr}
+                              </span>
+                            </div>
+                          )}
+                          {item.notifyDate && (
+                            <div className="text-[10px] text-sky-800 flex items-center gap-1 flex-wrap">
+                              <span className="text-slate-400">แจ้ง:</span>
+                              <span className="font-mono font-medium">{formatCompactDate(item.notifyDate)}</span>
+                              {item.requesterName && <span className="text-slate-500">({item.requesterName})</span>}
+                            </div>
+                          )}
+                        </div>
+                      ) : null}
                       <div className="flex items-center gap-1 mt-1 flex-wrap">
                         {item.lastCompletedOp ? (
                           <span 
@@ -451,12 +475,34 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                         {item.target3 && (
                           <>
                             <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
-                            <span className="text-purple-700 font-medium">
+                            <span className={item.target4 ? 'line-through text-slate-400' : 'text-purple-700 font-medium'}>
                               {formatCompactDate(item.target3)}
                             </span>
                           </>
                         )}
-                        {!item.target1 && <span className="text-slate-400">-</span>}
+                        {item.target4 && (
+                          <>
+                            <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
+                            <span className={item.target5 ? 'line-through text-slate-400' : 'text-purple-700 font-medium'}>
+                              {formatCompactDate(item.target4)}
+                            </span>
+                          </>
+                        )}
+                        {item.target5 && (
+                          <>
+                            <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
+                            <span className="text-purple-700 font-medium">
+                              {formatCompactDate(item.target5)}
+                            </span>
+                          </>
+                        )}
+                        {!item.target1 && item.targetLatest ? (
+                          <span className="text-slate-700">
+                            {formatCompactDate(item.targetLatest)}
+                          </span>
+                        ) : !item.target1 ? (
+                          <span className="text-slate-400">-</span>
+                        ) : null}
                       </div>
                     </td>
 

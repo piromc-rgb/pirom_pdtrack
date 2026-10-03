@@ -1,12 +1,15 @@
+export type WorkTag = 'Service' | 'Project' | 'Service Purchase';
+
 export interface DeliveryItem {
   id: string;
-  workTag?: 'Service' | 'Project'; // TAG: "Service" (Check list ส่งมอบ) หรือ "Project" (งานโครงการ จาก Record รับ - จ่าย Production)
+  workTag?: WorkTag; // TAG: "Service" (Check list ส่งมอบ), "Project" (งานโครงการ), "Service Purchase" (สั่งผลิต/สั่งซื้อ ตามใบเสนอราคา)
   docRef: string;
   projectCode: string;
   projectName: string;
   customer?: string;
   docType: string;
   machineName: string;
+  machine?: string;
   hasMachine: boolean;
   itemCode: string;
   itemName: string;
@@ -122,7 +125,7 @@ export interface MachineSummary {
   productionOrders: string[];
   requestDepts: string[];
   actionTopics: string[];
-  workTags?: ('Service' | 'Project')[];
+  workTags?: WorkTag[];
   earliestTarget: string | null;
   latestTarget: string | null;
   status: 'completed' | 'overdue' | 'due-soon' | 'in-progress';
@@ -130,7 +133,7 @@ export interface MachineSummary {
 }
 
 export interface SearchCriteria {
-  workTag?: 'all' | 'Service' | 'Project';
+  workTag?: 'all' | WorkTag;
   quickSearch?: string;
   dateWindow?: 'all' | 'overdue' | 'today' | '7days' | 'month' | 'qc-ready';
   statusSource?: 'overview' | 'qc' | 'dual';
@@ -141,7 +144,7 @@ export interface SearchCriteria {
   machineName: string;
   requestDept?: string;
   actionTopic?: string;
-  qcStatus?: 'all' | 'passed' | 'pending';
+  qcStatus?: 'all' | 'passed' | 'pending' | 'prd' | 'semi' | 'not_in_warehouse';
   overviewStatus?: string;  // 'all' | 'Active' | 'Planned' | 'Ready to Start' | 'Completed' | 'none'
   readyOpName?: string;     // 'all' | 'any_ready' | specific operation description e.g. 'CNC VF4'
   operationStatus?: string; // 'all' | 'ready' | 'active' | 'completed' | 'none'

@@ -80,18 +80,21 @@ export function App() {
     operationStatus: 'all',
   });
 
-  // Counts by TAG ("Service" vs "Project" vs "ทั้งคู่")
+  // Counts by TAG ("Service" vs "Project" vs "Service Purchase" vs "ทั้งหมด")
   const tagCounts = useMemo(() => {
     let service = 0;
     let project = 0;
+    let servicePurchase = 0;
     items.forEach(i => {
       if (i.workTag === 'Project') project++;
+      else if (i.workTag === 'Service Purchase') servicePurchase++;
       else service++;
     });
     return {
       all: items.length,
       Service: service,
       Project: project,
+      'Service Purchase': servicePurchase,
     };
   }, [items]);
 
@@ -190,11 +193,12 @@ export function App() {
     customUrl?: string, 
     customProdUrl?: string, 
     customQcUrl?: string,
-    customOverviewUrl?: string
+    customOverviewUrl?: string,
+    customSpUrl?: string
   ) => {
     setIsLoading(true);
     try {
-      const result = await fetchDeliveryData(customUrl, customProdUrl, customQcUrl, customOverviewUrl);
+      const result = await fetchDeliveryData(customUrl, customProdUrl, customQcUrl, customOverviewUrl, customSpUrl);
       setItems(result.items);
       setIsLive(result.fromLive);
       setLastSyncTime(new Date().toISOString());

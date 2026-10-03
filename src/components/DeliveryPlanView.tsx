@@ -271,6 +271,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
       'TAG',
       'สถานะกำหนดส่ง',
       'เลขที่เอกสาร 04',
+      'หัวข้อแจ้งดำเนินการ',
       'เลขที่ Item',
       'ชื่อ Item / รายละเอียด',
       'จำนวน (Qty)',
@@ -305,6 +306,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
           `"${item.workTag || 'Service'}"`,
           `"${urgencyText}"`,
           `"${item.machineName}"`,
+          `"${item.actionTopic || '-'}"`,
           `"${item.itemCode}"`,
           `"${item.itemName.replace(/"/g, '""')}"`,
           String(item.qty),
@@ -523,7 +525,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                         <tr>
                           <th className="py-2.5 px-3 w-10 text-center">#</th>
                           <th className="py-2.5 px-3 min-w-[130px]">ลูกค้า / โครงการ</th>
-                          <th className="py-2.5 px-3 min-w-[120px]">เลขที่เอกสาร 04</th>
+                          <th className="py-2.5 px-3 min-w-[130px]">เลขที่เอกสาร 04 / หัวข้อแจ้งดำเนินการ</th>
                           <th className="py-2.5 px-3 w-[calc(14ch+24px)] min-w-[calc(14ch+24px)] font-mono">เลขที่ Item</th>
                           <th className="py-2.5 px-3 min-w-[200px]">ชื่อชิ้นงาน / รายละเอียด</th>
                           <th className="py-2.5 px-3 text-center w-16">จำนวน</th>
@@ -531,15 +533,23 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                           
                           {/* Dynamic Status Header */}
                           {statusSource === 'qc' && (
-                            <th className="py-2.5 px-3 min-w-[130px]">สถานะ QC Record</th>
+                            <th className="py-2.5 px-3 min-w-[130px]">
+                              {searchCriteria.workTag === 'Service Purchase' ? 'วันที่แจ้งดำเนินการ' : 'สถานะ QC Record / วันที่แจ้ง'}
+                            </th>
                           )}
                           {statusSource === 'overview' && (
-                            <th className="py-2.5 px-3 min-w-[130px] bg-blue-50 text-blue-900">สถานะ Overview</th>
+                            <th className="py-2.5 px-3 min-w-[130px] bg-blue-50 text-blue-900">
+                              {searchCriteria.workTag === 'Service Purchase' ? 'PO/PR' : 'สถานะ Overview / PO/PR'}
+                            </th>
                           )}
                           {statusSource === 'dual' && (
                             <>
-                              <th className="py-2.5 px-2.5 min-w-[110px] bg-blue-50/80 text-blue-900 text-center">1. Overview</th>
-                              <th className="py-2.5 px-2.5 min-w-[120px] bg-emerald-50/80 text-emerald-900 text-center">2. QC Record</th>
+                              <th className="py-2.5 px-2.5 min-w-[110px] bg-blue-50/80 text-blue-900 text-center">
+                                {searchCriteria.workTag === 'Service Purchase' ? '1. PO/PR' : '1. Overview / PO/PR'}
+                              </th>
+                              <th className="py-2.5 px-2.5 min-w-[120px] bg-emerald-50/80 text-emerald-900 text-center">
+                                {searchCriteria.workTag === 'Service Purchase' ? '2. วันที่แจ้งดำเนินการ' : '2. QC Record / วันที่แจ้ง'}
+                              </th>
                             </>
                           )}
 
@@ -566,6 +576,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
                                       item.workTag === 'Project'
                                         ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                        : item.workTag === 'Service Purchase'
+                                        ? 'bg-amber-100 text-amber-800 border-amber-300'
                                         : 'bg-sky-100 text-sky-800 border-sky-300'
                                     }`}
                                   >
@@ -575,12 +587,12 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     {customerName}
                                   </span>
                                 </div>
-                                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                                <div className="text-[10px] text-slate-500 font-mono mt-0.5" title={item.projectName}>
                                   {item.projectCode}
                                 </div>
                               </td>
 
-                              {/* Machine Name */}
+                              {/* Machine Name & Action Topic */}
                               <td className="py-3 px-3 font-medium whitespace-nowrap min-w-[130px]">
                                 <button
                                   onClick={() => onSelectMachineByName(item.machineName)}
@@ -589,8 +601,11 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   <Cpu className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
                                   <span>{item.machineName === '(ไม่ระบุเครื่องจักร)' ? '(ไม่ระบุเอกสาร 04)' : item.machineName}</span>
                                 </button>
-                                <div className="text-[10px] text-slate-400 leading-snug" title={item.projectName}>
-                                  {item.projectName}
+                                <div 
+                                  className="text-[10px] text-slate-500 leading-snug mt-0.5 truncate max-w-[200px]" 
+                                  title={item.actionTopic ? `หัวข้อแจ้งดำเนินการ: ${item.actionTopic}` : undefined}
+                                >
+                                  {item.actionTopic || '-'}
                                 </div>
                               </td>
 
@@ -635,7 +650,22 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                               {/* Dynamic Status Display Cell */}
                               {statusSource === 'qc' && (
                                 <td className="py-3 px-3">
-                                  {(() => {
+                                  {item.workTag === 'Service Purchase' ? (
+                                    <div className="space-y-0.5">
+                                      <span 
+                                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-sky-50 text-sky-800 border border-sky-200"
+                                        title={item.notifyDate ? `วันที่แจ้งดำเนินการ: ${item.notifyDate}` : 'ไม่ระบุวันแจ้ง'}
+                                      >
+                                        <Calendar className="w-3 h-3 text-sky-600 shrink-0" />
+                                        {item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
+                                      </span>
+                                      {item.requesterName && (
+                                        <div className="text-[10px] text-slate-500 truncate max-w-[140px]" title={`ผู้แจ้ง: ${item.requesterName}${item.requestDept ? ` (${item.requestDept})` : ''}`}>
+                                          ผู้แจ้ง: {item.requesterName}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : (() => {
                                     const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
                                     if (whStatus === 'คลัง PRD') {
                                       return (
@@ -699,7 +729,29 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
                               {statusSource === 'overview' && (
                                 <td className="py-3 px-3">
-                                  {item.lastCompletedOp ? (
+                                  {item.workTag === 'Service Purchase' ? (
+                                    <div className="space-y-0.5">
+                                      {item.poPr ? (
+                                        <span 
+                                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10.5px] font-mono font-bold bg-amber-50 text-amber-900 border border-amber-300 shadow-2xs"
+                                          title={`PO/PR: ${item.poPr}`}
+                                        >
+                                          {item.poPr}
+                                        </span>
+                                      ) : (
+                                        <span className="text-slate-400 text-[10px] italic">
+                                          ไม่มีข้อมูล PO/PR
+                                        </span>
+                                      )}
+                                      {item.actionTopic && (
+                                        <div className="text-[10px] text-slate-500 truncate max-w-[155px]" title={item.actionTopic}>
+                                          {item.actionTopic}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <>
+                                      {item.lastCompletedOp ? (
                                     <span 
                                       className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs"
                                       title={`ขั้นตอนที่เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}${item.lastCompletedOpWc ? ` [${item.lastCompletedOpWc}]` : ''}`}
@@ -763,13 +815,30 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       </span>
                                     </div>
                                   ) : null}
+                                    </>
+                                  )}
                                 </td>
                               )}
 
                               {statusSource === 'dual' && (
                                 <>
                                   <td className="py-3 px-2.5 bg-blue-50/20 text-center">
-                                    {item.lastCompletedOp ? (
+                                    {item.workTag === 'Service Purchase' ? (
+                                      <div className="space-y-0.5">
+                                        {item.poPr ? (
+                                          <span 
+                                            className="font-mono font-bold text-amber-900 text-[10.5px] px-1.5 py-0.5 rounded bg-amber-50 border border-amber-300 inline-block shadow-2xs"
+                                            title={`PO/PR: ${item.poPr}`}
+                                          >
+                                            {item.poPr}
+                                          </span>
+                                        ) : (
+                                          <span className="text-slate-400 text-[10px] italic">-</span>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <>
+                                        {item.lastCompletedOp ? (
                                       <span 
                                         className="font-bold text-emerald-700 text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 inline-block"
                                         title={`เสร็จแล้ว: ${item.lastCompletedOp}${item.lastCompletedOpDesc ? ` (${item.lastCompletedOpDesc})` : ''}`}
@@ -811,9 +880,28 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                         </span>
                                       </div>
                                     ) : null}
+                                      </>
+                                    )}
                                   </td>
                                   <td className="py-3 px-2.5 bg-emerald-50/20 text-center">
-                                    {(() => {
+                                    {item.workTag === 'Service Purchase' ? (
+                                      <div className="space-y-0.5">
+                                        <span 
+                                          className="font-mono font-semibold text-sky-900 text-[10px] px-1.5 py-0.5 rounded bg-sky-50 border border-sky-200 inline-flex items-center gap-1"
+                                          title={item.notifyDate ? `วันที่แจ้งดำเนินการ: ${item.notifyDate}` : 'ไม่ระบุวันแจ้ง'}
+                                        >
+                                          <Calendar className="w-2.5 h-2.5 text-sky-600 shrink-0" />
+                                          {item.notifyDate ? formatCompactDate(item.notifyDate) : '-'}
+                                        </span>
+                                        {item.requesterName && (
+                                          <div className="text-[9.5px] text-slate-500 truncate max-w-[110px] mx-auto" title={item.requesterName}>
+                                            {item.requesterName}
+                                          </div>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <>
+                                        {(() => {
                                       const whStatus = item.qcWarehouseStatus || getQcWarehouseStatus(item.qcAction);
                                       if (whStatus === 'คลัง PRD') {
                                         return (
@@ -849,6 +937,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                                       {item.qcDate ? formatCompactDate(item.qcDate) : '-'}
                                     </div>
+                                      </>
+                                    )}
                                   </td>
                                 </>
                               )}
@@ -872,12 +962,34 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                   {item.target3 && (
                                     <>
                                       <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
-                                      <span className="text-purple-700 font-medium">
+                                      <span className={item.target4 ? 'line-through text-slate-400' : 'text-purple-700 font-medium'}>
                                         {formatCompactDate(item.target3)}
                                       </span>
                                     </>
                                   )}
-                                  {!item.target1 && <span className="text-slate-400">-</span>}
+                                  {item.target4 && (
+                                    <>
+                                      <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
+                                      <span className={item.target5 ? 'line-through text-slate-400' : 'text-purple-700 font-medium'}>
+                                        {formatCompactDate(item.target4)}
+                                      </span>
+                                    </>
+                                  )}
+                                  {item.target5 && (
+                                    <>
+                                      <ArrowRight className="w-2.5 h-2.5 text-slate-300" />
+                                      <span className="text-purple-700 font-medium">
+                                        {formatCompactDate(item.target5)}
+                                      </span>
+                                    </>
+                                  )}
+                                  {!item.target1 && item.targetLatest ? (
+                                    <span className="text-slate-700">
+                                      {formatCompactDate(item.targetLatest)}
+                                    </span>
+                                  ) : !item.target1 ? (
+                                    <span className="text-slate-400">-</span>
+                                  ) : null}
                                 </div>
                               </td>
 

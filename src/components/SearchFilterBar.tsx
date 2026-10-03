@@ -191,7 +191,7 @@ interface SearchFilterBarProps {
   searchCriteria: SearchCriteria;
   setSearchCriteria: React.Dispatch<React.SetStateAction<SearchCriteria>>;
   items: DeliveryItem[];
-  tagCounts?: { all: number; Service: number; Project: number };
+  tagCounts?: { all: number; Service: number; Project: number; 'Service Purchase'?: number };
   matchedMachinesCount: number;
   matchedItemsCount: number;
   actions?: React.ReactNode;
@@ -392,7 +392,7 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
             <span>มุมมองการดู:</span>
           </span>
 
-          {/* 1. มุมมองประเภทงาน (Dropdown: ทั้งคู่ / Service / Project) */}
+          {/* 1. มุมมองประเภทงาน (Dropdown: ทั้งหมด / Service / Project / Service Purchase) */}
           <div className="inline-flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl border border-slate-300 shadow-2xs shrink-0">
             <Tag className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
             <span className="text-[11px] font-semibold text-slate-500 select-none">ข้อมูล:</span>
@@ -401,9 +401,10 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               onChange={(e) => updateField('workTag', e.target.value)}
               className="text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer"
             >
-              <option value="all">ทั้งคู่ ({tagCounts ? tagCounts.all : items.length})</option>
+              <option value="all">ทั้งหมด ({tagCounts ? tagCounts.all : items.length})</option>
               <option value="Service">Service ({tagCounts ? tagCounts.Service : '-'})</option>
               <option value="Project">Project ({tagCounts ? tagCounts.Project : '-'})</option>
+              <option value="Service Purchase">Service Purchase ({tagCounts ? tagCounts['Service Purchase'] ?? '-' : '-'})</option>
             </select>
           </div>
 
@@ -416,9 +417,19 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
               onChange={(e) => updateField('statusSource', e.target.value)}
               className="text-xs font-bold text-slate-800 bg-transparent outline-none cursor-pointer"
             >
-              <option value="overview">📊 Overview status</option>
-              <option value="qc">🛡️ QC Record</option>
-              <option value="dual">⚡ แสดงทั้ง 2 แหล่ง (Dual)</option>
+              {searchCriteria.workTag === 'Service Purchase' ? (
+                <>
+                  <option value="dual">⚡ แสดงทั้ง 2 แหล่ง (PO/PR + วันที่แจ้ง)</option>
+                  <option value="overview">📋 PO/PR</option>
+                  <option value="qc">📅 วันที่แจ้งดำเนินการ</option>
+                </>
+              ) : (
+                <>
+                  <option value="dual">⚡ แสดงทั้ง 2 แหล่ง (Dual)</option>
+                  <option value="overview">📊 Overview status</option>
+                  <option value="qc">🛡️ QC Record</option>
+                </>
+              )}
             </select>
           </div>
         </div>

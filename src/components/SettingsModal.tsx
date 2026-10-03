@@ -18,6 +18,7 @@ import {
 import { 
   DEFAULT_SHEET_URL, 
   DEFAULT_PRODUCTION_URL,
+  DEFAULT_SERVICE_PURCHASE_URL,
   DEFAULT_QC_URL,
   DEFAULT_OVERVIEW_URL,
   DEFAULT_OVERVIEW_FOLDER_URL,
@@ -26,6 +27,8 @@ import {
   getSavedSheetUrl,
   saveProdUrl, 
   getSavedProdUrl,
+  saveServicePurchaseUrl,
+  getSavedServicePurchaseUrl,
   saveQcUrl, 
   getSavedQcUrl,
   saveOverviewUrl, 
@@ -48,7 +51,7 @@ import {
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onRefreshData: (newUrl?: string, newProdUrl?: string, newQcUrl?: string, newOverviewUrl?: string) => Promise<void>;
+  onRefreshData: (newUrl?: string, newProdUrl?: string, newQcUrl?: string, newOverviewUrl?: string, newSpUrl?: string) => Promise<void>;
   lastSyncTime: string | null;
   isLive: boolean;
   totalItems: number;
@@ -66,6 +69,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   const [sheetUrl, setSheetUrl] = useState(getSavedSheetUrl());
   const [prodUrl, setProdUrl] = useState(getSavedProdUrl());
+  const [spUrl, setSpUrl] = useState(getSavedServicePurchaseUrl());
   const [qcUrl, setQcUrl] = useState(getSavedQcUrl());
   const [overviewUrl, setOverviewUrl] = useState(getSavedOverviewUrl());
   const [dwgFolderUrl, setDwgFolderUrl] = useState(getSavedDwgFolderUrl());
@@ -175,6 +179,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     try {
       const trimmed1 = sheetUrl.trim();
       const trimmed2 = prodUrl.trim();
+      const trimmedSp = spUrl.trim();
       const trimmed3 = qcUrl.trim();
       const trimmed4 = overviewUrl.trim();
       const trimmedDwg = dwgFolderUrl.trim();
@@ -185,12 +190,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       if (trimmed2) {
         saveProdUrl(trimmed2);
       }
+      if (trimmedSp) {
+        saveServicePurchaseUrl(trimmedSp);
+      }
       if (trimmed3) {
         saveQcUrl(trimmed3);
       }
       saveOverviewUrl(trimmed4);
       saveDwgFolderUrl(trimmedDwg || DEFAULT_DWG_FOLDER_URL);
-      await onRefreshData(trimmed1, trimmed2, trimmed3, trimmed4);
+      await onRefreshData(trimmed1, trimmed2, trimmed3, trimmed4, trimmedSp);
       setSaveSuccess(true);
       setTimeout(() => {
         setSaveSuccess(false);
@@ -206,11 +214,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const handleResetDefault = () => {
     setSheetUrl(DEFAULT_SHEET_URL);
     setProdUrl(DEFAULT_PRODUCTION_URL);
+    setSpUrl(DEFAULT_SERVICE_PURCHASE_URL);
     setQcUrl(DEFAULT_QC_URL);
     setOverviewUrl(DEFAULT_OVERVIEW_URL);
     setDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
     saveSheetUrl(DEFAULT_SHEET_URL);
     saveProdUrl(DEFAULT_PRODUCTION_URL);
+    saveServicePurchaseUrl(DEFAULT_SERVICE_PURCHASE_URL);
     saveQcUrl(DEFAULT_QC_URL);
     saveOverviewUrl(DEFAULT_OVERVIEW_URL);
     saveDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
@@ -346,6 +356,36 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             />
             <span className="text-[11px] text-slate-400 block">
               * หากเลขที่ PD No. ปรากฏในไฟล์นี้ ระบบจะถือว่าชิ้นงานผ่าน QC แล้วโดยอัตโนมัติ
+            </span>
+          </div>
+
+          {/* URL: Service Purchase Sheet */}
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>ไฟล์: Sheet service purchase (gid: 1833136006)</span>
+              </label>
+              <a
+                href={spUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-amber-600 hover:underline flex items-center gap-0.5"
+              >
+                <span>เปิดดู</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+
+            <textarea
+              rows={2}
+              value={spUrl}
+              onChange={(e) => setSpUrl(e.target.value)}
+              className="w-full p-2.5 text-xs font-mono bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-amber-500 focus:bg-white"
+              placeholder="https://docs.google.com/spreadsheets/d/.../edit?gid=1833136006"
+            />
+            <span className="text-[11px] text-slate-400 block">
+              * ข้อมูลจัดซื้อ/จ้างบริการ (Service Purchase) โดยเลขที่เอกสาร 04 ดึงมาจากคอลัมน์ "เลขที่ใบ 04"
             </span>
           </div>
 

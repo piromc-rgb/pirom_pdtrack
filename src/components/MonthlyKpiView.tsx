@@ -24,7 +24,8 @@ import {
   Sparkles,
   Info,
   Wrench,
-  FolderGit2
+  FolderGit2,
+  Tag
 } from 'lucide-react';
 import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
 import { 
@@ -110,7 +111,7 @@ export const MonthlyKpiView: React.FC<MonthlyKpiViewProps> = ({
   onSelectMachineByName,
 }) => {
   // Filters
-  const [workScope, setWorkScope] = useState<'all' | 'Service' | 'Project' | 'compare'>('all');
+  const [workScope, setWorkScope] = useState<'all' | 'Service' | 'Project' | 'Service Purchase' | 'compare'>('all');
   const [selectedMonth, setSelectedMonth] = useState<string>('all');
   const [groupBasis, setGroupBasis] = useState<'targetLatest' | 'target1'>('targetLatest');
   const [itemStatusFilter, setItemStatusFilter] = useState<'all' | 'on-time-t1' | 'delivered' | 'rescheduled' | 'pending' | 'overdue'>('all');
@@ -165,6 +166,9 @@ export const MonthlyKpiView: React.FC<MonthlyKpiViewProps> = ({
     }
     if (workScope === 'Project') {
       return items.filter(i => i.workTag === 'Project');
+    }
+    if (workScope === 'Service Purchase') {
+      return items.filter(i => i.workTag === 'Service Purchase');
     }
     return items;
   }, [items, workScope]);
@@ -607,6 +611,17 @@ export const MonthlyKpiView: React.FC<MonthlyKpiViewProps> = ({
               >
                 <FolderGit2 className="w-3 h-3" />
                 <span>งานโครงการ</span>
+              </button>
+              <button
+                onClick={() => setWorkScope('Service Purchase')}
+                className={`px-3 py-1 rounded-lg font-medium transition cursor-pointer flex items-center gap-1 ${
+                  workScope === 'Service Purchase'
+                    ? 'bg-amber-600 text-white shadow-xs font-bold'
+                    : 'text-amber-800 hover:bg-amber-100/60'
+                }`}
+              >
+                <Tag className="w-3 h-3" />
+                <span>Service Purchase</span>
               </button>
               <button
                 onClick={() => setWorkScope('compare')}
@@ -1246,12 +1261,17 @@ export const MonthlyKpiView: React.FC<MonthlyKpiViewProps> = ({
                     {/* Work Tag */}
                     <td className="py-2.5 px-3 whitespace-nowrap">
                       {item.workTag === 'Project' ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-violet-100 text-violet-800 border border-violet-200">
                           <FolderGit2 className="w-2.5 h-2.5" />
                           <span>โครงการ</span>
                         </span>
-                      ) : (
+                      ) : item.workTag === 'Service Purchase' ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                          <Tag className="w-2.5 h-2.5" />
+                          <span>Service Purchase</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">
                           <Wrench className="w-2.5 h-2.5" />
                           <span>Service</span>
                         </span>
@@ -1358,7 +1378,7 @@ export const MonthlyKpiView: React.FC<MonthlyKpiViewProps> = ({
                     {/* Drawing DWG */}
                     <td className="py-2.5 px-3 text-right whitespace-nowrap">
                       <button
-                        onClick={() => searchAndOpenItemPdf(item.itemCode, item.itemName)}
+                        onClick={() => searchAndOpenItemPdf(item.itemCode)}
                         className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 transition cursor-pointer"
                         title="เปิดไฟล์แบบ drawing PDF"
                       >

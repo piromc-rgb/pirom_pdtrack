@@ -76,6 +76,8 @@ export const MachineCard: React.FC<MachineCardProps> = ({ machine, onSelect }) =
                     className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
                       tag === 'Project'
                         ? 'bg-violet-100 text-violet-800 border-violet-300'
+                        : tag === 'Service Purchase'
+                        ? 'bg-amber-100 text-amber-800 border-amber-300'
                         : 'bg-sky-100 text-sky-800 border-sky-300'
                     }`}
                   >

@@ -2,12 +2,13 @@ import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import defaultItemsJson from '../data/defaultData.json';
 import defaultProjectItemsJson from '../data/defaultProjectItems.json';
+import defaultServicePurchaseJson from '../data/defaultServicePurchaseItems.json';
 import defaultProductionMap from '../data/productionMap.json';
 import defaultQcData from '../data/qcData.json';
 import defaultOverviewData from '../data/overviewStatusData.json';
 import defaultOverviewItemMap from '../data/overviewItemMap.json';
 import itemPdMap from '../data/itemPdMap.json';
-import { DeliveryItem, MachineSummary, OverviewMeta } from '../types';
+import { DeliveryItem, MachineSummary, OverviewMeta, WorkTag } from '../types';
 import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer } from '../utils/dateUtils';
 
 // Initialize with bundled data, or restore cached live overview if available
@@ -43,6 +44,7 @@ export const qcStatusMap = defaultQcData as Record<string, QcMeta>;
 
 export const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1l5FbiznQNUhIpUNuma9iivKzYvcaCTiL7Z_9mDcCijE/edit?gid=472754949#gid=472754949';
 export const DEFAULT_PRODUCTION_URL = 'https://docs.google.com/spreadsheets/d/1YLgaxdeJR_MCHJhFkoAPAJfGmvUJB2K9GPgirYqlhPE/edit?gid=1308741309#gid=1308741309';
+export const DEFAULT_SERVICE_PURCHASE_URL = 'https://docs.google.com/spreadsheets/d/1YLgaxdeJR_MCHJhFkoAPAJfGmvUJB2K9GPgirYqlhPE/edit?gid=1833136006#gid=1833136006';
 export const DEFAULT_QC_URL = 'https://docs.google.com/spreadsheets/d/1w8B0DyG7PEy_YLHM5HCI_eVU_nt4HvA8xHWShuLRL_8/edit?gid=1814251242#gid=1814251242';
 export const DEFAULT_OVERVIEW_URL = '';
 export const DEFAULT_OVERVIEW_FOLDER_URL = 'https://drive.google.com/drive/folders/1Yt8drFmq0END9fAEWUy0No6sZ76H1dtA?usp=drive_link';
@@ -50,9 +52,10 @@ export const DEFAULT_OVERVIEW_APPS_SCRIPT_URL = 'https://script.google.com/macro
 
 const STORAGE_URL_KEY = 'pdtrack_sheet_url';
 const STORAGE_PROD_URL_KEY = 'pdtrack_prod_sheet_url';
+const STORAGE_SERVICE_PURCHASE_URL_KEY = 'pdtrack_service_purchase_url';
 const STORAGE_QC_URL_KEY = 'pdtrack_qc_sheet_url';
 const STORAGE_OVERVIEW_URL_KEY = 'pdtrack_overview_sheet_url';
-const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v8';
+const STORAGE_CACHE_KEY = 'pdtrack_cached_data_v10';
 const STORAGE_TIMESTAMP_KEY = 'pdtrack_last_sync';
 
 export interface ProductionMeta {
@@ -119,6 +122,14 @@ export function getSavedProdUrl(): string {
 
 export function saveProdUrl(url: string): void {
   localStorage.setItem(STORAGE_PROD_URL_KEY, url.trim());
+}
+
+export function getSavedServicePurchaseUrl(): string {
+  return localStorage.getItem(STORAGE_SERVICE_PURCHASE_URL_KEY) || DEFAULT_SERVICE_PURCHASE_URL;
+}
+
+export function saveServicePurchaseUrl(url: string): void {
+  localStorage.setItem(STORAGE_SERVICE_PURCHASE_URL_KEY, url.trim());
 }
 
 export function getSavedQcUrl(): string {
@@ -192,13 +203,13 @@ export function parseProductionCsv(csvText: string): {
     const doc = getVal(docRefIdx !== -1 ? docRefIdx : 0);
     const topic = getVal(topicIdx !== -1 ? topicIdx : 1);
     const ncr = getVal(ncrIdx !== -1 ? ncrIdx : 2);
-    const itemCode = getVal(itemCodeIdx !== -1 ? itemCodeIdx : 7);
-    const week = getVal(weekIdx !== -1 ? weekIdx : 13);
-    const targetReq = getVal(targetReqIdx !== -1 ? targetReqIdx : 14);
-    const dept = getVal(deptIdx !== -1 ? deptIdx : 15);
-    const requester = getVal(reqIdx !== -1 ? reqIdx : 16);
-    // Column Y is index 24 (หมายเหตุ)
-    const remark = getVal(remarkIdx !== -1 ? remarkIdx : 24);
+    const itemCode = getVal(itemCodeIdx !== -1 ? itemCodeIdx : 8);
+    const week = getVal(weekIdx !== -1 ? weekIdx : 14);
+    const targetReq = getVal(targetReqIdx !== -1 ? targetReqIdx : 15);
+    const dept = getVal(deptIdx !== -1 ? deptIdx : 16);
+    const requester = getVal(reqIdx !== -1 ? reqIdx : 17);
+    // Column Z is index 25 (หมายเหตุ)
+    const remark = getVal(remarkIdx !== -1 ? remarkIdx : 25);
 
     const meta: ProductionMeta = {
       actionTopic: topic,
@@ -895,7 +906,7 @@ export function parseDeliveryCsvWithProduction(
   const projCodeIdx = findCol(['เลขที่โครงการ', 'Project No']);
   const projNameIdx = findCol(['ชื่อโครงการ', 'Project Name']);
   const docTypeIdx = findCol(['ประเภท', 'Doc Type']);
-  const machineIdx = findCol(['เลขที่เอกสาร 04', 'เอกสาร 04', 'ชื่อเครื่องจักร', 'Machine Name', 'Machine']);
+  const machineIdx = findCol(['เลขที่ใบ 04', 'ใบ 04', 'เลขที่เอกสาร 04', 'เอกสาร 04', 'ชื่อเครื่องจักร', 'Machine Name', 'Machine']);
   const itemCodeIdx = findCol(['เลขที่ Item', 'Item Code', 'Item No']);
   const itemNameIdx = findCol(['ชื่อ Item', 'Item Name', 'รายการ']);
   const qtyIdx = findCol(['จำนวน', 'Qty', 'Quantity']);
@@ -1114,10 +1125,38 @@ export function parseProjectItemsFromProductionCsv(
   const sheet2Headers = (rows[headerRowIdx] || []).map((h: string) => (h || '').trim().replace(/\n/g, ' '));
   const findSheet2Col = (keywords: string[]) =>
     sheet2Headers.findIndex((h: string) => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
+
+  const docRefIdx = findSheet2Col(['Document number', 'Document Reference', 'Doc Ref', 'Reference']);
+  const actionTopicIdx = findSheet2Col(['หัวข้อแจ้งดำเนินการ', 'หัวข้อ']);
+  const ncrIdx = findSheet2Col(['NCR', 'IPR']);
+  const projCodeIdx = findSheet2Col(['เลขที่โครงการ', 'Project No']);
+  const projNameIdx = findSheet2Col(['ชื่อโครงการ', 'Project Name']);
+  const machineIdx = findSheet2Col(['เครื่องจักร', 'Machine Name', 'Machine']);
+  const docTypeIdx = findSheet2Col(['ประเภท', 'Doc Type']);
+  const doc04Idx = findSheet2Col(['เลขที่ใบ 04', 'ใบ 04', 'เลขที่เอกสาร 04', 'เอกสาร 04']);
+  const itemCodeIdx = findSheet2Col(['เลขที่ Item', 'Item Code', 'Item No']);
+  const itemNameIdx = findSheet2Col(['ชื่อ Item', 'Item Name', 'รายการ']);
+  const qtyIdx = findSheet2Col(['จำนวน', 'Qty', 'Quantity']);
+  const prodOrderIdx = findSheet2Col(['Production Order', 'Prod Order']);
+  const pdActLineIdx = findSheet2Col(['จำนวนPD', 'Act Line']);
+  const notifyDateIdx = findSheet2Col(['วันที่แจ้งดำเนินการ', 'Notify Date']);
+  const weekIdx = findSheet2Col(['Week']);
+  const targetReqIdx = findSheet2Col(['เป้าหมายที่ต้องการ', 'Target Requested']);
+  const deptIdx = findSheet2Col(['หน่วยงานที่แจ้งดำเนินการ', 'หน่วยงาน']);
+  const reqNameIdx = findSheet2Col(['ชื่อผู้แจ้งดำเนินการ', 'ผู้แจ้ง']);
+  const target1Idx = findSheet2Col(['เป้าหมายส่งมอบ 1', 'เป้าหมาย 1']);
+  const target2Idx = findSheet2Col(['เป้าหมายส่งมอบ 2', 'เป้าหมาย 2']);
+  const target3Idx = findSheet2Col(['เป้าหมายส่งมอบ 3', 'เป้าหมาย 3']);
+  const target4Idx = findSheet2Col(['เป้าหมายส่งมอบ 4', 'เป้าหมาย 4']);
+  const target5Idx = findSheet2Col(['เป้าหมายส่งมอบ 5', 'เป้าหมาย 5']);
+  const targetLatestIdx = findSheet2Col(['เป้าหมายล่าสุด', 'Target Latest']);
+  const poPrIdx = findSheet2Col(['PO/PR', 'PO', 'PR']);
+  const remarkIdx = findSheet2Col(['หมายเหตุ', 'Remark', 'Note']);
+  const dwgStatusIdx = findSheet2Col(['สถานะแบบ', 'DWG', 'แบบ']);
   const sheet2ClosedIdx = findSheet2Col(['Closed', 'closed', 'close', 'ปิดงาน', 'ปิด']);
-  const sheet2RemarkIdx = findSheet2Col(['หมายเหตุ', 'Remark', 'Note']);
+
   console.log(`[PDTrack] Sheet2 Headers (row ${headerRowIdx}):`, sheet2Headers);
-  console.log('[PDTrack] Sheet2 closedIdx:', sheet2ClosedIdx, '| remarkIdx:', sheet2RemarkIdx);
+  console.log('[PDTrack] Sheet2 doc04Idx:', doc04Idx, '| machineIdx:', machineIdx, '| docTypeIdx:', docTypeIdx, '| itemCodeIdx:', itemCodeIdx);
 
   for (let i = headerRowIdx + 1; i < rows.length; i++) {
     const r = rows[i];
@@ -1125,39 +1164,42 @@ export function parseProjectItemsFromProductionCsv(
 
     const getVal = (idx: number) => (idx >= 0 && idx < r.length && r[idx] ? r[idx].trim() : '');
 
-    const actionTopic = getVal(1);
+    const actionTopic = getVal(actionTopicIdx !== -1 ? actionTopicIdx : 1);
     if (actionTopic !== 'สั่งผลิตเครื่องจักรตาม Machine List') continue;
 
-    const rawDwgStatus = getVal(25);
+    const rawDwgStatus = getVal(dwgStatusIdx !== -1 ? dwgStatusIdx : 26);
     if (rawDwgStatus.includes('ยกเลิกผลิต') || rawDwgStatus.includes('ไม่สั่งผลิต')) continue;
 
-    const docRef = getVal(0);
-    const ncrNo = getVal(2);
-    const projectCode = getVal(3);
-    const projectName = getVal(4);
-    const docType = getVal(5) || 'งานโครงการ';
-    const rawMachine = getVal(6);
-    const itemCode = getVal(7);
-    const itemName = getVal(8);
-    const qtyStr = getVal(9);
-    let prodOrder = getVal(10);
-    const pdActLine = getVal(11);
-    const notifyDate = getVal(12);
-    const week = getVal(13);
-    const targetRequested = getVal(14);
-    const requestDept = getVal(15);
-    const requesterName = getVal(16);
-    const target1 = getVal(17);
-    const target2 = getVal(18);
-    const target3 = getVal(19);
-    const target4 = getVal(20);
-    const target5 = getVal(21);
-    let rawTargetLatest = getVal(22);
-    const poPr = getVal(23);
-    const remark = sheet2RemarkIdx !== -1 ? getVal(sheet2RemarkIdx) : getVal(24);
-    const closed = sheet2ClosedIdx !== -1 ? getVal(sheet2ClosedIdx) : getVal(26);
+    const docRef = getVal(docRefIdx !== -1 ? docRefIdx : 0);
+    const ncrNo = getVal(ncrIdx !== -1 ? ncrIdx : 2);
+    const projectCode = getVal(projCodeIdx !== -1 ? projCodeIdx : 3);
+    const projectName = getVal(projNameIdx !== -1 ? projNameIdx : 4);
+    const rawMachineCol = getVal(machineIdx !== -1 ? machineIdx : 5);
+    const docType = getVal(docTypeIdx !== -1 ? docTypeIdx : 6) || 'งานโครงการ';
+    // ดึงข้อมูลมาจาก Column 'เลขที่ใบ 04' ใน Google Sheet
+    const rawDoc04 = getVal(doc04Idx !== -1 ? doc04Idx : 7);
+    const itemCode = getVal(itemCodeIdx !== -1 ? itemCodeIdx : 8);
+    const itemName = getVal(itemNameIdx !== -1 ? itemNameIdx : 9);
+    const qtyStr = getVal(qtyIdx !== -1 ? qtyIdx : 10);
+    let prodOrder = getVal(prodOrderIdx !== -1 ? prodOrderIdx : 11);
+    const pdActLine = getVal(pdActLineIdx !== -1 ? pdActLineIdx : 12);
+    const notifyDate = getVal(notifyDateIdx !== -1 ? notifyDateIdx : 13);
+    const week = getVal(weekIdx !== -1 ? weekIdx : 14);
+    const targetRequested = getVal(targetReqIdx !== -1 ? targetReqIdx : 15);
+    const requestDept = getVal(deptIdx !== -1 ? deptIdx : 16);
+    const requesterName = getVal(reqNameIdx !== -1 ? reqNameIdx : 17);
+    const target1 = getVal(target1Idx !== -1 ? target1Idx : 18);
+    const target2 = getVal(target2Idx !== -1 ? target2Idx : 19);
+    const target3 = getVal(target3Idx !== -1 ? target3Idx : 20);
+    const target4 = getVal(target4Idx !== -1 ? target4Idx : 21);
+    const target5 = getVal(target5Idx !== -1 ? target5Idx : 22);
+    let rawTargetLatest = getVal(targetLatestIdx !== -1 ? targetLatestIdx : 23);
+    const poPr = getVal(poPrIdx !== -1 ? poPrIdx : 24);
+    const remark = remarkIdx !== -1 ? getVal(remarkIdx) : getVal(25);
+    const closed = sheet2ClosedIdx !== -1 ? getVal(sheet2ClosedIdx) : getVal(27);
 
-    const machineName = rawMachine || '(ไม่ระบุเอกสาร 04)';
+    // เลขที่เอกสาร 04 ดึงมาจาก Column 'เลขที่ใบ 04' (ถ้าไม่มี ให้เป็น '(ไม่ระบุเอกสาร 04)')
+    const machineName = rawDoc04 || '(ไม่ระบุเอกสาร 04)';
     const dedupKey = `${norm(docRef)}|${norm(machineName)}|${norm(itemCode)}`;
     if (existingServiceKeys.has(dedupKey)) continue;
 
@@ -1218,7 +1260,8 @@ export function parseProjectItemsFromProductionCsv(
       customer: extractCustomer(projectName),
       docType,
       machineName,
-      hasMachine: Boolean(rawMachine),
+      machine: rawMachineCol || undefined,
+      hasMachine: Boolean(rawDoc04),
       itemCode,
       itemName,
       qty,
@@ -1279,9 +1322,231 @@ export function parseProjectItemsFromProductionCsv(
 }
 
 /**
- * Helper to enrich a bundled item (Service or Project) with Production, QC, and Overview maps
+ * Parses Service Purchase items ("สั่งผลิต/สั่งซื้อ ตามใบเสนอราคา") from Sheet 'service purchase'
+ * (https://docs.google.com/spreadsheets/d/1YLgaxdeJR_MCHJhFkoAPAJfGmvUJB2K9GPgirYqlhPE/edit?gid=1833136006)
+ * and tags them with workTag: 'Service Purchase'
  */
-function enrichBundledItem(item: DeliveryItem, defaultTag: 'Service' | 'Project'): DeliveryItem {
+export function parseServicePurchaseCsv(
+  csvText: string,
+  existingKeys: Set<string>,
+  qcMap?: Record<string, QcMeta>
+): DeliveryItem[] {
+  const parsed = Papa.parse<string[]>(csvText, { skipEmptyLines: true });
+  const rows = parsed.data;
+  if (!rows || rows.length < 2) return [];
+
+  let headerRowIdx = 0;
+  if (rows[0] && rows[0].some(c => (c || '').includes('Document') || (c || '').includes('หัวข้อ'))) {
+    headerRowIdx = 0;
+  } else if (rows[1] && rows[1].some(c => (c || '').includes('Document') || (c || '').includes('หัวข้อ'))) {
+    headerRowIdx = 1;
+  }
+
+  const spHeaders = (rows[headerRowIdx] || []).map((h: string) => (h || '').trim().replace(/\n/g, ' '));
+  const findSpCol = (keywords: string[]) =>
+    spHeaders.findIndex((h: string) => keywords.some(k => h.toLowerCase().includes(k.toLowerCase())));
+
+  const docRefIdx = findSpCol(['Document number', 'Document Reference', 'Doc Ref', 'Reference']);
+  const actionTopicIdx = findSpCol(['หัวข้อแจ้งดำเนินการ', 'หัวข้อ']);
+  const ncrIdx = findSpCol(['NCR', 'IPR']);
+  const projCodeIdx = findSpCol(['เลขที่โครงการ', 'Project No']);
+  const projNameIdx = findSpCol(['ชื่อโครงการ', 'Project Name']);
+  const docTypeIdx = findSpCol(['ประเภท', 'Doc Type']);
+  const doc04Idx = findSpCol(['เลขที่ใบ 04', 'ใบ 04', 'เลขที่เอกสาร 04', 'เอกสาร 04']);
+  const machineIdx = findSpCol(['ชื่อเครื่องจักร', 'เครื่องจักร', 'Machine Name', 'Machine']);
+  const itemCodeIdx = findSpCol(['เลขที่ Item', 'Item Code', 'Item No']);
+  const itemNameIdx = findSpCol(['ชื่อ Item', 'Item Name', 'รายการ']);
+  const qtyIdx = findSpCol(['จำนวน', 'Qty', 'Quantity']);
+  const prodOrderIdx = findSpCol(['Production Order', 'Prod Order']);
+  const pdActLineIdx = findSpCol(['จำนวนPD', 'Act Line']);
+  const notifyDateIdx = findSpCol(['วันที่แจ้งดำเนินการ', 'Notify Date']);
+  const weekIdx = findSpCol(['Week']);
+  const targetReqIdx = findSpCol(['เป้าหมายที่ต้องการ', 'Target Requested']);
+  const deptIdx = findSpCol(['หน่วยงานที่แจ้งดำเนินการ', 'หน่วยงาน']);
+  const reqNameIdx = findSpCol(['ชื่อผู้แจ้งดำเนินการ', 'ผู้แจ้ง']);
+  const target1Idx = findSpCol(['เป้าหมายส่งมอบ 1', 'เป้าหมาย 1']);
+  const target2Idx = findSpCol(['เป้าหมายส่งมอบ 2', 'เป้าหมาย 2']);
+  const target3Idx = findSpCol(['เป้าหมายส่งมอบ 3', 'เป้าหมาย 3']);
+  const target4Idx = findSpCol(['เป้าหมายส่งมอบ 4', 'เป้าหมาย 4']);
+  const target5Idx = findSpCol(['เป้าหมายส่งมอบ 5', 'เป้าหมาย 5']);
+  const targetLatestIdx = findSpCol(['เป้าหมายล่าสุด', 'Target Latest']);
+  const poPrIdx = findSpCol(['po/pr', 'po / pr']);
+  const remarkIdx = findSpCol(['หมายเหตุ', 'Remark', 'Note']);
+  const dwgStatusIdx = findSpCol(['สถานะแบบ', 'DWG', 'แบบ']);
+  const closedIdx = findSpCol(['Closed', 'closed', 'close', 'ปิดงาน', 'ปิด']);
+
+  const spItems: DeliveryItem[] = [];
+  let spCounter = 0;
+
+  for (let i = headerRowIdx + 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r || r.length < 5 || r.every(c => !c.trim())) continue;
+
+    const getVal = (idx: number, fallback: number) => {
+      const target = idx !== -1 ? idx : fallback;
+      return target >= 0 && target < r.length && r[target] ? r[target].trim() : '';
+    };
+
+    const rawDwgStatus = getVal(dwgStatusIdx, 27);
+    if (rawDwgStatus.includes('ยกเลิกผลิต') || rawDwgStatus.includes('ไม่สั่งผลิต')) continue;
+
+    const docRef = getVal(docRefIdx, 0);
+    const actionTopic = getVal(actionTopicIdx, 1) || 'สั่งผลิต/สั่งซื้อ ตามใบเสนอราคา';
+    const ncrNo = getVal(ncrIdx, 2);
+    const projectCode = getVal(projCodeIdx, 3);
+    const projectName = getVal(projNameIdx, 4);
+    const docType = getVal(docTypeIdx, 5) || 'เอกสาร 04';
+    const rawDoc04 = getVal(doc04Idx, 6);
+    const rawMachineCol = getVal(machineIdx, 7);
+    const itemCode = getVal(itemCodeIdx, 8);
+    const itemName = getVal(itemNameIdx, 9);
+    const qtyStr = getVal(qtyIdx, 10);
+    let prodOrder = getVal(prodOrderIdx, 12);
+    const pdActLine = getVal(pdActLineIdx, 13);
+    const notifyDate = getVal(notifyDateIdx, 14);
+    const week = getVal(weekIdx, 15);
+    const targetRequested = getVal(targetReqIdx, 16);
+    const requestDept = getVal(deptIdx, 17);
+    const requesterName = getVal(reqNameIdx, 18);
+    let target1 = getVal(target1Idx, 19);
+    let target2 = getVal(target2Idx, 20);
+    let target3 = getVal(target3Idx, 21);
+    let target4 = getVal(target4Idx, 22);
+    let target5 = getVal(target5Idx, 23);
+    // Column Y (Col 24): เป้าหมายล่าสุด
+    const rawTargetLatest = getVal(targetLatestIdx, 24);
+    const poPr = getVal(poPrIdx, 25);
+    const remark = getVal(remarkIdx, 26);
+    const closed = getVal(closedIdx, 28);
+
+    const machineName = rawDoc04 || '(ไม่ระบุเอกสาร 04)';
+    const dedupKey = `${norm(docRef)}|${norm(machineName)}|${norm(itemCode)}`;
+    if (existingKeys.has(dedupKey)) continue;
+
+    // Service Purchase: เป้าหมายให้ดูใน Column Y (เป้าหมายล่าสุด)
+    const targetLatest = rawTargetLatest || target5 || target4 || target3 || target2 || target1 || targetRequested;
+
+    // พร้อมใส่ในช่องประวัติเลื่อนเป้าด้วย (ถ้า target1 ว่าง ให้ใช้ targetLatest จาก Column Y)
+    if (!target1 && targetLatest) {
+      target1 = targetLatest;
+    } else if (target1 && targetLatest && target1 !== targetLatest) {
+      if (!target2) target2 = targetLatest;
+      else if (!target3 && target2 !== targetLatest) target3 = targetLatest;
+      else if (!target4 && target3 !== targetLatest) target4 = targetLatest;
+      else if (!target5 && target4 !== targetLatest) target5 = targetLatest;
+    }
+
+    let qty = 1;
+    if (qtyStr) {
+      const parsedQty = parseFloat(qtyStr.replace(/,/g, ''));
+      if (!isNaN(parsedQty)) qty = parsedQty;
+    }
+
+    if (!prodOrder && itemCode) {
+      const projItemKey = `${projectCode.trim()}|${itemCode.trim()}`;
+      prodOrder =
+        (itemPdMap.byProjItem as Record<string, string>)[projItemKey] ||
+        (itemPdMap.byItem as Record<string, string>)[itemCode.trim()] ||
+        '';
+    }
+
+    const itemPds = extractPdNumbers(prodOrder);
+    const matchedQcPds = qcMap ? itemPds.filter(p => qcMap[p]) : [];
+    const latestQcMeta = pickLatestQcMeta(itemPds, qcMap);
+    const qcAction = latestQcMeta?.action || '';
+    const qcWarehouseStatus = getQcWarehouseStatus(qcAction);
+    const isQcPassed = qcWarehouseStatus === 'คลัง PRD' || qcWarehouseStatus === 'คลัง SEMI';
+
+    const overviewMeta = getOverviewStatusForItem(itemCode, projectCode, itemPds);
+    if (!prodOrder && overviewMeta?.prodOrder) {
+      prodOrder = overviewMeta.prodOrder;
+    }
+
+    const normRemark = remark.toLowerCase();
+    const normClosed = closed.toLowerCase();
+    const isDelivered =
+      normRemark.includes('ส่งแล้ว') ||
+      normRemark.includes('จัดส่งแล้ว') ||
+      normRemark.includes('*') ||
+      normRemark.includes('close') ||
+      normClosed.includes('*') ||
+      normClosed.includes('close');
+
+    spCounter++;
+    spItems.push({
+      id: `sp-item-${spCounter}`,
+      workTag: 'Service Purchase',
+      docRef,
+      projectCode,
+      projectName,
+      customer: extractCustomer(projectName),
+      docType,
+      machineName,
+      machine: rawMachineCol || undefined,
+      hasMachine: Boolean(rawDoc04),
+      itemCode,
+      itemName,
+      qty,
+      prodOrder,
+      pdActLine,
+      notifyDate,
+      target1,
+      target2,
+      target3,
+      target4,
+      target5,
+      targetLatest,
+      poPr,
+      remark,
+      status: isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ',
+      rawStatus: rawDwgStatus,
+      closed,
+      actionTopic,
+      ncrNo,
+      requestDept,
+      requesterName,
+      targetRequested,
+      week,
+      isQcPassed,
+      qcDate: latestQcMeta?.qcDate || '',
+      qcInspector: latestQcMeta?.inspector || '',
+      qcPassedQty: latestQcMeta?.qtyPass || '',
+      qcTopic: latestQcMeta?.topic || '',
+      qcRemarks: latestQcMeta?.remarks || '',
+      qcAction,
+      qcWarehouseStatus,
+      qcPdList: matchedQcPds,
+      overviewStatus: overviewMeta?.status || '',
+      overviewCustomer: overviewMeta?.customer || '',
+      overviewProject: overviewMeta?.project || '',
+      overviewItemCode: overviewMeta?.itemCode || '',
+      readyOp: overviewMeta?.readyOp || '',
+      readyOpDesc: overviewMeta?.readyOpDesc || '',
+      readyOpWc: overviewMeta?.readyOpWc || '',
+      readyOpNo: overviewMeta?.readyOpNo || undefined,
+      hasReadyOp: Boolean(overviewMeta?.readyOp),
+      activeOp: overviewMeta?.activeOp || '',
+      activeOpDesc: overviewMeta?.activeOpDesc || '',
+      activeOpWc: overviewMeta?.activeOpWc || '',
+      activeOpNo: overviewMeta?.activeOpNo || undefined,
+      currentOp: overviewMeta?.currentOp || '',
+      currentOpDesc: overviewMeta?.currentOpDesc || '',
+      currentOpStatus: overviewMeta?.currentOpStatus || '',
+      lastCompletedOp: overviewMeta?.lastCompletedOp || '',
+      lastCompletedOpDesc: overviewMeta?.lastCompletedOpDesc || '',
+      lastCompletedOpWc: overviewMeta?.lastCompletedOpWc || '',
+      lastCompletedOpNo: overviewMeta?.lastCompletedOpNo || undefined,
+      isAllCompleted: overviewMeta?.isAllCompleted || false,
+    });
+  }
+
+  return spItems;
+}
+
+/**
+ * Helper to enrich a bundled item (Service, Project, or Service Purchase) with Production, QC, and Overview maps
+ */
+function enrichBundledItem(item: DeliveryItem, defaultTag: WorkTag): DeliveryItem {
   const docNorm = norm(item.docRef);
   const itemNorm = norm(item.itemCode);
   const key = `${docNorm}|${itemNorm}`;
@@ -1388,15 +1653,18 @@ export async function fetchDeliveryData(
   customUrl?: string, 
   customProdUrl?: string,
   customQcUrl?: string,
-  customOverviewUrl?: string
+  customOverviewUrl?: string,
+  customSpUrl?: string
 ): Promise<{ items: DeliveryItem[]; fromLive: boolean; error?: string }> {
   const sheetUrl = customUrl || getSavedSheetUrl();
   const prodUrl = customProdUrl || getSavedProdUrl();
+  const spUrl = customSpUrl || getSavedServicePurchaseUrl();
   const qcUrl = customQcUrl || getSavedQcUrl();
   const overviewUrl = customOverviewUrl !== undefined ? customOverviewUrl : getSavedOverviewUrl();
 
   const csvUrl1 = getCsvExportUrl(sheetUrl);
   const csvUrl2 = getCsvExportUrl(prodUrl);
+  const csvUrlSp = getCsvExportUrl(spUrl);
   const xlsxUrl3 = getXlsxExportUrl(qcUrl);
   const csvUrl3 = getCsvExportUrl(qcUrl);
   const hasOverviewUrl = !!(overviewUrl && overviewUrl.trim());
@@ -1404,18 +1672,13 @@ export async function fetchDeliveryData(
 
   try {
     // Fetch all requested sheets in parallel
-    const fetchPromises: Promise<Response>[] = [
+    const [res1, res2, res3, res4, resSp] = await Promise.allSettled([
       fetch(csvUrl1, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
       fetch(csvUrl2, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
       fetch(xlsxUrl3, { method: 'GET' }),
-    ];
-    if (csvUrl4) {
-      fetchPromises.push(
-        fetch(csvUrl4, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } })
-      );
-    }
-
-    const [res1, res2, res3, res4] = await Promise.allSettled(fetchPromises);
+      csvUrl4 ? fetch(csvUrl4, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }) : Promise.reject('No overview URL'),
+      csvUrlSp ? fetch(csvUrlSp, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }) : Promise.reject('No SP URL'),
+    ]);
 
     if (res1.status !== 'fulfilled' || !res1.value.ok) {
       throw new Error('ไม่สามารถดึงข้อมูลจาก Google Sheet 1 (Check list ส่งมอบ) ได้');
@@ -1508,8 +1771,7 @@ export async function fetchDeliveryData(
     if (liveCsvText2) {
       projectItems = parseProjectItemsFromProductionCsv(liveCsvText2, serviceItems, qcMap);
     } else {
-      // Sheet 2 ไม่สามารถโหลดได้ (เช่น 401) — ใช้ project items จาก v8 cache ก่อน
-      // เพื่อไม่ให้สถานะ Closed ถูก reset เป็นค่าเก่าจาก bundled default
+      // Sheet 2 ไม่สามารถโหลดได้ (เช่น 401) — ใช้ project items จาก cache ก่อน
       const cachedRaw = localStorage.getItem(STORAGE_CACHE_KEY);
       if (cachedRaw) {
         try {
@@ -1519,7 +1781,7 @@ export async function fetchDeliveryData(
             .map(it => enrichBundledItem(it, 'Project'));
           if (cachedProj.length > 0) {
             projectItems = cachedProj;
-            console.warn('[PDTrack] Sheet2 fetch failed — using cached project items from localStorage v8');
+            console.warn('[PDTrack] Sheet2 fetch failed — using cached project items from localStorage');
           } else {
             projectItems = (defaultProjectItemsJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Project'));
           }
@@ -1531,11 +1793,63 @@ export async function fetchDeliveryData(
       }
     }
 
+    // 3. Parse Service Purchase items from Sheet "service purchase"
+    let spItems: DeliveryItem[] = [];
+    if (resSp && resSp.status === 'fulfilled' && resSp.value.ok) {
+      try {
+        const liveCsvSp = await resSp.value.text();
+        // Collect existing keys to avoid accidental duplicates
+        const existingKeys = new Set<string>();
+        for (const item of serviceItems) {
+          const docNum = (item.docRef || '').trim().toUpperCase();
+          const itemCode = (item.itemCode || '').trim().toUpperCase();
+          if (docNum && itemCode) existingKeys.add(`${docNum}|${itemCode}`);
+          if (item.prodOrder) existingKeys.add(item.prodOrder.trim().toUpperCase());
+        }
+        for (const item of projectItems) {
+          const docNum = (item.docRef || '').trim().toUpperCase();
+          const itemCode = (item.itemCode || '').trim().toUpperCase();
+          if (docNum && itemCode) existingKeys.add(`${docNum}|${itemCode}`);
+          if (item.prodOrder) existingKeys.add(item.prodOrder.trim().toUpperCase());
+        }
+        spItems = parseServicePurchaseCsv(liveCsvSp, existingKeys, qcMap);
+      } catch (spErr) {
+        console.warn('Could not parse live Service Purchase Sheet, falling back to cached/bundled:', spErr);
+      }
+    }
 
-    const items = [...serviceItems, ...projectItems];
+    if (spItems.length === 0) {
+      const cachedRaw = localStorage.getItem(STORAGE_CACHE_KEY);
+      if (cachedRaw) {
+        try {
+          const cachedAll = JSON.parse(cachedRaw) as DeliveryItem[];
+          const cachedSp = cachedAll
+            .filter(it => it.workTag === 'Service Purchase')
+            .map(it => enrichBundledItem(it, 'Service Purchase'));
+          if (cachedSp.length > 0) {
+            spItems = cachedSp;
+          } else {
+            spItems = (defaultServicePurchaseJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Service Purchase'));
+          }
+        } catch {
+          spItems = (defaultServicePurchaseJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Service Purchase'));
+        }
+      } else {
+        spItems = (defaultServicePurchaseJson as DeliveryItem[]).map(it => enrichBundledItem(it, 'Service Purchase'));
+      }
+    }
+
+    const items = [...serviceItems, ...projectItems, ...spItems];
 
     // Save to cache
     try {
+      // Clean up older cache versions to prevent QuotaExceededError
+      for (let k = 0; k < localStorage.length; k++) {
+        const key = localStorage.key(k);
+        if (key && key.startsWith('pdtrack_cached_data_') && key !== STORAGE_CACHE_KEY) {
+          localStorage.removeItem(key);
+        }
+      }
       localStorage.setItem(STORAGE_CACHE_KEY, JSON.stringify(items));
       localStorage.setItem(STORAGE_TIMESTAMP_KEY, new Date().toISOString());
     } catch (storageErr) {
@@ -1563,15 +1877,16 @@ export async function fetchDeliveryData(
       }
     }
 
-    // Default bundled data: combine Service (defaultData.json) + Project (defaultProjectItems.json)
+    // Default bundled data: combine Service + Project + Service Purchase
     const bundledServiceItems = (defaultItemsJson as DeliveryItem[]).map(item => enrichBundledItem(item, 'Service'));
     const bundledProjectItems = (defaultProjectItemsJson as DeliveryItem[]).map(item => enrichBundledItem(item, 'Project'));
-    const bundledItems = [...bundledServiceItems, ...bundledProjectItems];
+    const bundledSpItems = (defaultServicePurchaseJson as DeliveryItem[]).map(item => enrichBundledItem(item, 'Service Purchase'));
+    const bundledItems = [...bundledServiceItems, ...bundledProjectItems, ...bundledSpItems];
 
     return {
       items: bundledItems,
       fromLive: false,
-      error: `ใช้ข้อมูลสำรองในระบบ (เชื่อมโยงทั้งงาน Service และ Project เรียบร้อย)`,
+      error: `ใช้ข้อมูลสำรองในระบบ (เชื่อมโยงทั้งงาน Service, Project และ Service Purchase เรียบร้อย)`,
     };
   }
 }
@@ -1623,7 +1938,7 @@ export function buildMachineSummaries(items: DeliveryItem[]): MachineSummary[] {
     const prodOrdersSet = new Set<string>();
     const deptsSet = new Set<string>();
     const topicsSet = new Set<string>();
-    const workTagsSet = new Set<'Service' | 'Project'>();
+    const workTagsSet = new Set<WorkTag>();
 
     let earliestDate: Date | null = null;
     let latestDate: Date | null = null;

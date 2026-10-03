@@ -158,6 +158,8 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                     className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                       tag === 'Project'
                         ? 'bg-violet-500/20 text-violet-300 border-violet-500/40'
+                        : tag === 'Service Purchase'
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                         : 'bg-sky-500/20 text-sky-300 border-sky-500/40'
                     }`}
                   >
@@ -394,6 +396,8 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                               className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
                                 item.workTag === 'Project'
                                   ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                  : item.workTag === 'Service Purchase'
+                                  ? 'bg-amber-100 text-amber-800 border-amber-300'
                                   : 'bg-sky-100 text-sky-800 border-sky-300'
                               }`}
                             >
@@ -531,7 +535,11 @@ export const MachineDetailModal: React.FC<MachineDetailModalProps> = ({ machine,
                                 </span>
                               </>
                             )}
-                            {!item.target1 && !item.targetLatest && (
+                            {!item.target1 && item.targetLatest ? (
+                              <span className="px-1.5 py-0.5 rounded text-[11px] font-mono text-slate-700 bg-slate-100 font-medium">
+                                {formatCompactDate(item.targetLatest)}
+                              </span>
+                            ) : !item.target1 && (
                               <span className="text-slate-400">-</span>
                             )}
                           </div>

@@ -32,7 +32,7 @@ interface DeliveryCalendarViewProps {
 
 type CalendarViewMode = 'month' | 'week';
 type DeliveryStatusFilter = 'all' | 'pending' | 'delivered' | 'overdue';
-type WorkTypeFilter = 'all' | 'Service' | 'Project';
+type WorkTypeFilter = 'all' | 'Service' | 'Project' | 'Service Purchase';
 
 const THAI_MONTHS = [
   'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
@@ -262,6 +262,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
     let overdue = 0;
     let serviceCount = 0;
     let projectCount = 0;
+    let servicePurchaseCount = 0;
     let totalQty = 0;
 
     calendarDays.forEach((cell) => {
@@ -277,13 +278,15 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
         }
         if (item.workTag === 'Project') {
           projectCount++;
+        } else if (item.workTag === 'Service Purchase') {
+          servicePurchaseCount++;
         } else {
           serviceCount++;
         }
       });
     });
 
-    return { total, pending, delivered, overdue, serviceCount, projectCount, totalQty };
+    return { total, pending, delivered, overdue, serviceCount, projectCount, servicePurchaseCount, totalQty };
   }, [calendarDays, viewMode]);
 
   // Navigation handlers
@@ -535,6 +538,17 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                 <span className="w-2 h-2 rounded-full bg-violet-400"></span>
                 <span>Project</span>
               </button>
+              <button
+                onClick={() => setWorkTypeFilter('Service Purchase')}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
+                  workTypeFilter === 'Service Purchase'
+                    ? 'bg-amber-600 text-white shadow-2xs'
+                    : 'text-amber-800 hover:bg-white'
+                }`}
+              >
+                <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span>Service Purchase</span>
+              </button>
             </div>
 
             {/* 3. Quick Search in Calendar */}
@@ -610,6 +624,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
               const deliveredCount = cell.items.filter((i) => isItemDelivered(i)).length;
               const serviceCount = cell.items.filter((i) => (i.workTag || 'Service') === 'Service').length;
               const projectCount = cell.items.filter((i) => i.workTag === 'Project').length;
+              const spCount = cell.items.filter((i) => i.workTag === 'Service Purchase').length;
               const hasOverdue = cell.items.some((i) => !isItemDelivered(i) && i.isOverdue);
 
               return (
@@ -661,6 +676,14 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                               P:{projectCount}
                             </span>
                           )}
+                          {spCount > 0 && (
+                            <span
+                              className="px-1.5 py-0.2 rounded text-[9.5px] font-bold bg-amber-100 text-amber-800 border border-amber-200"
+                              title={`งาน Service Purchase ${spCount} รายการ`}
+                            >
+                              SP:{spCount}
+                            </span>
+                          )}
                         </div>
                       )}
                     </div>
@@ -670,6 +693,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                       {cell.items.slice(0, 3).map((item) => {
                         const delivered = isItemDelivered(item);
                         const isProj = item.workTag === 'Project';
+                        const isSp = item.workTag === 'Service Purchase';
                         return (
                           <div
                             key={item.id}
@@ -689,6 +713,8 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                                 ? 'bg-rose-50/90 text-rose-900 border-rose-200'
                                 : isProj
                                 ? 'bg-violet-50/90 text-violet-900 border-violet-200'
+                                : isSp
+                                ? 'bg-amber-50/90 text-amber-900 border-amber-200'
                                 : 'bg-sky-50/90 text-sky-900 border-sky-200'
                             }`}
                           >
@@ -701,10 +727,10 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                             )}
                             <span
                               className={`px-1 rounded text-[8.5px] font-bold shrink-0 ${
-                                isProj ? 'bg-violet-200/80 text-violet-900' : 'bg-sky-200/80 text-sky-900'
+                                isProj ? 'bg-violet-200/80 text-violet-900' : isSp ? 'bg-amber-200/80 text-amber-900' : 'bg-sky-200/80 text-sky-900'
                               }`}
                             >
-                              {isProj ? 'P' : 'S'}
+                              {isProj ? 'P' : isSp ? 'SP' : 'S'}
                             </span>
                             <span className="font-semibold truncate">
                               {item.machineName !== '(ไม่ระบุเครื่องจักร)' ? item.machineName : item.itemName}
@@ -840,6 +866,8 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                               className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
                                 isProj
                                   ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                  : item.workTag === 'Service Purchase'
+                                  ? 'bg-amber-100 text-amber-800 border-amber-300'
                                   : 'bg-sky-100 text-sky-800 border-sky-300'
                               }`}
                             >
@@ -954,7 +982,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                   <tr className="bg-slate-100 text-slate-600 border-b border-slate-200 font-semibold">
                     <th className="py-2.5 px-3 w-10 text-center">#</th>
                     <th className="py-2.5 px-3">ประเภท / ลูกค้า</th>
-                    <th className="py-2.5 px-3">เครื่องจักร / โครงการ</th>
+                    <th className="py-2.5 px-3">เครื่องจักร (04) / หัวข้อแจ้งดำเนินการ</th>
                     <th className="py-2.5 px-3">เลขที่ Item (Double-Click เปิด PDF)</th>
                     <th className="py-2.5 px-3">ชื่อชิ้นงาน</th>
                     <th className="py-2.5 px-3 text-center">จำนวน</th>
@@ -975,6 +1003,8 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                               className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold border ${
                                 item.workTag === 'Project'
                                   ? 'bg-violet-100 text-violet-800 border-violet-300'
+                                  : item.workTag === 'Service Purchase'
+                                  ? 'bg-amber-100 text-amber-800 border-amber-300'
                                   : 'bg-sky-100 text-sky-800 border-sky-300'
                               }`}
                             >
@@ -982,7 +1012,7 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                             </span>
                             <span className="font-bold text-slate-900">{customerName}</span>
                           </div>
-                          <div className="text-[10px] font-mono text-slate-500 mt-0.5">{item.projectCode}</div>
+                          <div className="text-[10px] font-mono text-slate-500 mt-0.5" title={item.projectName}>{item.projectCode}</div>
                         </td>
                         <td className="py-2.5 px-3">
                           <button
@@ -992,7 +1022,12 @@ export const DeliveryCalendarView: React.FC<DeliveryCalendarViewProps> = ({
                             <Cpu className="w-3.5 h-3.5 text-sky-500" />
                             <span>{item.machineName}</span>
                           </button>
-                          <div className="text-[10px] text-slate-400">{item.projectName}</div>
+                          <div 
+                            className="text-[10px] text-slate-500 truncate max-w-[200px] mt-0.5" 
+                            title={item.actionTopic ? `หัวข้อแจ้งดำเนินการ: ${item.actionTopic}` : undefined}
+                          >
+                            {item.actionTopic || '-'}
+                          </div>
                         </td>
                         <td
                           onDoubleClick={() =>
