@@ -170,29 +170,16 @@ export async function searchAndOpenItemPdf(rawItemCode: string): Promise<void> {
     // ข้ามไปค้นหาผ่าน Google Drive Search โดยตรง
   }
 
-  // 3. หากยังไม่พบไฟล์ตรงในดัชนี ให้เปิดโฟลเดอร์ dwg โดยตรง พร้อมคัดลอกรหัสแบบลงคลิปบอร์ด
-  // (ค้นหาเฉพาะในโฟลเดอร์ dwg ไม่ค้นหา Global ทั่ว Google Drive ตามที่กำหนด)
-  const dwgFolderUrl = getSavedDwgFolderUrl() || DEFAULT_DWG_FOLDER_URL;
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    try {
-      await navigator.clipboard.writeText(hyphenated);
-    } catch {
-      // ignore clipboard error
-    }
-  }
-
-  if (newTab) {
-    newTab.location.href = dwgFolderUrl;
-  } else {
-    window.open(dwgFolderUrl, '_blank', 'noopener,noreferrer');
+  // 3. หากยังไม่พบไฟล์ PDF ให้ปิดแท็บที่เปิดไว้ และแจ้งเตือนผู้ใช้ (ไม่เปิดลิงก์โฟลเดอร์)
+  if (newTab && !newTab.closed) {
+    newTab.close();
   }
 
   window.dispatchEvent(
     new CustomEvent('pdtrack:toast', {
       detail: {
         type: 'warning',
-        text: `ไม่พบไฟล์แบบ PDF สำหรับรหัส "${hyphenated}" จึงเปิดโฟลเดอร์ dwg ให้แทน (คัดลอกรหัสลงคลิปบอร์ดแล้ว)`,
+        text: `ไม่พบไฟล์ PDF สำหรับเลขที่ Item "${hyphenated || trimmed}" ในระบบ Google Drive`,
       },
     })
   );
