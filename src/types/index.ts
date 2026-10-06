@@ -23,6 +23,8 @@ export interface DeliveryItem {
   target4: string;
   target5: string;
   targetLatest: string;
+  poReceiptDate?: string;     // Service Purchase: วันที่รับของจาก Report PO ค้างรับ
+  deliveredByPo?: boolean;    // Service Purchase: ไม่พบ PO ใน Report PO ค้างรับ = ส่งแล้ว
   poPr: string;
   remark: string;
   status: 'ส่งแล้ว' | 'รอดำเนินการ';

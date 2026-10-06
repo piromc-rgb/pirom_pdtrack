@@ -39,7 +39,15 @@ import {
   parseOverviewJson,
   parseOverviewCsv,
   fetchOverviewFromAppsScript,
-  overviewStatusMap
+  autoSyncLatestOverview,
+  autoSyncLatestPoPending,
+  overviewStatusMap,
+  DEFAULT_PO_PENDING_FOLDER_URL,
+  getSavedPoPendingFolderUrl,
+  savePoPendingFolderUrl,
+  getActivePoPending,
+  parsePoPendingExcel,
+  saveActivePoPending
 } from '../services/sheetService';
 import {
   DEFAULT_DWG_FOLDER_URL,
@@ -84,6 +92,51 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [isSyncingDrive, setIsSyncingDrive] = useState(false);
   const [overviewMessage, setOverviewMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Report PO ค้างรับ (Purchase Data) States — ใช้หาเป้าส่งมอบงาน Service Purchase
+  const [poFolderUrl, setPoFolderUrl] = useState(getSavedPoPendingFolderUrl());
+  const [poInfo, setPoInfo] = useState(getActivePoPending());
+  const [isProcessingPo, setIsProcessingPo] = useState(false);
+  const [poMessage, setPoMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const poFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePoAutoSync = async () => {
+    setIsProcessingPo(true);
+    setPoMessage(null);
+    try {
+      const data = await autoSyncLatestPoPending(true);
+      if (!data) throw new Error('ไม่พบไฟล์ Report PO ค้างรับ ในโฟลเดอร์ Purchase Data (ต้องรันผ่าน dev server และมี Google Drive for desktop)');
+      setPoInfo(data);
+      setPoMessage({ type: 'success', text: `Scan พบไฟล์ล่าสุด "${data.fileName}" (${data.lines.length.toLocaleString()} รายการ)` });
+      await onRefreshData(sheetUrl.trim(), prodUrl.trim(), qcUrl.trim(), overviewUrl.trim(), spUrl.trim());
+    } catch (err: any) {
+      setPoMessage({ type: 'error', text: err.message || 'เกิดข้อผิดพลาด' });
+    } finally {
+      setIsProcessingPo(false);
+    }
+  };
+
+  const handlePoFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsProcessingPo(true);
+    setPoMessage(null);
+    try {
+      const data = parsePoPendingExcel(await file.arrayBuffer(), file.name);
+      if (data.lines.length === 0) {
+        throw new Error(`ไม่พบรายการ PO ค้างรับในไฟล์ "${file.name}"`);
+      }
+      saveActivePoPending(data);
+      setPoInfo(data);
+      setPoMessage({ type: 'success', text: `โหลด "${file.name}" สำเร็จ (${data.lines.length.toLocaleString()} รายการ PO ค้างรับ)` });
+      await onRefreshData(sheetUrl.trim(), prodUrl.trim(), qcUrl.trim(), overviewUrl.trim(), spUrl.trim());
+    } catch (err: any) {
+      setPoMessage({ type: 'error', text: err.message || 'เกิดข้อผิดพลาดในการอ่านไฟล์' });
+    } finally {
+      setIsProcessingPo(false);
+      if (poFileInputRef.current) poFileInputRef.current.value = '';
+    }
+  };
 
   // Handle local file selection (.xlsx, .xls, .json, .csv)
   const handleOverviewFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,6 +198,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setOverviewMessage(null);
 
     try {
+      // 1) scan โฟลเดอร์ Drive หาไฟล์ Status Overview ล่าสุดโดยตรง
+      const latest = await autoSyncLatestOverview(true);
+      if (latest) {
+        setActiveOverviewFilename(latest.fileName);
+        setOverviewPdCount(latest.pdCount);
+        setOverviewMessage({
+          type: 'success',
+          text: `Scan พบไฟล์ล่าสุด "${latest.fileName}" และซิงค์สำเร็จ (พบ ${latest.pdCount.toLocaleString()} PDs)`
+        });
+        await onRefreshData(sheetUrl.trim(), prodUrl.trim(), qcUrl.trim(), overviewUrl.trim(), spUrl.trim());
+        return;
+      }
+      // 2) สำรอง: Google Apps Script
       const res = await fetchOverviewFromAppsScript();
       const pdCount = Object.keys(res.byPd).length;
       if (pdCount === 0) {
@@ -198,6 +264,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }
       saveOverviewUrl(trimmed4);
       saveDwgFolderUrl(trimmedDwg || DEFAULT_DWG_FOLDER_URL);
+      savePoPendingFolderUrl(poFolderUrl);
       await onRefreshData(trimmed1, trimmed2, trimmed3, trimmed4, trimmedSp);
       setSaveSuccess(true);
       setTimeout(() => {
@@ -224,6 +291,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     saveQcUrl(DEFAULT_QC_URL);
     saveOverviewUrl(DEFAULT_OVERVIEW_URL);
     saveDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
+    setPoFolderUrl(DEFAULT_PO_PENDING_FOLDER_URL);
+    savePoPendingFolderUrl(DEFAULT_PO_PENDING_FOLDER_URL);
   };
 
   return (
@@ -389,6 +458,90 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </span>
           </div>
 
+          {/* Report PO ค้างรับ (Purchase Data) — เป้าส่งมอบงาน Service Purchase */}
+          <div className="p-3.5 rounded-xl border border-teal-200/90 bg-teal-50/40 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                <span>Report PO ค้างรับ: โฟลเดอร์ Purchase Data (เป้าส่งมอบงาน Service Purchase)</span>
+              </label>
+              <a
+                href={poFolderUrl.trim() || DEFAULT_PO_PENDING_FOLDER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-teal-700 hover:underline flex items-center gap-0.5"
+              >
+                <span>เปิดดูโฟลเดอร์</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+
+            <textarea
+              rows={2}
+              value={poFolderUrl}
+              onChange={(e) => setPoFolderUrl(e.target.value)}
+              className="w-full p-2.5 text-xs font-mono bg-white border border-slate-200 rounded-lg outline-none focus:border-teal-500"
+              placeholder="https://drive.google.com/drive/folders/1z4qVl5Iikwd1PTQSdwo0Et_nIk9VMTGS"
+            />
+
+            <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-teal-200 text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600 shrink-0" />
+                <div className="truncate">
+                  <span className="text-slate-400 text-[10px] block">ไฟล์ Report PO ค้างรับ ที่ใช้งานอยู่ (ใหม่ที่สุด):</span>
+                  <span className="font-bold text-slate-800 truncate block">{poInfo.fileName}</span>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0 ml-2">
+                {poInfo.lines.length.toLocaleString()} รายการ
+              </span>
+            </div>
+
+            {poMessage && (
+              <div className={`p-2.5 rounded-lg text-xs flex items-center gap-2 ${
+                poMessage.type === 'success'
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                  : 'bg-rose-50 text-rose-800 border border-rose-200'
+              }`}>
+                {poMessage.type === 'success' ? (
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                )}
+                <span>{poMessage.text}</span>
+              </div>
+            )}
+
+            <input
+              type="file"
+              ref={poFileInputRef}
+              accept=".xlsx,.xls"
+              className="hidden"
+              onChange={handlePoFileSelect}
+            />
+            <button
+              type="button"
+              onClick={handlePoAutoSync}
+              disabled={isProcessingPo}
+              className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+            >
+              <CloudDownload className={`w-3.5 h-3.5 ${isProcessingPo ? 'animate-bounce' : ''}`} />
+              <span>Scan หาไฟล์ล่าสุดและซิงค์อัตโนมัติ</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => poFileInputRef.current?.click()}
+              disabled={isProcessingPo}
+              className="w-full flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+            >
+              <FolderUp className="w-3.5 h-3.5" />
+              <span>{isProcessingPo ? 'กำลังอ่านไฟล์...' : 'หรือเลือกไฟล์ Report PO ค้างรับ (.xlsx) เอง'}</span>
+            </button>
+            <span className="text-[11px] text-slate-500 block">
+              * งาน Service Purchase: เป้าส่งมอบ = วันที่รับของ (Confirmed Receipt Date ถ้ามี ไม่เช่นนั้น Planned Receipt Date) ของเลข PO/PR ในไฟล์ล่าสุด · หากไม่พบ PO ในรายงาน ถือว่า "ส่งแล้ว" · ข้อมูลเริ่มต้นอัปเดตด้วย scripts/update_po_pending.py
+            </span>
+          </div>
+
           {/* Section 4: Status Overview from Google Drive Folder */}
           <div className="p-3.5 rounded-xl border border-amber-200/90 bg-amber-50/40 space-y-2.5">
             <div className="flex items-center justify-between">
@@ -475,7 +628,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 title="ซิงค์ข้อมูลล่าสุดจาก Google Drive Folder อัตโนมัติ"
               >
                 <CloudDownload className={`w-3.5 h-3.5 ${isSyncingDrive ? 'animate-bounce' : ''}`} />
-                <span>{isSyncingDrive ? 'กำลังดึงจาก Google Drive...' : 'ซิงค์สดจาก Google Drive Folder'}</span>
+                <span>{isSyncingDrive ? 'กำลังดึงจาก Google Drive...' : 'Scan หาไฟล์ล่าสุดจากโฟลเดอร์ & ซิงค์'}</span>
               </button>
             </div>
 

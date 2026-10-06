@@ -8,6 +8,7 @@ import defaultQcData from '../data/qcData.json';
 import defaultOverviewData from '../data/overviewStatusData.json';
 import defaultOverviewItemMap from '../data/overviewItemMap.json';
 import itemPdMap from '../data/itemPdMap.json';
+import defaultPoPendingJson from '../data/poPending.json';
 import { DeliveryItem, MachineSummary, OverviewMeta, WorkTag } from '../types';
 import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer } from '../utils/dateUtils';
 
@@ -1642,6 +1643,226 @@ function enrichBundledItem(item: DeliveryItem, defaultTag: WorkTag): DeliveryIte
   };
 }
 
+
+// ---------------------------------------------------------------------------
+// Report PO ค้างรับ (Purchase Data) — ใช้หาเป้าส่งมอบของงาน Service Purchase
+// ---------------------------------------------------------------------------
+export const DEFAULT_PO_PENDING_FOLDER_URL = 'https://drive.google.com/drive/folders/1z4qVl5Iikwd1PTQSdwo0Et_nIk9VMTGS?usp=drive_link';
+const STORAGE_PO_PENDING_FOLDER_KEY = 'pdtrack_po_pending_folder_url';
+const STORAGE_PO_PENDING_CACHE_KEY = 'pdtrack_po_pending_v1';
+
+export interface PoPendingLine {
+  order: string;
+  line?: number | string;
+  item: string;
+  qty?: number | string;
+  planned: string;
+  confirmed: string;
+}
+
+export interface PoPendingData {
+  fileName: string;
+  fileDate: string;
+  lines: PoPendingLine[];
+}
+
+let activePoPending: PoPendingData = defaultPoPendingJson as PoPendingData;
+try {
+  const cachedPo = localStorage.getItem(STORAGE_PO_PENDING_CACHE_KEY);
+  if (cachedPo) {
+    const parsedPo = JSON.parse(cachedPo) as PoPendingData;
+    // ใช้ไฟล์ที่ใหม่ที่สุดระหว่างข้อมูลที่ bundle มากับแคชที่ผู้ใช้โหลดเอง
+    if (parsedPo?.lines?.length && parsedPo.fileDate >= activePoPending.fileDate) {
+      activePoPending = parsedPo;
+    }
+  }
+} catch {
+  // ignore storage error
+}
+
+export function getActivePoPending(): PoPendingData {
+  return activePoPending;
+}
+
+export function getSavedPoPendingFolderUrl(): string {
+  return localStorage.getItem(STORAGE_PO_PENDING_FOLDER_KEY) || DEFAULT_PO_PENDING_FOLDER_URL;
+}
+
+export function savePoPendingFolderUrl(url: string): void {
+  localStorage.setItem(STORAGE_PO_PENDING_FOLDER_KEY, url.trim() || DEFAULT_PO_PENDING_FOLDER_URL);
+}
+
+function formatPoDate(v: unknown): string {
+  if (v instanceof Date && !isNaN(v.getTime())) {
+    const dd = String(v.getDate()).padStart(2, '0');
+    const mm = String(v.getMonth() + 1).padStart(2, '0');
+    return `${dd}/${mm}/${v.getFullYear()}`;
+  }
+  return '';
+}
+
+/** แยกวันที่จากชื่อไฟล์ เช่น "Report PO ค้างรับ  06-10-26.xlsx" -> 2026-10-06 */
+function poFileDateFromName(fileName: string): string {
+  const m = fileName.match(/(\d{1,2})-(\d{1,2})-(\d{2,4})/);
+  if (!m) return new Date().toISOString().slice(0, 10);
+  let y = parseInt(m[3], 10);
+  if (y >= 2500) y -= 543;
+  else if (y < 100) y += 2000;
+  return `${y}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+}
+
+/** อ่านไฟล์ Report PO ค้างรับ (.xlsx) แล้วใช้เป็นข้อมูลปัจจุบัน (เก็บใน localStorage) */
+export function parsePoPendingExcel(buffer: ArrayBuffer, fileName: string): PoPendingData {
+  const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
+  const ws = wb.Sheets['Data'] || wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, defval: '', raw: true });
+  const headers = (rows[0] || []).map(h => String(h ?? '').trim());
+  const idx = (name: string) => headers.indexOf(name);
+  const orderI = idx('Order');
+  const itemI = idx('Item') + 1; // รหัส Item อยู่คอลัมน์ถัดจากหัว "Item"
+  const planI = idx('Planned Receipt Date');
+  const confI = idx('Confirmed Receipt Date');
+  if (orderI < 0 || idx('Item') < 0 || planI < 0 || confI < 0) {
+    throw new Error(`ไม่พบคอลัมน์ Order / Item / Planned Receipt Date / Confirmed Receipt Date ในไฟล์ "${fileName}"`);
+  }
+  const lineI = idx('Line');
+  const qtyI = idx('Ordered Quantity');
+
+  const lines: PoPendingLine[] = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    const order = String(r[orderI] ?? '').trim().toUpperCase();
+    if (!order) continue;
+    lines.push({
+      order,
+      line: lineI >= 0 ? r[lineI] : undefined,
+      item: String(r[itemI] ?? '').trim().toUpperCase(),
+      qty: qtyI >= 0 ? r[qtyI] : undefined,
+      planned: formatPoDate(r[planI]),
+      confirmed: formatPoDate(r[confI]),
+    });
+  }
+  return { fileName, fileDate: poFileDateFromName(fileName), lines };
+}
+
+export function saveActivePoPending(data: PoPendingData): void {
+  activePoPending = data;
+  try {
+    localStorage.setItem(STORAGE_PO_PENDING_CACHE_KEY, JSON.stringify(data));
+  } catch (err) {
+    console.warn('Could not save PO pending data to localStorage:', err);
+  }
+}
+
+/**
+ * Service Purchase: เป้าส่งมอบ = วันที่รับของจาก Report PO ค้างรับ (Confirmed ถ้ามี ไม่งั้น Planned)
+ * ถ้า PO/PR ไม่อยู่ใน Report ค้างรับ แสดงว่าส่งมอบ/รับของแล้ว
+ */
+export function applyPoPendingToItems(items: DeliveryItem[]): DeliveryItem[] {
+  const { lines } = activePoPending;
+
+  const byOrder = new Map<string, PoPendingLine[]>();
+  for (const l of lines || []) {
+    const arr = byOrder.get(l.order);
+    if (arr) arr.push(l);
+    else byOrder.set(l.order, [l]);
+  }
+
+  return items.map(item => {
+    if (item.workTag !== 'Service Purchase') return item;
+
+    // Service Purchase ไม่ใช้เป้าหมายจากชีต service purchase — ใช้เฉพาะข้อมูลจาก Report PO ค้างรับ
+    const cleared: DeliveryItem = {
+      ...item,
+      target1: '',
+      target2: '',
+      target3: '',
+      target4: '',
+      target5: '',
+      targetLatest: '',
+      targetRequested: '',
+      poReceiptDate: '',
+      // งานที่เคยถูกตีว่าส่งแล้วจาก PO (แคช) ให้เริ่มจากสถานะรอดำเนินการก่อนตัดสินใหม่
+      ...(item.deliveredByPo ? { status: 'รอดำเนินการ' as const, deliveredByPo: false } : {}),
+    };
+
+    const po = (item.poPr || '').trim().toUpperCase();
+    if (!po || byOrder.size === 0) return cleared;
+
+    const poLines = byOrder.get(po);
+    if (!poLines) {
+      return { ...cleared, status: 'ส่งแล้ว', deliveredByPo: true };
+    }
+
+    const itemCode = (item.itemCode || '').trim().toUpperCase();
+    const matched = poLines.filter(l => l.item === itemCode);
+    const candidates = matched.length > 0 ? matched : poLines;
+    const receiptDate = candidates
+      .map(l => l.confirmed || l.planned)
+      .filter(Boolean)
+      .sort((a, b) => (parseDate(a)?.getTime() ?? 0) - (parseDate(b)?.getTime() ?? 0))[0];
+    if (!receiptDate) return cleared;
+    return { ...cleared, target1: receiptDate, targetLatest: receiptDate, poReceiptDate: receiptDate };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Auto-sync: scan โฟลเดอร์ Drive หาไฟล์ล่าสุด แล้วดึงมาใช้งานอัตโนมัติ (ผ่าน dev server)
+// ---------------------------------------------------------------------------
+const STORAGE_OVERVIEW_MTIME_KEY = 'pdtrack_overview_file_mtime';
+const STORAGE_PO_MTIME_KEY = 'pdtrack_po_file_mtime';
+
+async function fetchLatestLocalFile(
+  kind: 'overview' | 'po',
+  mtimeKey: string,
+  force: boolean
+): Promise<{ name: string; buffer: ArrayBuffer; stamp: string } | null> {
+  try {
+    const metaRes = await fetch(`/api/latest-file?kind=${kind}&meta=1`);
+    if (!metaRes.ok) return null;
+    const meta = await metaRes.json();
+    if (!meta?.found) return null;
+    const stamp = `${meta.name}|${meta.mtime}`;
+    if (!force && localStorage.getItem(mtimeKey) === stamp) return null; // ใช้ไฟล์ล่าสุดอยู่แล้ว
+    const res = await fetch(`/api/latest-file?kind=${kind}`);
+    if (!res.ok) return null;
+    return { name: meta.name, buffer: await res.arrayBuffer(), stamp };
+  } catch {
+    return null; // ไม่มี dev server / ไม่มีโฟลเดอร์ Drive — ใช้ข้อมูลเดิม
+  }
+}
+
+/** Scan โฟลเดอร์ Status Overview หาไฟล์ล่าสุด แล้วโหลดเป็นข้อมูล Overview ที่ใช้งาน (null = ไม่มีไฟล์ใหม่) */
+export async function autoSyncLatestOverview(force = false): Promise<{ fileName: string; pdCount: number } | null> {
+  const file = await fetchLatestLocalFile('overview', STORAGE_OVERVIEW_MTIME_KEY, force);
+  if (!file) return null;
+  const parsed = parseOverviewExcel(file.buffer);
+  const pdCount = Object.keys(parsed.byPd).length;
+  if (pdCount === 0) return null;
+  saveActiveOverviewData(parsed, file.name);
+  try {
+    localStorage.setItem(STORAGE_OVERVIEW_MTIME_KEY, file.stamp);
+  } catch {
+    // ignore storage error
+  }
+  return { fileName: file.name, pdCount };
+}
+
+/** Scan โฟลเดอร์ Purchase Data หา Report PO ค้างรับ ล่าสุด แล้วโหลดใช้งาน (null = ไม่มีไฟล์ใหม่) */
+export async function autoSyncLatestPoPending(force = false): Promise<PoPendingData | null> {
+  const file = await fetchLatestLocalFile('po', STORAGE_PO_MTIME_KEY, force);
+  if (!file) return null;
+  const data = parsePoPendingExcel(file.buffer, file.name);
+  if (data.lines.length === 0) return null;
+  saveActivePoPending(data);
+  try {
+    localStorage.setItem(STORAGE_PO_MTIME_KEY, file.stamp);
+  } catch {
+    // ignore storage error
+  }
+  return data;
+}
+
 /**
  * Fetch data connecting up to 4 Google Sheets:
  * 1. Delivery Sheet 1 (Check list ส่งมอบ -> TAG: Service)
@@ -1856,7 +2077,7 @@ export async function fetchDeliveryData(
       console.warn('Cannot save to localStorage:', storageErr);
     }
 
-    return { items, fromLive: true };
+    return { items: applyPoPendingToItems(items), fromLive: true };
   } catch (err: any) {
     console.warn('Live fetch failed, falling back to local cache/bundled data:', err);
 
@@ -1868,7 +2089,7 @@ export async function fetchDeliveryData(
         cachedItems = cachedItems.map(item => enrichBundledItem(item, item.workTag || 'Service'));
 
         return {
-          items: cachedItems,
+          items: applyPoPendingToItems(cachedItems),
           fromLive: false,
           error: `ใช้ข้อมูลแคชสำรองที่บันทึกไว้ (${err.message})`,
         };
@@ -1884,7 +2105,7 @@ export async function fetchDeliveryData(
     const bundledItems = [...bundledServiceItems, ...bundledProjectItems, ...bundledSpItems];
 
     return {
-      items: bundledItems,
+      items: applyPoPendingToItems(bundledItems),
       fromLive: false,
       error: `ใช้ข้อมูลสำรองในระบบ (เชื่อมโยงทั้งงาน Service, Project และ Service Purchase เรียบร้อย)`,
     };

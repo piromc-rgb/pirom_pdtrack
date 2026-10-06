@@ -37,6 +37,52 @@ function findPdfRecursively(dir: string, regex: RegExp, results: { name: string;
   return results;
 }
 
+// โฟลเดอร์ Google Drive (Drive for desktop) ที่ใช้ scan หาไฟล์ล่าสุดอัตโนมัติ
+const LATEST_FILE_SOURCES: Record<string, { dir: string; match: (name: string) => boolean }> = {
+  overview: {
+    dir: 'G:\\My Drive\\staus overview',
+    match: n => /status overview/i.test(n),
+  },
+  po: {
+    dir: 'G:\\My Drive\\Purchase Data',
+    match: n => /report po/i.test(n),
+  },
+};
+
+// วันที่ในชื่อไฟล์ (yy-mm-dd หรือ dd-mm-yy สำหรับ PO) ใช้จัดลำดับ ถ้าไม่มีให้ใช้เวลาแก้ไขไฟล์
+function fileSortKey(name: string, mtimeMs: number, kind: string): number {
+  const m = name.match(/(\d{2,4})-(\d{1,2})-(\d{1,2})/);
+  if (m) {
+    const a = parseInt(m[1], 10);
+    const b = parseInt(m[2], 10);
+    const c = parseInt(m[3], 10);
+    let y = kind === 'po' ? c : a;
+    const d = kind === 'po' ? a : c;
+    if (y >= 2500) y -= 543;
+    else if (y < 100) y += 2000;
+    const t = new Date(y, b - 1, d).getTime();
+    if (!isNaN(t)) return t;
+  }
+  return mtimeMs;
+}
+
+function findLatestFile(kind: string): { name: string; fullPath: string; mtimeMs: number } | null {
+  const src = LATEST_FILE_SOURCES[kind];
+  if (!src || !fs.existsSync(src.dir)) return null;
+  const files = fs
+    .readdirSync(src.dir)
+    .filter(n => n.toLowerCase().endsWith('.xlsx') && !n.startsWith('~$') && src.match(n))
+    .map(n => {
+      const fullPath = path.join(src.dir, n);
+      return { name: n, fullPath, mtimeMs: fs.statSync(fullPath).mtimeMs };
+    });
+  if (files.length === 0) return null;
+  files.sort(
+    (x, y) => fileSortKey(y.name, y.mtimeMs, kind) - fileSortKey(x.name, x.mtimeMs, kind) || y.mtimeMs - x.mtimeMs
+  );
+  return files[0];
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -79,6 +125,31 @@ export default defineConfig({
               return;
             }
             res.end(JSON.stringify({ found: false }));
+          } catch {
+            res.statusCode = 500;
+            res.end(JSON.stringify({ found: false }));
+          }
+        });
+
+        // scan โฟลเดอร์ Drive หาไฟล์ .xlsx ล่าสุด: ?kind=overview|po  (&meta=1 = ส่งเฉพาะชื่อ/เวลา ไม่ส่งไฟล์)
+        server.middlewares.use('/api/latest-file', (req, res) => {
+          try {
+            const urlObj = new URL(req.url || '', 'http://localhost');
+            const kind = urlObj.searchParams.get('kind') || '';
+            const latest = findLatestFile(kind);
+            if (!latest) {
+              res.statusCode = 404;
+              res.setHeader('Content-Type', 'application/json; charset=utf-8');
+              res.end(JSON.stringify({ found: false }));
+              return;
+            }
+            if (urlObj.searchParams.get('meta')) {
+              res.setHeader('Content-Type', 'application/json; charset=utf-8');
+              res.end(JSON.stringify({ found: true, name: latest.name, mtime: latest.mtimeMs }));
+              return;
+            }
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.end(fs.readFileSync(latest.fullPath));
           } catch {
             res.statusCode = 500;
             res.end(JSON.stringify({ found: false }));

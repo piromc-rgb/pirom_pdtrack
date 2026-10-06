@@ -14,7 +14,9 @@ import { MonthlyKpiView } from './components/MonthlyKpiView';
 import { SettingsModal } from './components/SettingsModal';
 import { ProductionOrderComparatorModal } from './components/ProductionOrderComparatorModal';
 import { 
-  fetchDeliveryData, 
+  fetchDeliveryData,
+  autoSyncLatestOverview,
+  autoSyncLatestPoPending,
   buildMachineSummaries, 
   getLastSyncTime,
   isOverviewCompletedOrClosed,
@@ -218,8 +220,17 @@ export function App() {
 
   // Initial load on mount
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    // scan โฟลเดอร์ Drive หา Status Overview / Report PO ค้างรับ ไฟล์ล่าสุดก่อน แล้วค่อยซิงค์ข้อมูล
+    (async () => {
+      try {
+        const [ov] = await Promise.all([autoSyncLatestOverview(), autoSyncLatestPoPending()]);
+        if (ov) showToast('success', `ใช้ Status Overview ล่าสุดอัตโนมัติ: ${ov.fileName} (${ov.pdCount.toLocaleString()} PDs)`);
+      } catch (err) {
+        console.warn('Auto-sync latest files failed:', err);
+      }
+      loadData();
+    })();
+  }, [loadData, showToast]);
 
   // Listen for custom toast events (e.g., from PDF finder)
   useEffect(() => {
