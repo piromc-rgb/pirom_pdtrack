@@ -319,11 +319,17 @@ export function App() {
     }
   }, [showToast]);
 
-  const handleConfirmDelivery = useCallback(async (item: DeliveryItem, confirmed: boolean) => {
+  const handleConfirmDelivery = useCallback(async (
+    item: DeliveryItem, 
+    confirmed: boolean,
+    extra?: { newTargetDate?: string; remark?: string }
+  ) => {
     try {
       const res = await updateItemInGoogleSheet(item, {
         closed: confirmed ? '*' : '',
         status: confirmed ? 'ส่งแล้ว' : 'รอดำเนินการ',
+        ...(extra?.newTargetDate ? { newTargetDate: extra.newTargetDate } : {}),
+        ...(extra?.remark !== undefined ? { remark: extra.remark } : {}),
       });
 
       // Update state for all matching representations
@@ -334,19 +340,21 @@ export function App() {
         return i;
       }));
 
+      setEditingItem(res.updatedItem);
+
       const displayPart = item.itemName || item.itemCode;
       if (confirmed) {
         if (res.syncResult?.synced) {
-          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${displayPart} (อัปเดต Google Sheet เรียบร้อย)`);
+          showToast('success', `ส่งงานแล้ว: ทำเครื่องหมาย * ที่ Column Closed สำเร็จ (${displayPart}) - อัปเดต Google Sheet เรียบร้อย`);
         } else {
-          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${displayPart}`);
+          showToast('success', `ส่งงานแล้ว: ทำเครื่องหมาย * ที่ Column Closed สำเร็จ (${displayPart})`);
         }
       } else {
-        showToast('info', `ยกเลิก Confirm ส่งมอบ: ${displayPart}`);
+        showToast('info', `ยกเลิกสถานะส่งงาน: ${displayPart}`);
       }
     } catch (err: any) {
       console.error('Failed to confirm delivery:', err);
-      showToast('warning', 'เกิดข้อผิดพลาดในการ Confirm ส่งมอบ: ' + (err.message || 'Error'));
+      showToast('warning', 'เกิดข้อผิดพลาดในการบันทึกส่งงาน: ' + (err.message || 'Error'));
     }
   }, [showToast]);
 
@@ -600,6 +608,7 @@ export function App() {
         item={editingItem}
         onClose={() => setEditingItem(null)}
         onSave={handleSaveTarget}
+        onConfirmDelivery={handleConfirmDelivery}
       />
 
       {/* Footer */}

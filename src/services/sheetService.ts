@@ -598,7 +598,16 @@ function updateSheetItem(data) {
   var docCol = findCol(['Document number', 'Doc Ref', 'Reference']);
   var itemCol = findCol(['เลขที่ Item', 'Item Code', 'Item No']);
   var prodCol = findCol(['Production Order', 'Prod Order']);
-  var closedCol = findCol(['Closed', 'closed', 'ปิดงาน', 'ปิด']);
+  var closedCol = findCol(['Closed', 'closed', 'close', 'ปิดงาน', 'ปิด']);
+  if (closedCol <= 0) {
+    if (sheetName === 'Record รับ - จ่าย Production') {
+      closedCol = 28;
+    } else if (sheetName === 'service purchase') {
+      closedCol = 29;
+    } else if (sheetName === 'Check list ส่งมอบ') {
+      closedCol = 20;
+    }
+  }
   var targetLatestCol = findCol(['เป้าหมายล่าสุด', 'Target Latest']);
   var remarkCol = findCol(['หมายเหตุ', 'Remark']);
 
