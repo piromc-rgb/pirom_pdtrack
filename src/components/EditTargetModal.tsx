@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, 
   Calendar, 
@@ -43,6 +43,26 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
   const [remarkInput, setRemarkInput] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const datePickerRef = useRef<HTMLInputElement>(null);
+
+  const handleOpenCalendar = () => {
+    if (datePickerRef.current) {
+      try {
+        if ('showPicker' in HTMLInputElement.prototype) {
+          datePickerRef.current.showPicker();
+          return;
+        }
+      } catch (err) {
+        console.warn('showPicker error, fallback to focus/click', err);
+      }
+      try {
+        datePickerRef.current.focus();
+        datePickerRef.current.click();
+      } catch (err) {
+        console.warn('Fallback click error', err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (item && isOpen) {
@@ -243,18 +263,22 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
                 />
               </div>
 
-              {/* Native Calendar Picker Button with invisible overlay input */}
+              {/* Native Calendar Picker Button with showPicker API */}
               <div className="relative shrink-0">
                 <input
+                  ref={datePickerRef}
                   type="date"
                   value={newDateInput}
                   onChange={(e) => handlePickerChange(e.target.value)}
-                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                  title="คลิกเพื่อเลือกวันที่จากปฏิทิน"
+                  className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+                  tabIndex={-1}
+                  aria-hidden="true"
                 />
                 <button
                   type="button"
-                  className="px-3.5 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition pointer-events-none"
+                  onClick={handleOpenCalendar}
+                  className="px-3.5 py-2.5 bg-sky-50 hover:bg-sky-100 active:bg-sky-200 text-sky-700 border border-sky-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
+                  title="คลิกเพื่อเลือกวันที่จากปฏิทิน"
                 >
                   <Calendar className="w-4 h-4 text-sky-600" />
                   <span>เลือกปฏิทิน</span>
