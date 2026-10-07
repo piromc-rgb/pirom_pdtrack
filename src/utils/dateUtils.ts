@@ -92,10 +92,10 @@ export function formatThaiDate(dateStr: string | null | undefined): string {
 /**
  * Formats date as compact d/m/y (e.g. 6/10/26)
  */
-export function formatCompactDate(dateStr: string | null | undefined): string {
-  if (!dateStr) return '-';
-  const d = parseDate(dateStr);
-  if (!d) return dateStr;
+export function formatCompactDate(dateVal: string | Date | null | undefined): string {
+  if (!dateVal) return '-';
+  const d = dateVal instanceof Date ? (isNaN(dateVal.getTime()) ? null : dateVal) : parseDate(dateVal);
+  if (!d) return typeof dateVal === 'string' ? dateVal : '-';
 
   const day = d.getDate();
   const month = d.getMonth() + 1;

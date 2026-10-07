@@ -303,7 +303,7 @@ export function App() {
       // Keep editingItem updated with latest data
       setEditingItem(res.updatedItem);
 
-      const displayPart = item.partName || item.itemName || item.itemCode;
+      const displayPart = item.itemName || item.itemCode;
       const displayDate = res.updatedItem?.targetLatest || newTargetDate;
 
       if (res.syncResult?.synced) {
@@ -334,7 +334,7 @@ export function App() {
         return i;
       }));
 
-      const displayPart = item.partName || item.itemName || item.itemCode;
+      const displayPart = item.itemName || item.itemCode;
       if (confirmed) {
         if (res.syncResult?.synced) {
           showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${displayPart} (อัปเดต Google Sheet เรียบร้อย)`);

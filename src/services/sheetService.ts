@@ -10,7 +10,7 @@ import defaultOverviewItemMap from '../data/overviewItemMap.json';
 import itemPdMap from '../data/itemPdMap.json';
 import defaultPoPendingJson from '../data/poPending.json';
 import { DeliveryItem, MachineSummary, OverviewMeta, WorkTag, ItemOverride } from '../types';
-import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer } from '../utils/dateUtils';
+import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer, formatCompactDate, getDaysDiff } from '../utils/dateUtils';
 
 // Initialize with bundled data, or restore cached live overview if available
 let initialOverviewStatusMap = defaultOverviewData as Record<string, OverviewMeta>;
