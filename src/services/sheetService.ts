@@ -186,6 +186,26 @@ export function getItemKey(item: Partial<DeliveryItem>): string {
   return `${tag}|${doc}|${machine}|${code}|${po}`;
 }
 
+export function isSameDeliveryItem(a?: Partial<DeliveryItem> | null, b?: Partial<DeliveryItem> | null): boolean {
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (a.id && b.id && a.id === b.id) return true;
+  const keyA = getItemKey(a);
+  const keyB = getItemKey(b);
+  if (keyA && keyB && keyA === keyB) return true;
+  const norm = (s?: string) => (s || '').trim().toLowerCase();
+  if (
+    norm(a.docRef) &&
+    norm(a.docRef) === norm(b.docRef) &&
+    norm(a.itemCode) &&
+    norm(a.itemCode) === norm(b.itemCode) &&
+    (a.workTag || 'Service') === (b.workTag || 'Service')
+  ) {
+    return true;
+  }
+  return false;
+}
+
 export function getItemOverrides(): Record<string, ItemOverride> {
   try {
     const raw = localStorage.getItem(STORAGE_ITEM_OVERRIDES_KEY);
@@ -199,9 +219,38 @@ export function saveItemOverride(key: string, override: ItemOverride): void {
   try {
     const current = getItemOverrides();
     current[key] = override;
+    if (override.itemId) {
+      current[override.itemId] = override;
+    }
+    if (override.itemKey) {
+      current[override.itemKey] = override;
+    }
+    // Secondary core key: workTag + docRef + itemCode
+    const parts = (override.itemKey || key).split('|');
+    if (parts.length >= 4) {
+      const coreKey = `${parts[0]}|${parts[1]}|${parts[3]}`;
+      current[coreKey] = override;
+    }
     localStorage.setItem(STORAGE_ITEM_OVERRIDES_KEY, JSON.stringify(current));
   } catch (err) {
     console.warn('Could not save item override to localStorage:', err);
+  }
+}
+
+export function updateCachedItem(updatedItem: DeliveryItem): void {
+  try {
+    const raw = localStorage.getItem(STORAGE_CACHE_KEY);
+    if (!raw) return;
+    const items = JSON.parse(raw) as DeliveryItem[];
+    const next = items.map(it => {
+      if (isSameDeliveryItem(it, updatedItem)) {
+        return { ...it, ...updatedItem };
+      }
+      return it;
+    });
+    localStorage.setItem(STORAGE_CACHE_KEY, JSON.stringify(next));
+  } catch (err) {
+    console.warn('Could not update cached item in localStorage:', err);
   }
 }
 
@@ -229,7 +278,8 @@ export function applyOverridesToItems(items: DeliveryItem[]): DeliveryItem[] {
 
   return items.map(item => {
     const key = getItemKey(item);
-    const ov = overrides[key] || (item.id ? overrides[item.id] : undefined);
+    const coreKey = `${item.workTag || 'Service'}|${(item.docRef || '').trim().toLowerCase()}|${(item.itemCode || '').trim().toLowerCase()}`;
+    const ov = overrides[key] || (item.id ? overrides[item.id] : undefined) || overrides[coreKey];
     if (!ov) return item;
 
     const target1 = ov.target1 !== undefined ? ov.target1 : item.target1;
@@ -340,6 +390,12 @@ export async function updateItemInGoogleSheet(
   let target4 = existingOv.target4 !== undefined ? existingOv.target4 : item.target4;
   let target5 = existingOv.target5 !== undefined ? existingOv.target5 : item.target5;
   let targetLatest = existingOv.targetLatest !== undefined ? existingOv.targetLatest : item.targetLatest;
+
+  if (target1) target1 = formatCompactDate(target1);
+  if (target2) target2 = formatCompactDate(target2);
+  if (target3) target3 = formatCompactDate(target3);
+  if (target4) target4 = formatCompactDate(target4);
+  if (target5) target5 = formatCompactDate(target5);
   let targetSlot = 1;
 
   if (changes.newTargetDate) {
@@ -416,6 +472,9 @@ export async function updateItemInGoogleSheet(
     isDueSoon,
     parsedLatestDate: parseDate(targetLatest),
   };
+
+  // Update cached data in localStorage immediately
+  updateCachedItem(updatedItem);
 
   // 2. Send to Google Apps Script Web App if configured
   const appsScriptUrl = getSavedUpdateAppsScriptUrl();

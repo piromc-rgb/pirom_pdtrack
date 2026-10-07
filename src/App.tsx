@@ -24,7 +24,8 @@ import {
   isOverviewCompletedOrClosed,
   getQcWarehouseStatus,
   updateItemInGoogleSheet,
-  getItemKey
+  getItemKey,
+  isSameDeliveryItem
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
 import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from './utils/searchUtils';
@@ -35,14 +36,14 @@ import {
   BarChart3, 
   LayoutGrid, 
   Calendar, 
-  Layers,
-  Cpu,
-  GitCompare,
-  RefreshCw,
-  Download,
-  Printer,
-  ChevronDown,
-  ChevronUp
+  Layers, 
+  Cpu, 
+  GitCompare, 
+  RefreshCw, 
+  Download, 
+  Printer, 
+  ChevronDown, 
+  ChevronUp 
 } from 'lucide-react';
 
 export function App() {
@@ -60,7 +61,7 @@ export function App() {
     }
     return 'machines';
   });
-  const [selectedMachine, setSelectedMachine] = useState<MachineSummary | null>(null);
+  const [selectedMachineName, setSelectedMachineName] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isComparatorOpen, setIsComparatorOpen] = useState<boolean>(false);
   const [deliveryActions, setDeliveryActions] = useState<{ exportCsv: () => void; openPrint: () => void; expandAll: () => void; collapseAll: () => void } | null>(null);
@@ -119,6 +120,12 @@ export function App() {
   const machines = useMemo(() => {
     return buildMachineSummaries(tagFilteredItems);
   }, [tagFilteredItems]);
+
+  // Active selected machine (always kept in sync with latest machines & items data)
+  const selectedMachine = useMemo(() => {
+    if (!selectedMachineName) return null;
+    return machines.find(m => m.name === selectedMachineName) || null;
+  }, [selectedMachineName, machines]);
 
   // Overall KPI counts (reflecting active workTag selection)
   const totalItems = tagFilteredItems.length;
@@ -255,11 +262,8 @@ export function App() {
 
   // Handler to select machine by name
   const handleSelectMachineByName = useCallback((machineName: string) => {
-    const found = machines.find(m => m.name === machineName);
-    if (found) {
-      setSelectedMachine(found);
-    }
-  }, [machines]);
+    setSelectedMachineName(machineName);
+  }, []);
 
   // Mode Toggle & Password
   const handleToggleMode = useCallback(() => {
@@ -288,15 +292,16 @@ export function App() {
         remark: note,
       });
 
-      const targetKey = getItemKey(item);
-
-      // Update state
+      // Update state for all matching representations
       setItems(prev => prev.map(i => {
-        if (getItemKey(i) === targetKey) {
+        if (isSameDeliveryItem(i, item)) {
           return res.updatedItem;
         }
         return i;
       }));
+
+      // Keep editingItem updated with latest data
+      setEditingItem(res.updatedItem);
 
       const displayPart = item.partName || item.itemName || item.itemCode;
       const displayDate = res.updatedItem?.targetLatest || newTargetDate;
@@ -318,13 +323,12 @@ export function App() {
     try {
       const res = await updateItemInGoogleSheet(item, {
         closed: confirmed ? '*' : '',
+        status: confirmed ? 'ส่งแล้ว' : 'รอดำเนินการ',
       });
 
-      const targetKey = getItemKey(item);
-
-      // Update state
+      // Update state for all matching representations
       setItems(prev => prev.map(i => {
-        if (getItemKey(i) === targetKey) {
+        if (isSameDeliveryItem(i, item)) {
           return res.updatedItem;
         }
         return i;
@@ -480,7 +484,7 @@ export function App() {
         {activeTab === 'machines' && (
           <MachineGrid
             machines={machines}
-            onSelectMachine={(m) => setSelectedMachine(m)}
+            onSelectMachine={(m) => setSelectedMachineName(m.name)}
             searchCriteria={searchCriteria}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
@@ -510,7 +514,7 @@ export function App() {
             items={tagFilteredItems}
             machines={machines}
             searchCriteria={searchCriteria}
-            onSelectMachine={(m) => setSelectedMachine(m)}
+            onSelectMachine={(m) => setSelectedMachineName(m.name)}
           />
         )}
 
@@ -551,7 +555,7 @@ export function App() {
           <AnalyticsView
             machines={machines}
             items={tagFilteredItems}
-            onSelectMachine={(m) => setSelectedMachine(m)}
+            onSelectMachine={(m) => setSelectedMachineName(m.name)}
           />
         )}
 
@@ -560,7 +564,7 @@ export function App() {
       {/* Machine Detail Modal */}
       <MachineDetailModal
         machine={selectedMachine}
-        onClose={() => setSelectedMachine(null)}
+        onClose={() => setSelectedMachineName(null)}
         mode={appMode}
         onEditTarget={handleEditTarget}
         onConfirmDelivery={handleConfirmDelivery}
