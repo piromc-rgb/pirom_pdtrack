@@ -1,4 +1,22 @@
 export type WorkTag = 'Service' | 'Project' | 'Service Purchase';
+export type AppMode = 'VIEW' | 'EDIT';
+
+export interface ItemOverride {
+  itemKey: string;
+  itemId?: string;
+  target1?: string;
+  target2?: string;
+  target3?: string;
+  target4?: string;
+  target5?: string;
+  targetLatest?: string;
+  closed?: string;
+  status?: 'ส่งแล้ว' | 'รอดำเนินการ';
+  remark?: string;
+  rescheduledCount?: number;
+  updatedAt: string;
+}
+
 
 export interface DeliveryItem {
   id: string;

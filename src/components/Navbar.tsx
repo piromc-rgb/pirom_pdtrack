@@ -13,9 +13,12 @@ import {
   ExternalLink,
   Truck,
   GitCompare,
-  TrendingUp
+  TrendingUp,
+  Eye,
+  Edit3,
+  Lock
 } from 'lucide-react';
-import { ActiveTab } from '../types';
+import { ActiveTab, AppMode } from '../types';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -29,6 +32,8 @@ interface NavbarProps {
   totalMachines: number;
   totalItems: number;
   pendingItemsCount?: number;
+  mode: AppMode;
+  onToggleMode: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -43,6 +48,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   totalMachines,
   totalItems,
   pendingItemsCount = 0,
+  mode,
+  onToggleMode,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
@@ -133,6 +140,41 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span>ตัวเทียบ PD</span>
               </button>
             )}
+
+            {/* Mode Switcher: VIEW / EDIT */}
+            <div className="flex items-center rounded-xl p-0.5 border border-slate-200 bg-slate-100 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => {
+                  if (mode !== 'VIEW') onToggleMode();
+                }}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                  mode === 'VIEW'
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900'
+                }`}
+                title="โหมด VIEW: ดูข้อมูลอย่างเดียว (ไม่สามารถแก้ไขได้)"
+              >
+                <Eye className="w-3.5 h-3.5 text-slate-500" />
+                <span>VIEW</span>
+              </button>
+              <button
+                type="button"
+                onClick={onToggleMode}
+                className={`px-2.5 py-1 text-xs font-bold rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                  mode === 'EDIT'
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-xs ring-1 ring-amber-300'
+                    : 'text-slate-500 hover:text-amber-700'
+                }`}
+                title={mode === 'EDIT' ? 'โหมดแก้ไขเปิดอยู่ (คลิกเพื่อสลับกลับเป็น VIEW)' : 'คลิกเพื่อเข้าสู่โหมด EDIT (ต้องใส่รหัสผ่าน 2211)'}
+              >
+                <Edit3 className={`w-3.5 h-3.5 ${mode === 'EDIT' ? 'text-white' : 'text-amber-600'}`} />
+                <span>EDIT</span>
+                {mode === 'EDIT' && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                )}
+              </button>
+            </div>
 
             <button
               onClick={onOpenSettings}

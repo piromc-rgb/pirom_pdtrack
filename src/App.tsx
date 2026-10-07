@@ -13,6 +13,8 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { MonthlyKpiView } from './components/MonthlyKpiView';
 import { SettingsModal } from './components/SettingsModal';
 import { ProductionOrderComparatorModal } from './components/ProductionOrderComparatorModal';
+import { PasswordModal } from './components/PasswordModal';
+import { EditTargetModal } from './components/EditTargetModal';
 import { 
   fetchDeliveryData,
   autoSyncLatestOverview,
@@ -20,11 +22,12 @@ import {
   buildMachineSummaries, 
   getLastSyncTime,
   isOverviewCompletedOrClosed,
-  getQcWarehouseStatus
+  getQcWarehouseStatus,
+  updateItemInGoogleSheet
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
 import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from './utils/searchUtils';
-import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria } from './types';
+import { DeliveryItem, MachineSummary, ActiveTab, SearchCriteria, AppMode } from './types';
 import { 
   AlertCircle, 
   CheckCircle2, 
@@ -62,6 +65,11 @@ export function App() {
   const [deliveryActions, setDeliveryActions] = useState<{ exportCsv: () => void; openPrint: () => void; expandAll: () => void; collapseAll: () => void } | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | 'in-progress' | 'overdue' | 'due-soon' | 'completed'>('all');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'warning' | 'info'; text: string } | null>(null);
+
+  // Mode: VIEW / EDIT (password protected)
+  const [appMode, setAppMode] = useState<AppMode>('VIEW');
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState<boolean>(false);
+  const [editingItem, setEditingItem] = useState<DeliveryItem | null>(null);
 
   // 5 Specific Search Fields + Production Department & Action Topic Filters + QC Status + Overview & Ready Operation + Work Tag (Service / Project)
   const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({
@@ -252,6 +260,85 @@ export function App() {
     }
   }, [machines]);
 
+  // Mode Toggle & Password
+  const handleToggleMode = useCallback(() => {
+    if (appMode === 'VIEW') {
+      setIsPasswordModalOpen(true);
+    } else {
+      setAppMode('VIEW');
+      showToast('info', 'สลับกลับสู่โหมด VIEW เรียบร้อยแล้ว');
+    }
+  }, [appMode, showToast]);
+
+  const handlePasswordSuccess = useCallback(() => {
+    setAppMode('EDIT');
+    showToast('success', 'เข้าสู่โหมด EDIT สำเร็จ (สามารถแก้ไขเป้าหมายและ Confirm ส่งมอบได้)');
+  }, [showToast]);
+
+  // Edit Target & Confirm Delivery handlers
+  const handleEditTarget = useCallback((item: DeliveryItem) => {
+    setEditingItem(item);
+  }, []);
+
+  const handleSaveTarget = useCallback(async (item: DeliveryItem, newTargetDate: string, note?: string) => {
+    try {
+      const res = await updateItemInGoogleSheet({
+        item,
+        newTargetDate,
+        note,
+      });
+
+      // Update state
+      setItems(prev => prev.map(i => {
+        if (i.workTag === item.workTag && i.docRef === item.docRef && i.itemCode === item.itemCode && i.prodOrder === item.prodOrder) {
+          return res.updatedItem;
+        }
+        return i;
+      }));
+
+      if (res.syncResult.synced) {
+        showToast('success', `อัปเดตเป้าหมายของ ${item.partName || item.itemCode} เป็น ${newTargetDate} และส่งข้อมูลไปยัง Google Sheet เรียบร้อยแล้ว`);
+      } else if (res.syncResult.error) {
+        showToast('warning', `บันทึกเป้าหมายในระบบแล้ว (${newTargetDate}) แต่ซิงค์ Google Sheet ไม่สำเร็จ: ${res.syncResult.error}`);
+      } else {
+        showToast('info', `บันทึกเป้าหมายในระบบเรียบร้อย (${newTargetDate}) - จะซิงค์ Google Sheet เมื่อตั้งค่า Web App URL ในหน้าต่างตั้งค่า`);
+      }
+    } catch (err: any) {
+      console.error('Failed to save target date:', err);
+      showToast('warning', 'เกิดข้อผิดพลาดในการบันทึกเป้าหมาย: ' + (err.message || 'Error'));
+    }
+  }, [showToast]);
+
+  const handleConfirmDelivery = useCallback(async (item: DeliveryItem, confirmed: boolean) => {
+    try {
+      const res = await updateItemInGoogleSheet({
+        item,
+        closed: confirmed ? '*' : '',
+      });
+
+      // Update state
+      setItems(prev => prev.map(i => {
+        if (i.workTag === item.workTag && i.docRef === item.docRef && i.itemCode === item.itemCode && i.prodOrder === item.prodOrder) {
+          return res.updatedItem;
+        }
+        return i;
+      }));
+
+      if (confirmed) {
+        if (res.syncResult.synced) {
+          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${item.partName || item.itemCode} (อัปเดต Google Sheet เรียบร้อย)`);
+        } else {
+          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${item.partName || item.itemCode}`);
+        }
+      } else {
+        showToast('info', `ยกเลิก Confirm ส่งมอบ: ${item.partName || item.itemCode}`);
+      }
+    } catch (err: any) {
+      console.error('Failed to confirm delivery:', err);
+      showToast('warning', 'เกิดข้อผิดพลาดในการ Confirm ส่งมอบ: ' + (err.message || 'Error'));
+    }
+  }, [showToast]);
+
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-['Prompt',sans-serif]">
       
@@ -268,6 +355,8 @@ export function App() {
         totalMachines={machines.length}
         totalItems={totalItems}
         pendingItemsCount={pendingItems}
+        mode={appMode}
+        onToggleMode={handleToggleMode}
       />
 
       {/* Toast notification banner */}
@@ -402,6 +491,9 @@ export function App() {
             onOpenComparator={() => setIsComparatorOpen(true)}
             isLoading={isLoading}
             onRegisterActions={setDeliveryActions}
+            mode={appMode}
+            onEditTarget={handleEditTarget}
+            onConfirmDelivery={handleConfirmDelivery}
           />
         )}
 
@@ -422,6 +514,9 @@ export function App() {
             machines={machines}
             searchCriteria={searchCriteria}
             onSelectMachineByName={handleSelectMachineByName}
+            mode={appMode}
+            onEditTarget={handleEditTarget}
+            onConfirmDelivery={handleConfirmDelivery}
           />
         )}
 
@@ -459,6 +554,9 @@ export function App() {
       <MachineDetailModal
         machine={selectedMachine}
         onClose={() => setSelectedMachine(null)}
+        mode={appMode}
+        onEditTarget={handleEditTarget}
+        onConfirmDelivery={handleConfirmDelivery}
       />
 
       {/* Google Sheets Dual-Sync Settings Modal */}
@@ -478,13 +576,28 @@ export function App() {
         items={tagFilteredItems}
       />
 
+      {/* Mode Password Modal */}
+      <PasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+        onSuccess={handlePasswordSuccess}
+      />
+
+      {/* Edit Target Date Modal */}
+      <EditTargetModal
+        isOpen={!!editingItem}
+        item={editingItem}
+        onClose={() => setEditingItem(null)}
+        onSave={handleSaveTarget}
+      />
+
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-12">
         <div className="max-w-[98vw] 2xl:max-w-[1800px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <img src={appLogo} alt="AMW" className="h-5 w-auto object-contain inline-block" />
             <span className="font-semibold text-slate-700">AMW PDTrack</span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.3</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.61</span>
             <span>- ระบบติดตามเป้าหมายการส่งมอบ</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 flex-wrap">

@@ -9,7 +9,7 @@ import defaultOverviewData from '../data/overviewStatusData.json';
 import defaultOverviewItemMap from '../data/overviewItemMap.json';
 import itemPdMap from '../data/itemPdMap.json';
 import defaultPoPendingJson from '../data/poPending.json';
-import { DeliveryItem, MachineSummary, OverviewMeta, WorkTag } from '../types';
+import { DeliveryItem, MachineSummary, OverviewMeta, WorkTag, ItemOverride } from '../types';
 import { parseDate, isDateOverdue, isDateDueSoon, extractCustomer } from '../utils/dateUtils';
 
 // Initialize with bundled data, or restore cached live overview if available
@@ -152,6 +152,400 @@ export function saveOverviewUrl(url: string): void {
 export function getLastSyncTime(): string | null {
   return localStorage.getItem(STORAGE_TIMESTAMP_KEY);
 }
+
+// ---------------------------------------------------------------------------
+// VIEW / EDIT Mode & Google Sheet Item Updates
+// ---------------------------------------------------------------------------
+export const STORAGE_ITEM_OVERRIDES_KEY = 'pdtrack_item_overrides_v1';
+export const STORAGE_EDIT_PASSWORD_KEY = 'pdtrack_edit_password_v1';
+export const STORAGE_UPDATE_APPS_SCRIPT_URL_KEY = 'pdtrack_update_apps_script_url_v1';
+export const DEFAULT_EDIT_PASSWORD = '2211';
+
+export function getSavedEditPassword(): string {
+  return localStorage.getItem(STORAGE_EDIT_PASSWORD_KEY) || DEFAULT_EDIT_PASSWORD;
+}
+
+export function saveEditPassword(pwd: string): void {
+  localStorage.setItem(STORAGE_EDIT_PASSWORD_KEY, pwd.trim() || DEFAULT_EDIT_PASSWORD);
+}
+
+export function getSavedUpdateAppsScriptUrl(): string {
+  return localStorage.getItem(STORAGE_UPDATE_APPS_SCRIPT_URL_KEY) || '';
+}
+
+export function saveUpdateAppsScriptUrl(url: string): void {
+  localStorage.setItem(STORAGE_UPDATE_APPS_SCRIPT_URL_KEY, url.trim());
+}
+
+export function getItemKey(item: Partial<DeliveryItem>): string {
+  const tag = item.workTag || 'Service';
+  const doc = (item.docRef || '').trim().toLowerCase();
+  const machine = (item.machineName || '').trim().toLowerCase();
+  const code = (item.itemCode || '').trim().toLowerCase();
+  const po = (item.prodOrder || '').trim().toLowerCase();
+  return `${tag}|${doc}|${machine}|${code}|${po}`;
+}
+
+export function getItemOverrides(): Record<string, ItemOverride> {
+  try {
+    const raw = localStorage.getItem(STORAGE_ITEM_OVERRIDES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveItemOverride(key: string, override: ItemOverride): void {
+  try {
+    const current = getItemOverrides();
+    current[key] = override;
+    localStorage.setItem(STORAGE_ITEM_OVERRIDES_KEY, JSON.stringify(current));
+  } catch (err) {
+    console.warn('Could not save item override to localStorage:', err);
+  }
+}
+
+export function removeItemOverride(key: string): void {
+  try {
+    const current = getItemOverrides();
+    delete current[key];
+    localStorage.setItem(STORAGE_ITEM_OVERRIDES_KEY, JSON.stringify(current));
+  } catch (err) {
+    console.warn('Could not remove item override:', err);
+  }
+}
+
+export function clearAllOverrides(): void {
+  try {
+    localStorage.removeItem(STORAGE_ITEM_OVERRIDES_KEY);
+  } catch (err) {
+    console.warn('Could not clear overrides:', err);
+  }
+}
+
+export function applyOverridesToItems(items: DeliveryItem[]): DeliveryItem[] {
+  const overrides = getItemOverrides();
+  if (Object.keys(overrides).length === 0) return items;
+
+  return items.map(item => {
+    const key = getItemKey(item);
+    const ov = overrides[key] || (item.id ? overrides[item.id] : undefined);
+    if (!ov) return item;
+
+    const target1 = ov.target1 !== undefined ? ov.target1 : item.target1;
+    const target2 = ov.target2 !== undefined ? ov.target2 : item.target2;
+    const target3 = ov.target3 !== undefined ? ov.target3 : item.target3;
+    const target4 = ov.target4 !== undefined ? ov.target4 : item.target4;
+    const target5 = ov.target5 !== undefined ? ov.target5 : item.target5;
+    const targetLatest = ov.targetLatest !== undefined ? ov.targetLatest : (item.targetLatest || target5 || target4 || target3 || target2 || target1);
+
+    const closed = ov.closed !== undefined ? ov.closed : item.closed;
+    const normClosed = (closed || '').toLowerCase();
+    const remark = ov.remark !== undefined ? ov.remark : item.remark;
+    const normRemark = (remark || '').toLowerCase();
+    const normRawStatus = (item.rawStatus || '').toLowerCase();
+
+    // กฎ: ถ้ามีเครื่องหมาย * ใน Closed หรือระบุว่าส่งแล้ว ให้ปรับสถานะเป็น 'ส่งแล้ว'
+    const isDelivered =
+      ov.status === 'ส่งแล้ว' ||
+      normClosed.includes('*') ||
+      normClosed.includes('close') ||
+      normRemark.includes('*') ||
+      normRemark.includes('close') ||
+      normRawStatus.includes('ส่ง') ||
+      normRawStatus.includes('deliv');
+
+    const status: 'ส่งแล้ว' | 'รอดำเนินการ' = isDelivered ? 'ส่งแล้ว' : 'รอดำเนินการ';
+
+    let rescheduledCount = 0;
+    if (target2) rescheduledCount++;
+    if (target3) rescheduledCount++;
+    if (target4) rescheduledCount++;
+    if (target5) rescheduledCount++;
+
+    const isOverdue = status !== 'ส่งแล้ว' && isDateOverdue(targetLatest);
+    const isDueSoon = status !== 'ส่งแล้ว' && !isOverdue && isDateDueSoon(targetLatest, 7);
+
+    return {
+      ...item,
+      target1,
+      target2,
+      target3,
+      target4,
+      target5,
+      targetLatest,
+      closed,
+      status,
+      remark,
+      rescheduledCount,
+      isOverdue,
+      isDueSoon,
+      parsedLatestDate: parseDate(targetLatest),
+    };
+  });
+}
+
+/**
+ * Updates an item's target delivery date and/or Closed (*) delivery confirmation status.
+ * Updates local cache immediately and sends update to Google Apps Script Web App if configured.
+ */
+export async function updateItemInGoogleSheet(
+  item: DeliveryItem,
+  changes: {
+    newTargetDate?: string;
+    closed?: string;
+    status?: 'ส่งแล้ว' | 'รอดำเนินการ';
+    remark?: string;
+  }
+): Promise<{ success: boolean; message: string; localOnly?: boolean }> {
+  const key = getItemKey(item);
+  const overrides = getItemOverrides();
+  const existingOv = overrides[key] || (item.id ? overrides[item.id] : {}) || {};
+
+  let target1 = existingOv.target1 !== undefined ? existingOv.target1 : item.target1;
+  let target2 = existingOv.target2 !== undefined ? existingOv.target2 : item.target2;
+  let target3 = existingOv.target3 !== undefined ? existingOv.target3 : item.target3;
+  let target4 = existingOv.target4 !== undefined ? existingOv.target4 : item.target4;
+  let target5 = existingOv.target5 !== undefined ? existingOv.target5 : item.target5;
+  let targetLatest = existingOv.targetLatest !== undefined ? existingOv.targetLatest : item.targetLatest;
+  let targetSlot = 1;
+
+  if (changes.newTargetDate) {
+    const newDate = changes.newTargetDate.trim();
+    if (!target1) {
+      target1 = newDate;
+      targetSlot = 1;
+    } else if (!target2 && target1 !== newDate) {
+      target2 = newDate;
+      targetSlot = 2;
+    } else if (!target3 && target2 !== newDate) {
+      target3 = newDate;
+      targetSlot = 3;
+    } else if (!target4 && target3 !== newDate) {
+      target4 = newDate;
+      targetSlot = 4;
+    } else {
+      target5 = newDate;
+      targetSlot = 5;
+    }
+    targetLatest = newDate;
+  }
+
+  const closed = changes.closed !== undefined ? changes.closed : (existingOv.closed !== undefined ? existingOv.closed : item.closed);
+  const isNowDelivered = (closed && closed.includes('*')) || changes.status === 'ส่งแล้ว';
+  const status: 'ส่งแล้ว' | 'รอดำเนินการ' = isNowDelivered ? 'ส่งแล้ว' : (changes.status || 'รอดำเนินการ');
+  const remark = changes.remark !== undefined ? changes.remark : (existingOv.remark !== undefined ? existingOv.remark : item.remark);
+
+  const overridePayload: ItemOverride = {
+    itemKey: key,
+    itemId: item.id,
+    target1,
+    target2,
+    target3,
+    target4,
+    target5,
+    targetLatest,
+    closed,
+    status,
+    remark,
+    updatedAt: new Date().toISOString(),
+  };
+
+  // 1. Save locally
+  saveItemOverride(key, overridePayload);
+  if (item.id) {
+    saveItemOverride(item.id, overridePayload);
+  }
+
+  // 2. Send to Google Apps Script Web App if configured
+  const appsScriptUrl = getSavedUpdateAppsScriptUrl();
+  if (appsScriptUrl && appsScriptUrl.trim()) {
+    try {
+      const payload = {
+        action: 'update',
+        workTag: item.workTag || 'Service',
+        docRef: item.docRef || '',
+        itemCode: item.itemCode || '',
+        prodOrder: item.prodOrder || '',
+        machineName: item.machineName || '',
+        newTargetDate: changes.newTargetDate || '',
+        targetSlot,
+        targetLatest,
+        closed,
+        status,
+        remark: changes.remark || ''
+      };
+
+      await fetch(appsScriptUrl.trim(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        mode: 'no-cors'
+      });
+
+      return {
+        success: true,
+        localOnly: false,
+        message: 'บันทึกและส่งข้อมูลอัปเดต Google Sheet เรียบร้อยแล้ว'
+      };
+    } catch (err: any) {
+      console.warn('Google Apps Script call failed:', err);
+      return {
+        success: true,
+        localOnly: true,
+        message: 'บันทึกในระบบสำเร็จ (Apps Script ขัดข้อง: ' + (err?.message || 'Error') + ')'
+      };
+    }
+  }
+
+  return {
+    success: true,
+    localOnly: true,
+    message: 'บันทึกในระบบเรียบร้อย (แคชในเครื่อง)'
+  };
+}
+
+export const APPS_SCRIPT_UPDATE_CODE = `/**
+ * ============================================================================
+ * Google Apps Script สำหรับ AMW PDTrack
+ * จัดการ Update วันที่เป้าหมาย และ Confirm ส่งมอบ (Closed *) ลง Google Sheet ต้นฉบับ
+ * ============================================================================
+ * 
+ * วิธีติดตั้ง:
+ * 1. เปิด Google Spreadsheet ของคุณ (ไฟล์ Check list ส่งมอบ หรือ Record Production)
+ * 2. ไปที่เมนู "ส่วนขยาย" (Extensions) > "Apps Script"
+ * 3. วางโค้ดนี้ลงในไฟล์ Code.gs
+ * 4. กดปุ่ม "ทำให้ใช้งานได้" (Deploy) > "การทำให้ใช้งานได้รายการใหม่" (New deployment)
+ * 5. เลือกประเภท: "เว็บแอปพลิเคชัน" (Web app)
+ *    - ดำเนินการในฐานะ: "ฉัน" (Me)
+ *    - ผู้ที่มีสิทธิ์เข้าถึง: "ทุกคน" (Anyone)
+ * 6. คัดลอก "URL เว็บแอปพลิเคชัน" มาใส่ในช่อง "URL ของ Google Apps Script" ในหน้าต่างตั้งค่าของ PDTrack
+ */
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.tryLock(15000);
+  try {
+    var contents = e && e.postData ? e.postData.contents : '';
+    var data = contents ? JSON.parse(contents) : {};
+    var res = updateSheetItem(data);
+    return ContentService.createTextOutput(JSON.stringify(res))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function doGet(e) {
+  var p = e && e.parameter ? e.parameter : {};
+  if (p && p.action === 'update') {
+    return ContentService.createTextOutput(JSON.stringify(updateSheetItem(p)))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  return ContentService.createTextOutput(JSON.stringify({ status: 'PDTrack Update API Ready' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function updateSheetItem(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // เลือกชีตตาม workTag
+  var sheetName = 'Check list ส่งมอบ';
+  if (data.workTag === 'Project') {
+    sheetName = 'Record รับ - จ่าย Production';
+  } else if (data.workTag === 'Service Purchase') {
+    sheetName = 'service purchase';
+  }
+  
+  var sheet = ss.getSheetByName(sheetName) || ss.getSheets()[0];
+  var values = sheet.getDataRange().getValues();
+  if (values.length < 2) return { success: false, error: 'ไม่พบข้อมูลในชีต ' + sheetName };
+
+  // ตรวจสอบแถวหัวตาราง (แถว 0 หรือ 1)
+  var headerRowIdx = 0;
+  if (values[0] && values[0].some(function(c) { return String(c || '').indexOf('Document') !== -1 || String(c || '').indexOf('หัวข้อ') !== -1; })) {
+    headerRowIdx = 0;
+  } else if (values[1] && values[1].some(function(c) { return String(c || '').indexOf('Document') !== -1 || String(c || '').indexOf('หัวข้อ') !== -1; })) {
+    headerRowIdx = 1;
+  }
+  var headers = values[headerRowIdx].map(function(h) { return String(h || '').trim(); });
+  
+  function findCol(keywords) {
+    for (var i = 0; i < headers.length; i++) {
+      for (var k = 0; k < keywords.length; k++) {
+        if (headers[i].toLowerCase().indexOf(keywords[k].toLowerCase()) !== -1) return i + 1; // 1-indexed column
+      }
+    }
+    return -1;
+  }
+
+  var docCol = findCol(['Document number', 'Doc Ref', 'Reference']);
+  var itemCol = findCol(['เลขที่ Item', 'Item Code', 'Item No']);
+  var prodCol = findCol(['Production Order', 'Prod Order']);
+  var closedCol = findCol(['Closed', 'closed', 'ปิดงาน', 'ปิด']);
+  var targetLatestCol = findCol(['เป้าหมายล่าสุด', 'Target Latest']);
+  var remarkCol = findCol(['หมายเหตุ', 'Remark']);
+
+  // หาแถวเป้าหมาย
+  var targetRow = -1;
+  var docClean = String(data.docRef || '').trim().toLowerCase();
+  var itemClean = String(data.itemCode || '').trim().toLowerCase();
+  var prodClean = String(data.prodOrder || '').trim().toLowerCase();
+
+  for (var r = headerRowIdx + 1; r < values.length; r++) {
+    var rowDoc = docCol > 0 ? String(values[r][docCol - 1] || '').trim().toLowerCase() : '';
+    var rowItem = itemCol > 0 ? String(values[r][itemCol - 1] || '').trim().toLowerCase() : '';
+    var rowProd = prodCol > 0 ? String(values[r][prodCol - 1] || '').trim().toLowerCase() : '';
+
+    var matchDoc = docClean ? (rowDoc === docClean) : true;
+    var matchItem = itemClean ? (rowItem === itemClean) : true;
+    var matchProd = prodClean ? (rowProd === prodClean) : false;
+
+    if ((matchDoc && matchItem) || (prodClean && matchProd)) {
+      targetRow = r + 1; // 1-indexed row in SpreadsheetApp
+      break;
+    }
+  }
+
+  if (targetRow === -1) {
+    return { success: false, error: 'ไม่พบรายการในชีต ' + sheetName + ' (Doc: ' + data.docRef + ', Item: ' + data.itemCode + ')' };
+  }
+
+  // 1. อัปเดตเป้าหมายส่งมอบ
+  if (data.newTargetDate) {
+    var slotNum = Number(data.targetSlot) || 1;
+    var slotCol = findCol(['เป้าหมายส่งมอบ ' + slotNum, 'เป้าหมาย ' + slotNum]);
+    if (slotCol > 0) {
+      sheet.getRange(targetRow, slotCol).setValue(data.newTargetDate);
+    }
+    if (targetLatestCol > 0) {
+      sheet.getRange(targetRow, targetLatestCol).setValue(data.newTargetDate);
+    }
+  }
+
+  // 2. อัปเดต Closed (*)
+  if (data.closed !== undefined) {
+    if (closedCol > 0) {
+      sheet.getRange(targetRow, closedCol).setValue(data.closed);
+    }
+  }
+
+  // 3. อัปเดตหมายเหตุ (ถ้ามี)
+  if (data.remark && remarkCol > 0) {
+    sheet.getRange(targetRow, remarkCol).setValue(data.remark);
+  }
+
+  return { 
+    success: true, 
+    row: targetRow, 
+    sheet: sheetName,
+    message: 'อัปเดตข้อมูลแถวที่ ' + targetRow + ' ในชีต ' + sheetName + ' เรียบร้อยแล้ว'
+  };
+}
+`;
 
 function norm(s: string | null | undefined): string {
   if (!s) return '';
@@ -2077,7 +2471,7 @@ export async function fetchDeliveryData(
       console.warn('Cannot save to localStorage:', storageErr);
     }
 
-    return { items: applyPoPendingToItems(items), fromLive: true };
+    return { items: applyOverridesToItems(applyPoPendingToItems(items)), fromLive: true };
   } catch (err: any) {
     console.warn('Live fetch failed, falling back to local cache/bundled data:', err);
 
@@ -2089,7 +2483,7 @@ export async function fetchDeliveryData(
         cachedItems = cachedItems.map(item => enrichBundledItem(item, item.workTag || 'Service'));
 
         return {
-          items: applyPoPendingToItems(cachedItems),
+          items: applyOverridesToItems(applyPoPendingToItems(cachedItems)),
           fromLive: false,
           error: `ใช้ข้อมูลแคชสำรองที่บันทึกไว้ (${err.message})`,
         };
@@ -2105,7 +2499,7 @@ export async function fetchDeliveryData(
     const bundledItems = [...bundledServiceItems, ...bundledProjectItems, ...bundledSpItems];
 
     return {
-      items: applyPoPendingToItems(bundledItems),
+      items: applyOverridesToItems(applyPoPendingToItems(bundledItems)),
       fromLive: false,
       error: `ใช้ข้อมูลสำรองในระบบ (เชื่อมโยงทั้งงาน Service, Project และ Service Purchase เรียบร้อย)`,
     };

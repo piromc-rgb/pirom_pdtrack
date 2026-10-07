@@ -228,3 +228,40 @@ export function getDaysBetweenDates(date1Str: string | null | undefined, date2St
   const diffMs = t2 - t1;
   return Math.round(diffMs / (1000 * 60 * 60 * 24));
 }
+
+/**
+ * Formats a date string (DD/MM/YYYY or Date) to HTML input date value (YYYY-MM-DD)
+ */
+export function formatDateToInput(dateVal: string | Date | null | undefined): string {
+  if (!dateVal) return '';
+  const d = parseDate(dateVal);
+  if (!d) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Formats HTML input date value (YYYY-MM-DD) to compact DD/MM/YYYY format
+ */
+export function formatInputToCompact(inputDateStr: string | null | undefined): string {
+  if (!inputDateStr) return '';
+  const parts = inputDateStr.split('-');
+  if (parts.length === 3) {
+    const year = parseInt(parts[0], 10);
+    const month = parts[1].padStart(2, '0');
+    const day = parts[2].padStart(2, '0');
+    return `${day}/${month}/${year}`;
+  }
+  return formatCompactDate(inputDateStr);
+}
+
+/**
+ * Adds N days to a date string and returns formatted DD/MM/YYYY
+ */
+export function addDaysToDate(dateVal: string | Date | null | undefined, days: number): string {
+  const d = parseDate(dateVal) || new Date();
+  const nextDate = new Date(d.getTime() + days * 24 * 60 * 60 * 1000);
+  return formatCompactDate(nextDate);
+}

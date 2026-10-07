@@ -13,7 +13,12 @@ import {
   FolderUp,
   CloudDownload,
   CheckCircle2,
-  FolderOpen
+  FolderOpen,
+  Edit3,
+  Lock,
+  KeyRound,
+  Copy,
+  Code
 } from 'lucide-react';
 import { 
   DEFAULT_SHEET_URL, 
@@ -23,6 +28,14 @@ import {
   DEFAULT_OVERVIEW_URL,
   DEFAULT_OVERVIEW_FOLDER_URL,
   DEFAULT_OVERVIEW_APPS_SCRIPT_URL,
+  DEFAULT_EDIT_PASSWORD,
+  getSavedEditPassword,
+  saveEditPassword,
+  getSavedUpdateAppsScriptUrl,
+  saveUpdateAppsScriptUrl,
+  APPS_SCRIPT_UPDATE_CODE,
+  clearAllOverrides,
+  getItemOverrides,
   saveSheetUrl, 
   getSavedSheetUrl,
   saveProdUrl, 
@@ -84,6 +97,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // EDIT Mode & Google Sheet Update Settings
+  const [editPassword, setEditPassword] = useState(getSavedEditPassword());
+  const [updateAppsScriptUrl, setUpdateAppsScriptUrl] = useState(getSavedUpdateAppsScriptUrl());
+  const [showAppsScriptCode, setShowAppsScriptCode] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+  const [overrideCount, setOverrideCount] = useState(() => Object.keys(getItemOverrides()).length);
 
   // Overview Google Drive & File Selection States
   const [activeOverviewFilename, setActiveOverviewFilename] = useState(getSavedOverviewFilename());
@@ -265,6 +285,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       saveOverviewUrl(trimmed4);
       saveDwgFolderUrl(trimmedDwg || DEFAULT_DWG_FOLDER_URL);
       savePoPendingFolderUrl(poFolderUrl);
+      saveEditPassword(editPassword);
+      saveUpdateAppsScriptUrl(updateAppsScriptUrl);
       await onRefreshData(trimmed1, trimmed2, trimmed3, trimmed4, trimmedSp);
       setSaveSuccess(true);
       setTimeout(() => {
@@ -285,12 +307,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     setQcUrl(DEFAULT_QC_URL);
     setOverviewUrl(DEFAULT_OVERVIEW_URL);
     setDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
+    setEditPassword(DEFAULT_EDIT_PASSWORD);
+    setUpdateAppsScriptUrl('');
     saveSheetUrl(DEFAULT_SHEET_URL);
     saveProdUrl(DEFAULT_PRODUCTION_URL);
     saveServicePurchaseUrl(DEFAULT_SERVICE_PURCHASE_URL);
     saveQcUrl(DEFAULT_QC_URL);
     saveOverviewUrl(DEFAULT_OVERVIEW_URL);
     saveDwgFolderUrl(DEFAULT_DWG_FOLDER_URL);
+    saveEditPassword(DEFAULT_EDIT_PASSWORD);
+    saveUpdateAppsScriptUrl('');
     setPoFolderUrl(DEFAULT_PO_PENDING_FOLDER_URL);
     savePoPendingFolderUrl(DEFAULT_PO_PENDING_FOLDER_URL);
   };
@@ -675,6 +701,121 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <span className="text-[11px] text-slate-400 block">
               * เมื่อ Double Click ที่เลข Item ในตาราง ระบบจะค้นหาไฟล์ PDF ที่มีรหัสแบบมีขีดคั่น (เช่น J131012-Z-38-1-D-00) จากโฟลเดอร์นี้และทุก Subfolder ({TOTAL_INDEXED_DWG_PDFS.toLocaleString()} ไฟล์)
             </span>
+          </div>
+
+          {/* Section: EDIT Mode & Google Sheet Update */}
+          <div className="p-3.5 rounded-xl border border-amber-300 bg-amber-50/50 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span>โหมดแก้ไข (EDIT Mode) & การอัปเดต Google Sheet</span>
+              </label>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">
+                รหัสผ่านเริ่มต้น: 2211
+              </span>
+            </div>
+
+            {/* Password setting */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-slate-700">รหัสผ่านสำหรับเข้าสู่โหมด EDIT:</span>
+                {editPassword !== DEFAULT_EDIT_PASSWORD && (
+                  <button
+                    type="button"
+                    onClick={() => setEditPassword(DEFAULT_EDIT_PASSWORD)}
+                    className="text-[10px] text-amber-700 hover:underline cursor-pointer"
+                  >
+                    รีเซ็ตเป็น 2211
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
+                  placeholder="2211"
+                  className="w-36 p-2 text-xs font-mono bg-white border border-slate-300 rounded-lg outline-none focus:border-amber-500 font-bold"
+                />
+                <span className="text-[11px] text-slate-500">
+                  (ระบบจะถามรหัสผ่านนี้เมื่อผู้ใช้กดปุ่มสลับเข้าสู่โหมด EDIT)
+                </span>
+              </div>
+            </div>
+
+            {/* Apps Script Update URL */}
+            <div className="space-y-1 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-slate-700">URL ของ Google Apps Script สำหรับบันทึกข้อมูลลง Google Sheet:</span>
+                <button
+                  type="button"
+                  onClick={() => setShowAppsScriptCode(!showAppsScriptCode)}
+                  className="text-[11px] text-blue-700 hover:underline flex items-center gap-1 font-semibold cursor-pointer"
+                >
+                  <Code className="w-3.5 h-3.5" />
+                  <span>{showAppsScriptCode ? 'ซ่อนโค้ด Apps Script' : 'ดูโค้ด Apps Script สำหรับติดตั้งใน Sheet'}</span>
+                </button>
+              </div>
+              <textarea
+                rows={2}
+                value={updateAppsScriptUrl}
+                onChange={(e) => setUpdateAppsScriptUrl(e.target.value)}
+                className="w-full p-2.5 text-xs font-mono bg-white border border-slate-300 rounded-lg outline-none focus:border-amber-500"
+                placeholder="https://script.google.com/macros/s/AKfycb.../exec (เว้นว่างไว้เพื่อบันทึกแคชในเครื่อง)"
+              />
+              <span className="text-[10px] text-slate-500 block">
+                * เมื่อแก้ไขเป้าหมาย หรือ Confirm ส่งมอบ ระบบจะส่งข้อมูลไปบันทึกที่ Google Sheet ผ่าน URL นี้ทันที
+              </span>
+            </div>
+
+            {/* Apps Script Code Modal / Expander */}
+            {showAppsScriptCode && (
+              <div className="bg-slate-900 rounded-xl p-3 text-slate-200 space-y-2 border border-slate-700 animate-in fade-in">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                    <Code className="w-4 h-4" />
+                    <span>โค้ด Google Apps Script (Update Code.gs)</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(APPS_SCRIPT_UPDATE_CODE);
+                      setCopiedCode(true);
+                      setTimeout(() => setCopiedCode(false), 3000);
+                    }}
+                    className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] flex items-center gap-1 transition cursor-pointer"
+                  >
+                    {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedCode ? 'คัดลอกแล้ว!' : 'คัดลอกโค้ด'}</span>
+                  </button>
+                </div>
+                <pre className="text-[10px] font-mono max-h-48 overflow-y-auto bg-slate-950 p-2.5 rounded-lg text-emerald-400">
+                  {APPS_SCRIPT_UPDATE_CODE}
+                </pre>
+                <p className="text-[10px] text-slate-400">
+                  วิธีติดตั้ง: ไปที่ Google Sheet ของคุณ $\rightarrow$ Extensions $\rightarrow$ Apps Script $\rightarrow$ วางโค้ด $\rightarrow$ กด Deploy as Web App (Anyone) $\rightarrow$ นำ URL มาใส่ในช่องด้านบน
+                </p>
+              </div>
+            )}
+
+            {/* Overrides indicator */}
+            {overrideCount > 0 && (
+              <div className="flex items-center justify-between pt-1 text-[11px] text-slate-600 border-t border-amber-200/60">
+                <span>มีรายการที่ถูกแก้ไขหรือ Confirm ในเครื่อง: <strong className="text-amber-800">{overrideCount}</strong> รายการ</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('ต้องการล้างประวัติการแก้ไขและ Confirm ในเครื่องทั้งหมดใช่หรือไม่?')) {
+                      clearAllOverrides();
+                      setOverrideCount(0);
+                    }
+                  }}
+                  className="text-rose-600 hover:underline cursor-pointer"
+                >
+                  ล้างข้อมูลแก้ไขในเครื่อง
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-1">

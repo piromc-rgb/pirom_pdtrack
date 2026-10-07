@@ -20,9 +20,10 @@ import {
   RefreshCw,
   GitCompare,
   Layers,
-  TrendingUp
+  TrendingUp,
+  Edit3
 } from 'lucide-react';
-import { DeliveryItem, MachineSummary, SearchCriteria } from '../types';
+import { DeliveryItem, MachineSummary, SearchCriteria, AppMode } from '../types';
 import { 
   formatThaiDate, 
   formatCompactDate, 
@@ -65,6 +66,9 @@ interface DeliveryPlanViewProps {
   onOpenComparator?: () => void;
   isLoading?: boolean;
   onRegisterActions?: (actions: { exportCsv: () => void; openPrint: () => void; expandAll: () => void; collapseAll: () => void } | null) => void;
+  mode?: AppMode;
+  onEditTarget?: (item: DeliveryItem) => void;
+  onConfirmDelivery?: (item: DeliveryItem, confirmed: boolean) => void;
 }
 
 export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
@@ -72,6 +76,9 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
   searchCriteria,
   onSelectMachineByName,
   onRegisterActions,
+  mode = 'VIEW',
+  onEditTarget,
+  onConfirmDelivery,
 }) => {
   const [expandedDates, setExpandedDates] = useState<Record<string, boolean>>({});
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
@@ -555,6 +562,11 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
 
                           <th className="py-2.5 px-3 min-w-[130px]">ประวัติเลื่อนเป้า (1 $\rightarrow$ 5)</th>
                           <th className="py-2.5 px-3 min-w-[150px]">หมายเหตุ / ปลายทาง</th>
+                          {mode === 'EDIT' && (
+                            <th className="py-2.5 px-3 min-w-[160px] bg-amber-50 text-amber-900 text-center font-bold">
+                              จัดการเป้าหมาย & Confirm
+                            </th>
+                          )}
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -1002,6 +1014,40 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                     </span>
                                   )}
                               </td>
+
+                              {mode === 'EDIT' && (
+                                <td className="py-3 px-3 text-center bg-amber-50/20 whitespace-nowrap">
+                                  <div className="flex items-center justify-center gap-1.5">
+                                    <button
+                                      type="button"
+                                      onClick={() => onEditTarget && onEditTarget(item)}
+                                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-sky-50 text-sky-700 hover:text-sky-800 border border-sky-300 shadow-2xs transition active:scale-95 cursor-pointer"
+                                      title="แก้ไขวันที่เป้าหมายส่งมอบ (แผ่นส่งจะขยับเปลี่ยนวันที่ทันที)"
+                                    >
+                                      <Edit3 className="w-3.5 h-3.5" />
+                                      <span>แก้เป้า</span>
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => onConfirmDelivery && onConfirmDelivery(item, !(item.closed === '*' || item.status === 'ส่งแล้ว'))}
+                                      className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer border ${
+                                        item.closed === '*' || item.status === 'ส่งแล้ว'
+                                          ? 'bg-emerald-100 hover:bg-rose-50 text-emerald-800 hover:text-rose-700 border-emerald-300 hover:border-rose-300'
+                                          : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
+                                      }`}
+                                      title={
+                                        item.closed === '*' || item.status === 'ส่งแล้ว'
+                                          ? 'ส่งมอบแล้ว (*) คลิกเพื่อยกเลิกการส่งมอบ'
+                                          : 'คลิกเพื่อ Confirm การส่งมอบ (บันทึกเครื่องหมาย * ใน Closed)'
+                                      }
+                                    >
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      <span>{item.closed === '*' || item.status === 'ส่งแล้ว' ? 'ส่งแล้ว (*)' : 'Confirm'}</span>
+                                    </button>
+                                  </div>
+                                </td>
+                              )}
                             </tr>
                           );
                         })}
