@@ -194,7 +194,8 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
     } = {};
 
     pendingItems.forEach(item => {
-      const dateKey = item.targetLatest ? item.targetLatest.trim() : 'ยังไม่ระบุวันส่ง';
+      const rawDate = item.targetLatest ? item.targetLatest.trim() : '';
+      const dateKey = rawDate ? formatCompactDate(rawDate) : 'ยังไม่ระบุวันส่ง';
       const parsed = parseDate(dateKey);
       const daysDiff = getDaysDiff(dateKey);
       const isOverdue = item.isOverdue || Boolean(daysDiff !== null && daysDiff < 0);

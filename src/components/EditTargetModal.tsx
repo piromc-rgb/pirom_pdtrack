@@ -38,7 +38,8 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [newDateInput, setNewDateInput] = useState<string>(''); // YYYY-MM-DD
+  const [dateTextInput, setDateTextInput] = useState<string>(''); // d/m/y format e.g. "6/10/26"
+  const [newDateInput, setNewDateInput] = useState<string>(''); // YYYY-MM-DD for native picker
   const [remarkInput, setRemarkInput] = useState<string>('');
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -46,6 +47,8 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
   useEffect(() => {
     if (item && isOpen) {
       const initialDate = item.targetLatest || item.target1 || '';
+      const compact = formatCompactDate(initialDate);
+      setDateTextInput(compact === '-' ? '' : compact);
       setNewDateInput(formatDateToInput(initialDate));
       setRemarkInput(item.remark || '');
       setErrorMessage('');
@@ -55,27 +58,44 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
   if (!isOpen || !item) return null;
 
   const currentFormatted = item.targetLatest ? formatCompactDate(item.targetLatest) : 'ยังไม่ระบุ';
-  const newCompactDate = formatInputToCompact(newDateInput);
-  const newParsed = parseDate(newCompactDate);
+  const newCompactDate = dateTextInput ? formatCompactDate(dateTextInput) : '';
+  const newParsed = parseDate(dateTextInput);
+
+  // Handle direct text typing in d/m/y format (e.g. 6/10/26)
+  const handleDateTextChange = (val: string) => {
+    setDateTextInput(val);
+    const parsed = parseDate(val);
+    if (parsed) {
+      setNewDateInput(formatDateToInput(parsed));
+      setErrorMessage('');
+    }
+  };
+
+  // Handle calendar picker selection
+  const handlePickerChange = (pickerVal: string) => {
+    setNewDateInput(pickerVal);
+    const compact = formatInputToCompact(pickerVal);
+    setDateTextInput(compact);
+    setErrorMessage('');
+  };
 
   // Quick adjust helper
   const handleQuickAddDays = (days: number) => {
-    const baseDate = newParsed || parseDate(item.targetLatest) || new Date();
+    const baseDate = parseDate(dateTextInput) || parseDate(item.targetLatest) || new Date();
     const nextFormatted = addDaysToDate(baseDate, days);
+    setDateTextInput(nextFormatted);
     setNewDateInput(formatDateToInput(nextFormatted));
+    setErrorMessage('');
   };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDateInput) {
-      setErrorMessage('กรุณาเลือกวันที่เป้าหมายใหม่');
+    const parsed = parseDate(dateTextInput);
+    if (!parsed) {
+      setErrorMessage('กรุณาระบุวันที่เป้าหมายใหม่ให้ถูกต้อง เช่น 6/10/26 หรือเลือกจากปฏิทิน');
       return;
     }
-    const compactDate = formatInputToCompact(newDateInput);
-    if (!compactDate || compactDate === '-') {
-      setErrorMessage('รูปแบบวันที่ไม่ถูกต้อง กรุณาเลือกวันที่จากปฏิทิน');
-      return;
-    }
+    const compactDate = formatCompactDate(parsed);
 
     setIsSaving(true);
     setErrorMessage('');
@@ -199,24 +219,57 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
 
           {/* New Target Date Input */}
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-slate-800 flex items-center justify-between">
-              <span>กำหนดวันที่เป้าหมายส่งมอบใหม่:</span>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-800">
+                กำหนดวันที่เป้าหมายส่งมอบใหม่ (d/m/y):
+              </label>
               {newParsed && (
                 <span className="text-sky-700 font-medium text-[11px]">
-                  {formatThaiDate(newCompactDate)} ({formatThaiDayOfWeek(newCompactDate)})
+                  {formatThaiDate(dateTextInput)} ({formatThaiDayOfWeek(dateTextInput)})
                 </span>
               )}
-            </label>
-
-            <div className="relative">
-              <input
-                type="date"
-                required
-                value={newDateInput}
-                onChange={(e) => setNewDateInput(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-mono text-slate-800 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200 transition"
-              />
             </div>
+
+            {/* Input with Calendar picker button */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  required
+                  value={dateTextInput}
+                  onChange={(e) => handleDateTextChange(e.target.value)}
+                  placeholder="เช่น 6/10/26"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-mono text-slate-900 font-bold outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200 transition"
+                />
+              </div>
+
+              {/* Native Calendar Picker Button with invisible overlay input */}
+              <div className="relative shrink-0">
+                <input
+                  type="date"
+                  value={newDateInput}
+                  onChange={(e) => handlePickerChange(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                  title="คลิกเพื่อเลือกวันที่จากปฏิทิน"
+                />
+                <button
+                  type="button"
+                  className="px-3.5 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition pointer-events-none"
+                >
+                  <Calendar className="w-4 h-4 text-sky-600" />
+                  <span>เลือกปฏิทิน</span>
+                </button>
+              </div>
+            </div>
+
+            <p className="text-[11px] text-slate-500 flex items-center justify-between">
+              <span>* กรอกรูปแบบ <strong>d/m/y</strong> เช่น <strong>6/10/26</strong> หรือกดปุ่มปฏิทินเพื่อเลือกวัน</span>
+              {newParsed && (
+                <span className="text-emerald-700 font-mono font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  เป้าหมาย: {formatCompactDate(dateTextInput)}
+                </span>
+              )}
+            </p>
 
             {/* Quick date adjustment buttons */}
             <div className="flex items-center gap-1.5 flex-wrap pt-1">

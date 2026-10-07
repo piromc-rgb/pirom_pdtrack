@@ -16,12 +16,18 @@ export function parseDate(dateStr: any): Date | null {
   const clean = dateStr.trim();
   if (!clean || clean === '-' || clean === 'N/A') return null;
 
-  // Match DD/MM/YYYY or DD-MM-YYYY
+  // Match DD/MM/YYYY or DD-MM-YYYY or YYYY-MM-DD
   const parts = clean.split(/[/\-.]/);
   if (parts.length === 3) {
-    const day = parseInt(parts[0], 10);
+    let day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1; // 0-indexed
     let year = parseInt(parts[2], 10);
+
+    // If first part is a 4-digit year (e.g. YYYY-MM-DD)
+    if (parts[0].length === 4 || day > 1000) {
+      year = day;
+      day = parseInt(parts[2], 10);
+    }
 
     if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
 
@@ -46,7 +52,7 @@ export function parseDate(dateStr: any): Date | null {
 }
 
 /**
- * Formats a date string to Thai friendly display (e.g. 14 ก.ค. 2026)
+ * Formats a date string to Thai friendly display (e.g. 6 ต.ค. 26)
  */
 export function formatThaiDate(dateStr: string | null | undefined): string {
   if (!dateStr) return '-';
@@ -60,22 +66,22 @@ export function formatThaiDate(dateStr: string | null | undefined): string {
 
   const day = d.getDate();
   const month = thaiMonthsShort[d.getMonth()];
-  const year = d.getFullYear() + 543; // Display in Buddhist era for Thai standard or Christian era
+  const year2 = String(d.getFullYear()).slice(-2);
 
-  return `${day} ${month} ${year} (${d.getFullYear()})`;
+  return `${day} ${month} ${year2}`;
 }
 
 /**
- * Formats date as compact DD/MM/YY
+ * Formats date as compact d/m/y (e.g. 6/10/26)
  */
 export function formatCompactDate(dateStr: string | null | undefined): string {
   if (!dateStr) return '-';
   const d = parseDate(dateStr);
   if (!d) return dateStr;
 
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const year = d.getFullYear();
+  const day = d.getDate();
+  const month = d.getMonth() + 1;
+  const year = String(d.getFullYear()).slice(-2);
 
   return `${day}/${month}/${year}`;
 }
@@ -243,17 +249,10 @@ export function formatDateToInput(dateVal: string | Date | null | undefined): st
 }
 
 /**
- * Formats HTML input date value (YYYY-MM-DD) to compact DD/MM/YYYY format
+ * Formats HTML input date value (YYYY-MM-DD) or any date string to d/m/y format (e.g. 6/10/26)
  */
 export function formatInputToCompact(inputDateStr: string | null | undefined): string {
   if (!inputDateStr) return '';
-  const parts = inputDateStr.split('-');
-  if (parts.length === 3) {
-    const year = parseInt(parts[0], 10);
-    const month = parts[1].padStart(2, '0');
-    const day = parts[2].padStart(2, '0');
-    return `${day}/${month}/${year}`;
-  }
   return formatCompactDate(inputDateStr);
 }
 
