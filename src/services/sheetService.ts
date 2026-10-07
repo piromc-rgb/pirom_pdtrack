@@ -289,15 +289,47 @@ export function applyOverridesToItems(items: DeliveryItem[]): DeliveryItem[] {
  * Updates an item's target delivery date and/or Closed (*) delivery confirmation status.
  * Updates local cache immediately and sends update to Google Apps Script Web App if configured.
  */
+export interface UpdateItemOptions {
+  newTargetDate?: string;
+  closed?: string;
+  status?: 'ส่งแล้ว' | 'รอดำเนินการ';
+  remark?: string;
+  note?: string;
+}
+
+export interface UpdateItemResult {
+  success: boolean;
+  message: string;
+  localOnly?: boolean;
+  updatedItem: DeliveryItem;
+  syncResult: { synced: boolean; error?: string };
+}
+
+/**
+ * Updates an item's target delivery date and/or Closed (*) delivery confirmation status.
+ * Updates local cache immediately and sends update to Google Apps Script Web App if configured.
+ * Accepts either:
+ * - updateItemInGoogleSheet(item, changes)
+ * - updateItemInGoogleSheet({ item, newTargetDate, ... })
+ */
 export async function updateItemInGoogleSheet(
-  item: DeliveryItem,
-  changes: {
-    newTargetDate?: string;
-    closed?: string;
-    status?: 'ส่งแล้ว' | 'รอดำเนินการ';
-    remark?: string;
+  arg1: DeliveryItem | ({ item: DeliveryItem } & UpdateItemOptions),
+  arg2?: UpdateItemOptions
+): Promise<UpdateItemResult> {
+  let item: DeliveryItem;
+  let changes: UpdateItemOptions;
+
+  if (arg2 !== undefined) {
+    item = arg1 as DeliveryItem;
+    changes = arg2 || {};
+  } else if ((arg1 as any)?.item) {
+    item = (arg1 as any).item;
+    changes = (arg1 as any) || {};
+  } else {
+    item = arg1 as DeliveryItem;
+    changes = {};
   }
-): Promise<{ success: boolean; message: string; localOnly?: boolean }> {
+
   const key = getItemKey(item);
   const overrides = getItemOverrides();
   const existingOv = overrides[key] || (item.id ? overrides[item.id] : {}) || {};
@@ -311,7 +343,8 @@ export async function updateItemInGoogleSheet(
   let targetSlot = 1;
 
   if (changes.newTargetDate) {
-    const newDate = changes.newTargetDate.trim();
+    const rawDate = changes.newTargetDate.trim();
+    const newDate = formatCompactDate(rawDate) || rawDate;
     if (!target1) {
       target1 = newDate;
       targetSlot = 1;
@@ -324,7 +357,7 @@ export async function updateItemInGoogleSheet(
     } else if (!target4 && target3 !== newDate) {
       target4 = newDate;
       targetSlot = 4;
-    } else {
+    } else if (target4 !== newDate) {
       target5 = newDate;
       targetSlot = 5;
     }
@@ -334,7 +367,7 @@ export async function updateItemInGoogleSheet(
   const closed = changes.closed !== undefined ? changes.closed : (existingOv.closed !== undefined ? existingOv.closed : item.closed);
   const isNowDelivered = (closed && closed.includes('*')) || changes.status === 'ส่งแล้ว';
   const status: 'ส่งแล้ว' | 'รอดำเนินการ' = isNowDelivered ? 'ส่งแล้ว' : (changes.status || 'รอดำเนินการ');
-  const remark = changes.remark !== undefined ? changes.remark : (existingOv.remark !== undefined ? existingOv.remark : item.remark);
+  const remark = changes.remark !== undefined ? changes.remark : (changes.note !== undefined ? changes.note : (existingOv.remark !== undefined ? existingOv.remark : item.remark));
 
   const overridePayload: ItemOverride = {
     itemKey: key,
@@ -357,6 +390,33 @@ export async function updateItemInGoogleSheet(
     saveItemOverride(item.id, overridePayload);
   }
 
+  const daysDiff = getDaysDiff(targetLatest);
+  const isOverdue = status !== 'ส่งแล้ว' && (Boolean(daysDiff !== null && daysDiff < 0) || isDateOverdue(targetLatest));
+  const isDueSoon = status !== 'ส่งแล้ว' && !isOverdue && isDateDueSoon(targetLatest, 7);
+
+  let rescheduledCount = 0;
+  if (target2) rescheduledCount++;
+  if (target3) rescheduledCount++;
+  if (target4) rescheduledCount++;
+  if (target5) rescheduledCount++;
+
+  const updatedItem: DeliveryItem = {
+    ...item,
+    target1,
+    target2,
+    target3,
+    target4,
+    target5,
+    targetLatest,
+    closed,
+    status,
+    remark,
+    rescheduledCount,
+    isOverdue,
+    isDueSoon,
+    parsedLatestDate: parseDate(targetLatest),
+  };
+
   // 2. Send to Google Apps Script Web App if configured
   const appsScriptUrl = getSavedUpdateAppsScriptUrl();
   if (appsScriptUrl && appsScriptUrl.trim()) {
@@ -368,12 +428,12 @@ export async function updateItemInGoogleSheet(
         itemCode: item.itemCode || '',
         prodOrder: item.prodOrder || '',
         machineName: item.machineName || '',
-        newTargetDate: changes.newTargetDate || '',
+        newTargetDate: changes.newTargetDate ? (formatCompactDate(changes.newTargetDate) || changes.newTargetDate) : '',
         targetSlot,
         targetLatest,
         closed,
         status,
-        remark: changes.remark || ''
+        remark: remark || ''
       };
 
       await fetch(appsScriptUrl.trim(), {
@@ -386,14 +446,18 @@ export async function updateItemInGoogleSheet(
       return {
         success: true,
         localOnly: false,
-        message: 'บันทึกและส่งข้อมูลอัปเดต Google Sheet เรียบร้อยแล้ว'
+        message: 'บันทึกและส่งข้อมูลอัปเดต Google Sheet เรียบร้อยแล้ว',
+        updatedItem,
+        syncResult: { synced: true }
       };
     } catch (err: any) {
       console.warn('Google Apps Script call failed:', err);
       return {
         success: true,
         localOnly: true,
-        message: 'บันทึกในระบบสำเร็จ (Apps Script ขัดข้อง: ' + (err?.message || 'Error') + ')'
+        message: 'บันทึกในระบบสำเร็จ (Apps Script ขัดข้อง: ' + (err?.message || 'Error') + ')',
+        updatedItem,
+        syncResult: { synced: false, error: err?.message || 'Apps Script network error' }
       };
     }
   }
@@ -401,7 +465,9 @@ export async function updateItemInGoogleSheet(
   return {
     success: true,
     localOnly: true,
-    message: 'บันทึกในระบบเรียบร้อย (แคชในเครื่อง)'
+    message: 'บันทึกในระบบเรียบร้อย (แคชในเครื่อง)',
+    updatedItem,
+    syncResult: { synced: false }
   };
 }
 

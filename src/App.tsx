@@ -23,7 +23,8 @@ import {
   getLastSyncTime,
   isOverviewCompletedOrClosed,
   getQcWarehouseStatus,
-  updateItemInGoogleSheet
+  updateItemInGoogleSheet,
+  getItemKey
 } from './services/sheetService';
 import { getDaysDiff } from './utils/dateUtils';
 import { matchItemWithQuickSearch, matchDocRefFilter, matchMachineFilter } from './utils/searchUtils';
@@ -282,26 +283,30 @@ export function App() {
 
   const handleSaveTarget = useCallback(async (item: DeliveryItem, newTargetDate: string, note?: string) => {
     try {
-      const res = await updateItemInGoogleSheet({
-        item,
+      const res = await updateItemInGoogleSheet(item, {
         newTargetDate,
-        note,
+        remark: note,
       });
+
+      const targetKey = getItemKey(item);
 
       // Update state
       setItems(prev => prev.map(i => {
-        if (i.workTag === item.workTag && i.docRef === item.docRef && i.itemCode === item.itemCode && i.prodOrder === item.prodOrder) {
+        if (getItemKey(i) === targetKey) {
           return res.updatedItem;
         }
         return i;
       }));
 
-      if (res.syncResult.synced) {
-        showToast('success', `อัปเดตเป้าหมายของ ${item.partName || item.itemCode} เป็น ${newTargetDate} และส่งข้อมูลไปยัง Google Sheet เรียบร้อยแล้ว`);
-      } else if (res.syncResult.error) {
-        showToast('warning', `บันทึกเป้าหมายในระบบแล้ว (${newTargetDate}) แต่ซิงค์ Google Sheet ไม่สำเร็จ: ${res.syncResult.error}`);
+      const displayPart = item.partName || item.itemName || item.itemCode;
+      const displayDate = res.updatedItem?.targetLatest || newTargetDate;
+
+      if (res.syncResult?.synced) {
+        showToast('success', `อัปเดตเป้าหมายของ ${displayPart} เป็น ${displayDate} และส่งข้อมูลไปยัง Google Sheet เรียบร้อยแล้ว`);
+      } else if (res.syncResult?.error) {
+        showToast('warning', `บันทึกเป้าหมายในระบบแล้ว (${displayDate}) แต่ซิงค์ Google Sheet ไม่สำเร็จ: ${res.syncResult.error}`);
       } else {
-        showToast('info', `บันทึกเป้าหมายในระบบเรียบร้อย (${newTargetDate}) - จะซิงค์ Google Sheet เมื่อตั้งค่า Web App URL ในหน้าต่างตั้งค่า`);
+        showToast('info', `บันทึกเป้าหมายในระบบเรียบร้อย (${displayDate}) - จะซิงค์ Google Sheet เมื่อตั้งค่า Web App URL ในหน้าต่างตั้งค่า`);
       }
     } catch (err: any) {
       console.error('Failed to save target date:', err);
@@ -311,27 +316,29 @@ export function App() {
 
   const handleConfirmDelivery = useCallback(async (item: DeliveryItem, confirmed: boolean) => {
     try {
-      const res = await updateItemInGoogleSheet({
-        item,
+      const res = await updateItemInGoogleSheet(item, {
         closed: confirmed ? '*' : '',
       });
 
+      const targetKey = getItemKey(item);
+
       // Update state
       setItems(prev => prev.map(i => {
-        if (i.workTag === item.workTag && i.docRef === item.docRef && i.itemCode === item.itemCode && i.prodOrder === item.prodOrder) {
+        if (getItemKey(i) === targetKey) {
           return res.updatedItem;
         }
         return i;
       }));
 
+      const displayPart = item.partName || item.itemName || item.itemCode;
       if (confirmed) {
-        if (res.syncResult.synced) {
-          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${item.partName || item.itemCode} (อัปเดต Google Sheet เรียบร้อย)`);
+        if (res.syncResult?.synced) {
+          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${displayPart} (อัปเดต Google Sheet เรียบร้อย)`);
         } else {
-          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${item.partName || item.itemCode}`);
+          showToast('success', `Confirm ส่งมอบ (*) สำเร็จ: ${displayPart}`);
         }
       } else {
-        showToast('info', `ยกเลิก Confirm ส่งมอบ: ${item.partName || item.itemCode}`);
+        showToast('info', `ยกเลิก Confirm ส่งมอบ: ${displayPart}`);
       }
     } catch (err: any) {
       console.error('Failed to confirm delivery:', err);
