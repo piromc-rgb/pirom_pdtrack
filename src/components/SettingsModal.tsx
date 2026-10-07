@@ -725,16 +725,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onClick={() => setEditPassword(DEFAULT_EDIT_PASSWORD)}
                     className="text-[10px] text-amber-700 hover:underline cursor-pointer"
                   >
-                    รีเซ็ตเป็น 2211
+                    รีเซ็ตเป็นค่าเริ่มต้น
                   </button>
                 )}
               </div>
               <div className="flex items-center gap-2">
                 <input
-                  type="text"
+                  type="password"
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
-                  placeholder="2211"
+                  placeholder="รหัสผ่าน"
                   className="w-36 p-2 text-xs font-mono bg-white border border-slate-300 rounded-lg outline-none focus:border-amber-500 font-bold"
                 />
                 <span className="text-[11px] text-slate-500">

@@ -35,7 +35,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
       onSuccess();
       onClose();
     } else {
-      setError('รหัสผ่านไม่ถูกต้อง (รหัสผ่านเริ่มต้นคือ 2211)');
+      setError('รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
     }
   };
 
@@ -80,7 +80,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
                   setPassword(e.target.value);
                   if (error) setError('');
                 }}
-                placeholder="ใส่รหัสผ่าน (เช่น 2211)"
+                placeholder="ใส่รหัสผ่าน"
                 className="w-full pl-9 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl outline-none focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-200 transition font-mono"
               />
               <button
@@ -92,9 +92,6 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            <p className="text-[11px] text-slate-500 flex items-center justify-between pt-0.5">
-              <span>* รหัสผ่านเริ่มต้นคือ <strong className="font-mono text-amber-700 bg-amber-50 px-1 py-0.5 rounded border border-amber-200">2211</strong></span>
-            </p>
           </div>
 
           {error && (
