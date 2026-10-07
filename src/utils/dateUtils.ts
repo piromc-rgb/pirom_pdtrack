@@ -13,42 +13,60 @@ export function parseDate(dateStr: any): Date | null {
     return isNaN(d.getTime()) ? null : d;
   }
   if (typeof dateStr !== 'string') return null;
-  const clean = dateStr.trim();
+
+  // Convert Thai digits (๐-๙) to Arabic digits (0-9)
+  const thaiDigits = ['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'];
+  const clean = dateStr.trim().replace(/[๐-๙]/g, (ch: string) => thaiDigits.indexOf(ch).toString());
   if (!clean || clean === '-' || clean === 'N/A') return null;
 
-  // Match DD/MM/YYYY or DD-MM-YYYY or YYYY-MM-DD
-  const parts = clean.split(/[/\-.]/);
-  if (parts.length === 3) {
-    let day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10) - 1; // 0-indexed
-    let year = parseInt(parts[2], 10);
-
-    // If first part is a 4-digit year (e.g. YYYY-MM-DD)
-    if (parts[0].length === 4 || day > 1000) {
-      year = day;
-      day = parseInt(parts[2], 10);
-    }
-
-    if (isNaN(day) || isNaN(month) || isNaN(year)) return null;
-
-    // Convert Buddhist era to Gregorian if > 2400 (e.g. 2569 -> 2026)
-    if (year >= 2400) {
-      year -= 543;
-    } else if (year < 100) {
-      // e.g. 26 -> 2026 or 69 -> 2026 (2569 BE)
-      if (year >= 60 && year <= 80) {
-        year = (year + 2500) - 543;
-      } else {
-        year += 2000;
-      }
-    }
-
-    const d = new Date(year, month, day);
-    return isNaN(d.getTime()) ? null : d;
+  // Extract all digit groups (handles slashes, dashes, dots, spaces, commas, etc.)
+  const numbers = clean.match(/\d+/g);
+  if (!numbers || numbers.length < 2) {
+    const fallback = new Date(clean);
+    return isNaN(fallback.getTime()) ? null : fallback;
   }
 
-  const parsed = new Date(clean);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  let day = 1;
+  let month = 0;
+  let year = new Date().getFullYear();
+
+  if (numbers.length >= 3) {
+    // If first part is a 4-digit year (YYYY-MM-DD or YYYY/MM/DD)
+    if (numbers[0].length === 4 || parseInt(numbers[0], 10) > 1000) {
+      year = parseInt(numbers[0], 10);
+      month = parseInt(numbers[1], 10) - 1;
+      day = parseInt(numbers[2], 10);
+    } else {
+      // D/M/Y or DD/MM/YYYY
+      day = parseInt(numbers[0], 10);
+      month = parseInt(numbers[1], 10) - 1;
+      year = parseInt(numbers[2], 10);
+    }
+  } else if (numbers.length === 2) {
+    // Only day and month provided (e.g. 6/10) -> assume current year 2026
+    day = parseInt(numbers[0], 10);
+    month = parseInt(numbers[1], 10) - 1;
+    year = 2026;
+  }
+
+  if (isNaN(day) || isNaN(month) || isNaN(year) || month < 0 || month > 11 || day < 1 || day > 31) {
+    return null;
+  }
+
+  // Convert Buddhist era to Gregorian if > 2400 (e.g. 2569 -> 2026)
+  if (year >= 2400) {
+    year -= 543;
+  } else if (year < 100) {
+    // 2-digit year: 60-99 -> Thai BE (e.g. 69 -> 2026), 0-59 -> CE (e.g. 26 -> 2026)
+    if (year >= 60 && year <= 99) {
+      year = (year + 2500) - 543;
+    } else {
+      year += 2000;
+    }
+  }
+
+  const d = new Date(year, month, day);
+  return isNaN(d.getTime()) ? null : d;
 }
 
 /**

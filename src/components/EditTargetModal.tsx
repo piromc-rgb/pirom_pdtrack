@@ -90,7 +90,7 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = parseDate(dateTextInput);
+    const parsed = parseDate(dateTextInput) || parseDate(newDateInput);
     if (!parsed) {
       setErrorMessage('กรุณาระบุวันที่เป้าหมายใหม่ให้ถูกต้อง เช่น 6/10/26 หรือเลือกจากปฏิทิน');
       return;
@@ -314,7 +314,7 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>
-                  เลื่อนจาก <strong className="font-mono">{currentFormatted}</strong> $\rightarrow$ เป็น <strong className="font-mono text-emerald-700">{newCompactDate}</strong>
+                  เลื่อนจาก <strong className="font-mono">{currentFormatted}</strong> → เป็น <strong className="font-mono text-emerald-700">{newCompactDate}</strong>
                 </span>
               </div>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
