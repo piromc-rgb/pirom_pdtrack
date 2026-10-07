@@ -401,23 +401,11 @@ export async function updateItemInGoogleSheet(
   if (changes.newTargetDate) {
     const rawDate = changes.newTargetDate.trim();
     const newDate = formatCompactDate(rawDate) || rawDate;
-    if (!target1) {
-      target1 = newDate;
-      targetSlot = 1;
-    } else if (!target2 && target1 !== newDate) {
-      target2 = newDate;
-      targetSlot = 2;
-    } else if (!target3 && target2 !== newDate) {
-      target3 = newDate;
-      targetSlot = 3;
-    } else if (!target4 && target3 !== newDate) {
-      target4 = newDate;
-      targetSlot = 4;
-    } else if (target4 !== newDate) {
-      target5 = newDate;
-      targetSlot = 5;
-    }
+
+    // อัปเดตลง Column S (เป้าหมายส่งมอบ 1) และเป้าหมายล่าสุดเสมอ
+    target1 = newDate;
     targetLatest = newDate;
+    targetSlot = 1;
   }
 
   const closed = changes.closed !== undefined ? changes.closed : (existingOv.closed !== undefined ? existingOv.closed : item.closed);
@@ -639,14 +627,18 @@ function updateSheetItem(data) {
     return { success: false, error: 'ไม่พบรายการในชีต ' + sheetName + ' (Doc: ' + data.docRef + ', Item: ' + data.itemCode + ')' };
   }
 
-  // 1. อัปเดตเป้าหมายส่งมอบ
+  // 1. อัปเดตเป้าหมายส่งมอบ (อัปเดตลง Column S: เป้าหมายส่งมอบ 1)
   if (data.newTargetDate) {
-    var slotNum = Number(data.targetSlot) || 1;
-    var slotCol = findCol(['เป้าหมายส่งมอบ ' + slotNum, 'เป้าหมาย ' + slotNum]);
-    if (slotCol > 0) {
-      sheet.getRange(targetRow, slotCol).setValue(data.newTargetDate);
+    // ใน Record รับ - จ่าย Production: Column S คือ 'เป้าหมายส่งมอบ 1' (Column 19)
+    var colS = findCol(['เป้าหมายส่งมอบ 1', 'เป้าหมาย 1']);
+    if (colS <= 0 && sheetName === 'Record รับ - จ่าย Production') {
+      colS = 19; // Column S
     }
-    if (targetLatestCol > 0) {
+
+    if (colS > 0) {
+      sheet.getRange(targetRow, colS).setValue(data.newTargetDate);
+    }
+    if (targetLatestCol > 0 && targetLatestCol !== colS) {
       sheet.getRange(targetRow, targetLatestCol).setValue(data.newTargetDate);
     }
   }

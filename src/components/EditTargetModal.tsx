@@ -208,7 +208,7 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
           {/* Current Target vs Milestone History */}
           <div className="bg-sky-50/70 border border-sky-200 rounded-xl p-3 text-xs space-y-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-sky-900 font-medium">เป้าหมายส่งมอบปัจจุบัน:</span>
+              <span className="text-sky-900 font-medium">เป้าหมายส่งมอบปัจจุบัน (Column S):</span>
               <span className="font-mono font-bold text-sky-900 text-sm bg-white px-2 py-0.5 rounded border border-sky-300">
                 {currentFormatted}
               </span>
@@ -232,7 +232,7 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
               </>}
               {item.target5 && <>
                 <ArrowRight className="w-2.5 h-2.5 text-slate-400" />
-                <span className="text-purple-700 font-semibold">{formatCompactDate(item.target5)}</span>
+                <span className={item.target5 ? 'text-purple-700 font-semibold' : 'text-purple-700 font-semibold'}>{formatCompactDate(item.target5)}</span>
               </>}
             </div>
           </div>
@@ -240,8 +240,8 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
           {/* New Target Date Input */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-800">
-                กำหนดวันที่เป้าหมายส่งมอบใหม่ (d/m/y):
+              <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <span>กำหนดวันที่เป้าหมายส่งมอบใหม่ (Column S):</span>
               </label>
               {newParsed && (
                 <span className="text-sky-700 font-medium text-[11px]">
@@ -287,7 +287,7 @@ export const EditTargetModal: React.FC<EditTargetModalProps> = ({
             </div>
 
             <p className="text-[11px] text-slate-500 flex items-center justify-between">
-              <span>* กรอกรูปแบบ <strong>d/m/y</strong> เช่น <strong>6/10/26</strong> หรือกดปุ่มปฏิทินเพื่อเลือกวัน</span>
+              <span>* รูปแบบ <strong>d/m/y</strong> เช่น <strong>6/10/26</strong> หรือเลือกปฏิทิน (อัปเดตลง <strong>Column S</strong> ในชีต)</span>
               {newParsed && (
                 <span className="text-emerald-700 font-mono font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   เป้าหมาย: {formatCompactDate(dateTextInput)}
