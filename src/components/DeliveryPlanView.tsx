@@ -561,7 +561,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                             </>
                           )}
 
-                          <th className="py-2.5 px-3 min-w-[130px]">ประวัติเลื่อนเป้า (1 $\rightarrow$ 5)</th>
+                          <th className="py-2.5 px-3 min-w-[130px]">ประวัติเลื่อนเป้า</th>
                           <th className="py-2.5 px-3 min-w-[150px]">หมายเหตุ / ปลายทาง</th>
                           {mode === 'EDIT' && (
                             <th className="py-2.5 px-3 min-w-[160px] bg-amber-50 text-amber-900 text-center font-bold">
