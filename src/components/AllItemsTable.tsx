@@ -303,8 +303,8 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                 <th className="py-3 px-3 text-center">สถานะ</th>
                 <th className="py-3 px-3 min-w-[150px]">หมายเหตุ</th>
                 {mode === 'EDIT' && (
-                  <th className="py-3 px-3 min-w-[160px] bg-amber-50 text-amber-900 text-center font-bold">
-                    จัดการเป้าหมาย & ส่งงานแล้ว
+                  <th className="py-3 px-3 min-w-[100px] bg-amber-50 text-amber-900 text-center font-bold">
+                    จัดการเป้าหมาย
                   </th>
                 )}
               </tr>
@@ -560,7 +560,7 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
 
                     {mode === 'EDIT' && (
                       <td className="py-3 px-3 text-center bg-amber-50/20 whitespace-nowrap">
-                        <div className="flex items-center justify-center gap-1.5">
+                        <div className="flex items-center justify-center">
                           <button
                             type="button"
                             onClick={() => onEditTarget && onEditTarget(item)}
@@ -569,24 +569,6 @@ export const AllItemsTable: React.FC<AllItemsTableProps> = ({
                           >
                             <Edit3 className="w-3.5 h-3.5" />
                             <span>แก้เป้า</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => onConfirmDelivery && onConfirmDelivery(item, !(item.closed === '*' || item.status === 'ส่งแล้ว'))}
-                            className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer border ${
-                              item.closed === '*' || item.status === 'ส่งแล้ว'
-                                ? 'bg-emerald-100 hover:bg-rose-50 text-emerald-800 hover:text-rose-700 border-emerald-300 hover:border-rose-300'
-                                : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
-                            }`}
-                            title={
-                              item.closed === '*' || item.status === 'ส่งแล้ว'
-                                ? 'ส่งมอบแล้ว (*) คลิกเพื่อยกเลิกสถานะส่งงาน'
-                                : 'คลิกเพื่อบันทึกสถานะส่งงานแล้ว (บันทึกเครื่องหมาย * ใน Closed)'
-                            }
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5" />
-                            <span>{item.closed === '*' || item.status === 'ส่งแล้ว' ? 'ส่งแล้ว (*)' : 'ส่งงานแล้ว'}</span>
                           </button>
                         </div>
                       </td>
