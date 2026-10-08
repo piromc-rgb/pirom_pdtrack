@@ -617,7 +617,7 @@ export function App() {
           <div className="flex items-center gap-2">
             <img src={appLogo} alt="AMW" className="h-5 w-auto object-contain inline-block" />
             <span className="font-semibold text-slate-700">AMW PDTrack</span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.61</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">Ver 1.62</span>
             <span>- ระบบติดตามเป้าหมายการส่งมอบ</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400 flex-wrap">

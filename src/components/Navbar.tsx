@@ -69,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-2">
                 <span className="text-xl font-bold tracking-tight text-slate-900">AMW PD<span className="text-sky-600">Track</span></span>
                 <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-sky-50 text-sky-700 border border-sky-200 shadow-2xs">
-                  Ver 1.61
+                  Ver 1.62
                 </span>
               </div>
               <p className="text-xs text-slate-500 hidden md:block">
