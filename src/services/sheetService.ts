@@ -272,15 +272,79 @@ export function clearAllOverrides(): void {
   }
 }
 
-export function applyOverridesToItems(items: DeliveryItem[]): DeliveryItem[] {
+export function applyOverridesToItems(items: DeliveryItem[], isLive = false): DeliveryItem[] {
   const overrides = getItemOverrides();
   if (Object.keys(overrides).length === 0) return items;
 
-  return items.map(item => {
+  let overridesModified = false;
+
+  const result = items.map(item => {
     const key = getItemKey(item);
     const coreKey = `${item.workTag || 'Service'}|${(item.docRef || '').trim().toLowerCase()}|${(item.itemCode || '').trim().toLowerCase()}`;
     const ov = overrides[key] || (item.id ? overrides[item.id] : undefined) || overrides[coreKey];
     if (!ov) return item;
+
+    // เมื่อดึงข้อมูลสดจาก Google Sheet (isLive === true)
+    if (isLive) {
+      const sheetClosed = (item.closed || '').toLowerCase();
+      const sheetRemark = (item.remark || '').toLowerCase();
+      const sheetHasStar =
+        sheetClosed.includes('*') ||
+        sheetClosed.includes('close') ||
+        sheetRemark.includes('*') ||
+        sheetRemark.includes('close');
+
+      const keysToClean = [key, item.id || '', coreKey, ov.itemKey || ''].filter(Boolean);
+
+      // ถ้าใน Google Sheet ไม่มีเครื่องหมาย * หรือ close แล้ว (ผู้ใช้ไปลบ * ออกใน Google Sheet)
+      // แต่ใน override ยังจำว่าปิดงาน/ส่งแล้ว -> ให้ล้าง override สถานะส่งแล้วออกทันที เพื่อคืนรายการกลับมาในระบบ
+      if (!sheetHasStar && (ov.closed === '*' || ov.status === 'ส่งแล้ว')) {
+        keysToClean.forEach(k => {
+          if (overrides[k]) {
+            delete overrides[k].closed;
+            delete overrides[k].status;
+            overridesModified = true;
+          }
+        });
+      }
+
+      // ถ้าใน Google Sheet มีเป้าหมายตรงกับ override ที่เคยแก้ไว้แล้ว (Google Sheet บันทึกเรียบร้อยแล้ว)
+      if (ov.target1 && (item.target1 === ov.target1 || item.targetLatest === ov.target1)) {
+        keysToClean.forEach(k => {
+          if (overrides[k]) {
+            delete overrides[k].target1;
+            delete overrides[k].targetLatest;
+            overridesModified = true;
+          }
+        });
+      }
+      if (ov.remark !== undefined && item.remark === ov.remark) {
+        keysToClean.forEach(k => {
+          if (overrides[k]) {
+            delete overrides[k].remark;
+            overridesModified = true;
+          }
+        });
+      }
+
+      // ถ้า override ไม่เหลือข้อมูลอะไรที่ต้องทับแล้ว ให้ลบออกจาก overrides
+      let allCleaned = true;
+      keysToClean.forEach(k => {
+        const o = overrides[k];
+        if (o) {
+          const hasRemaining = Object.keys(o).some(field => !['itemKey', 'itemId', 'updatedAt'].includes(field));
+          if (!hasRemaining) {
+            delete overrides[k];
+            overridesModified = true;
+          } else {
+            allCleaned = false;
+          }
+        }
+      });
+      if (allCleaned) {
+        return item;
+      }
+    }
 
     const target1 = ov.target1 !== undefined ? ov.target1 : item.target1;
     const target2 = ov.target2 !== undefined ? ov.target2 : item.target2;
@@ -333,6 +397,16 @@ export function applyOverridesToItems(items: DeliveryItem[]): DeliveryItem[] {
       parsedLatestDate: parseDate(targetLatest),
     };
   });
+
+  if (overridesModified) {
+    try {
+      localStorage.setItem(STORAGE_ITEM_OVERRIDES_KEY, JSON.stringify(overrides));
+    } catch (e) {
+      console.warn('Could not update cleaned overrides in localStorage:', e);
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -2412,13 +2486,14 @@ export async function fetchDeliveryData(
   const csvUrl4 = hasOverviewUrl ? getCsvExportUrl(overviewUrl.trim()) : '';
 
   try {
-    // Fetch all requested sheets in parallel
+    // Fetch all requested sheets in parallel with cache-busting
+    const cacheBuster = `&_t=${Date.now()}`;
     const [res1, res2, res3, res4, resSp] = await Promise.allSettled([
-      fetch(csvUrl1, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
-      fetch(csvUrl2, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }),
-      fetch(xlsxUrl3, { method: 'GET' }),
-      csvUrl4 ? fetch(csvUrl4, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }) : Promise.reject('No overview URL'),
-      csvUrlSp ? fetch(csvUrlSp, { method: 'GET', headers: { Accept: 'text/csv,text/plain,*/*' } }) : Promise.reject('No SP URL'),
+      fetch(csvUrl1 + cacheBuster, { method: 'GET', cache: 'no-store', headers: { Accept: 'text/csv,text/plain,*/*' } }),
+      fetch(csvUrl2 + cacheBuster, { method: 'GET', cache: 'no-store', headers: { Accept: 'text/csv,text/plain,*/*' } }),
+      fetch(xlsxUrl3 + `?_t=${Date.now()}`, { method: 'GET', cache: 'no-store' }),
+      csvUrl4 ? fetch(csvUrl4 + cacheBuster, { method: 'GET', cache: 'no-store', headers: { Accept: 'text/csv,text/plain,*/*' } }) : Promise.reject('No overview URL'),
+      csvUrlSp ? fetch(csvUrlSp + cacheBuster, { method: 'GET', cache: 'no-store', headers: { Accept: 'text/csv,text/plain,*/*' } }) : Promise.reject('No SP URL'),
     ]);
 
     if (res1.status !== 'fulfilled' || !res1.value.ok) {
@@ -2597,7 +2672,7 @@ export async function fetchDeliveryData(
       console.warn('Cannot save to localStorage:', storageErr);
     }
 
-    return { items: applyOverridesToItems(applyPoPendingToItems(items)), fromLive: true };
+    return { items: applyOverridesToItems(applyPoPendingToItems(items), true), fromLive: true };
   } catch (err: any) {
     console.warn('Live fetch failed, falling back to local cache/bundled data:', err);
 

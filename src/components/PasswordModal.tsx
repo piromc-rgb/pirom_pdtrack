@@ -108,7 +108,7 @@ export const PasswordModal: React.FC<PasswordModalProps> = ({
             </div>
             <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-800 pl-1">
               <li>แก้ไขวันที่เป้าหมายส่งมอบ (แผ่นส่งจะขยับเปลี่ยนวันทันที)</li>
-              <li>Confirm การส่งมอบชิ้นส่วน (บันทึกเครื่องหมาย * ใน Closed)</li>
+              <li>บันทึกสถานะส่งงานแล้ว / ส่งมอบชิ้นส่วน (บันทึกเครื่องหมาย * ใน Closed)</li>
               <li>ข้อมูลที่แก้ไขจะอัปเดตลง Google Sheet ต้นฉบับอัตโนมัติ</li>
             </ul>
           </div>

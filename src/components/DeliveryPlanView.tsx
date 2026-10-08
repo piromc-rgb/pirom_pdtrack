@@ -565,7 +565,7 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                           <th className="py-2.5 px-3 min-w-[150px]">หมายเหตุ / ปลายทาง</th>
                           {mode === 'EDIT' && (
                             <th className="py-2.5 px-3 min-w-[160px] bg-amber-50 text-amber-900 text-center font-bold">
-                              จัดการเป้าหมาย & Confirm
+                              จัดการเป้าหมาย & ส่งงานแล้ว
                             </th>
                           )}
                         </tr>
@@ -1039,12 +1039,12 @@ export const DeliveryPlanView: React.FC<DeliveryPlanViewProps> = ({
                                       }`}
                                       title={
                                         item.closed === '*' || item.status === 'ส่งแล้ว'
-                                          ? 'ส่งมอบแล้ว (*) คลิกเพื่อยกเลิกการส่งมอบ'
-                                          : 'คลิกเพื่อ Confirm การส่งมอบ (บันทึกเครื่องหมาย * ใน Closed)'
+                                          ? 'ส่งมอบแล้ว (*) คลิกเพื่อยกเลิกสถานะส่งงาน'
+                                          : 'คลิกเพื่อบันทึกสถานะส่งงานแล้ว (บันทึกเครื่องหมาย * ใน Closed)'
                                       }
                                     >
                                       <CheckCircle2 className="w-3.5 h-3.5" />
-                                      <span>{item.closed === '*' || item.status === 'ส่งแล้ว' ? 'ส่งแล้ว (*)' : 'Confirm'}</span>
+                                      <span>{item.closed === '*' || item.status === 'ส่งแล้ว' ? 'ส่งแล้ว (*)' : 'ส่งงานแล้ว'}</span>
                                     </button>
                                   </div>
                                 </td>
